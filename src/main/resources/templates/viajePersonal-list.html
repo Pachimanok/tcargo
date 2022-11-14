@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head th:insert="fragments/componentes/plantilla :: head"></head>
+
+<body class="horizontal-layout horizontal-menu 2-columns  " data-open="hover" data-menu="horizontal-menu"
+    data-col="2-columns">
+
+    <nav th:insert="fragments/componentes/plantilla :: header"></nav>
+
+    <nav th:insert="fragments/componentes/plantilla :: menu"></nav>
+
+
+    <div class="app-content content">
+        <div class="content-overlay"></div>
+        <div class="content-wrapper">
+            <div class="content-header row">
+                <div class="content-header-left col-md-6 col-12 mb-2">
+                    <h3 class="content-header-title" th:text="#{text.viaje.list.titulo}">
+                    </h3>
+                    <div class="row breadcrumbs-top">
+                        <div class="breadcrumb-wrapper col-12">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item">
+                                    <a th:href="@{/dashboard}" th:text="#{text.tittle.home}">
+                                    </a>
+                                </li>
+                                <li class="breadcrumb-item active" th:text="#{text.viaje.list.subtitulo}">
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="content-body">
+                <section id="pagination">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4 th:if="${session.rolActual != 'dador'}" class="card-title float-left"
+                                        th:text="#{text.viaje.personal.form.gestion.viajes.personales}">
+                                    </h4>
+                                    <h4 th:if="${session.rolActual == 'dador'}" class="card-title float-left"
+                                        th:text="#{text.viaje.list.card.tittle.dador}">
+                                    </h4>
+
+                                    <div class="media width-250 float-right">
+                                        <div class="media-body media-right text-right">
+                                            <a th:if="${session.rolActual == 'transportador' OR session.rolActual == 'ambas'}"
+                                                th:href="@{/viajepersonal/formulario}" class="btn btn-primary">
+                                                <i class="la la-plus"></i>
+                                                <span th:text="#{text.viaje.form.h4.crear.viaje}"></span>
+                                            </a>
+                                            <a th:href="@{/viajepersonal/listado(busquedaViaje = ${busquedaViajeModel} ? ${busquedaViajeModel} : '',format=xlsx)}"
+                                                class="m-2"
+                                                th:if="${session.usuario.rol.toString() == 'ADMINISTRADOR' || session.usuario.rol.toString() == 'ADMINISTRADOR_LOCAL'}">
+                                                <i class="la la-download"></i>
+                                                <span th:text="#{text.viaje.list.span.xlsx}"></span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body" th:unless="${page!=null and !page.isEmpty()}">
+                                    <h4 th:text="#{text.viaje.list.empty}"></h4>
+                                </div>
+                                <div class="card-body">
+                                    <div th:if="${error != null}" class="alert alert-danger" role="alert"
+                                        th:text="${error}">
+                                    </div>
+                                    <div th:if="${info != null}" class="alert alert-info" role="alert"
+                                        th:text="${info}">
+                                    </div>
+                                    <div class="card-text">
+
+
+                                        <form th:action="@{/viajepersonal/listado}" th:object="${busquedaViajeModel}">
+                                            <input type="hidden" th:value="${transportadorid}" name="transportadorid" />
+                                            <div class="row mb-2">
+
+                                                <!--                                        SOLO PARA TRANSPORTADOR -->
+                                                <div class="col-sm-2 col-md-2"
+                                                    th:if="${session.rolActual == 'transportador'}">
+                                                    <label for="holdername"
+                                                        th:text="#{text.viaje.list.filtro.tipo.vehiculo}">
+                                                    </label>
+                                                    <select class="form-control" id="vehiculoSelect"
+                                                        th:field="*{vehiculo}">
+                                                        <option th:text="#{text.vaije.list.filtro.select.tipo.vehiculo}"
+                                                            th:value="''" selected>
+                                                        <option th:each="v : ${vehiculos}"
+                                                            th:text="${v.modelo.nombre} + ' ' + ${v.dominio}"
+                                                            th:value="${v.id}" th:select="${v.id == vehiculo}">
+                                                    </select>
+                                                </div>
+
+                                                <!--                                        SOLO PARA DADOR -->
+                                                <div class="col-sm-2 col-md-2" th:if="${session.rolActual == 'dador'}">
+                                                    <label for="holdername"
+                                                        th:text="#{text.viaje.list.filtro.tipo.carga}">
+                                                    </label>
+                                                    <select class="form-control" th:field="*{tipoDeCarga}" multiple>
+                                                        <option th:text="#{text.viaje.list.filtro.select.tipo.carga}"
+                                                            th:value="''" selected>
+                                                        <option th:each="tc : ${tipoCargas}"
+                                                            th:text="${tc.caracteristicas}" th:value="${tc.id}"
+                                                            th:select="${tc.id == tipoDeCarga}">
+                                                    </select>
+                                                </div>
+                                                <div class="col-sm-2 col-md-2" th:if="${session.rolActual == 'dador'}">
+                                                    <label for="holdername"
+                                                        th:text="#{text.viaje.list.filtro.tipo.remolque}">
+                                                    </label>
+                                                    <select class="form-control" th:field="*{tipoDeRemolque}">
+                                                        <option th:text="#{text.viaje.list.filtro.select.tipo.remolque}"
+                                                            th:value="''" selected>
+                                                        <option th:each="tc : ${tipoRemolques}"
+                                                            th:text="${tc.caracteristicas}" th:value="${tc.id}"
+                                                            th:select="${tc.id == tipoDeRemolque}">
+                                                    </select>
+                                                </div>
+                                                <div class="col-sm-2 col-md-2" th:if="${session.rolActual == 'dador'}">
+                                                    <label for="holdername"
+                                                        th:text="#{text.viaje.list.filtro.tipo.vehiculo}">
+                                                    </label>
+                                                    <select class="form-control" th:field="*{tipoDeCamion}">
+                                                        <option th:text="#{text.vaije.list.filtro.select.tipo.vehiculo}"
+                                                            th:value="''" selected>
+                                                        <option th:each="tc : ${tipoVehiculos}" th:text="${tc.nombre}"
+                                                            th:value="${tc.id}" th:select="${tc.id == tipoDeRemolque}">
+                                                    </select>
+                                                </div>
+                                                <div class="col-sm-2 col-md-2" th:if="${session.rolActual == 'dador'}">
+                                                    <label for="holdername" th:text="#{text.viaje.list.filtro.modelos}">
+                                                    </label>
+                                                    <select class="form-control" th:field="*{idModelo}">
+                                                        <option th:text="#{text.viaje.list.filtro.select.modelos}"
+                                                            th:value="''" selected>
+                                                        <option th:each="tc : ${modelos}"
+                                                            th:text="${tc.nombre} + ' ' + ${tc.marca.nombre}"
+                                                            th:value="${tc.id}" th:select="${tc.id == idModelo}">
+                                                    </select>
+                                                </div>
+
+                                                <div class="col-sm-2 col-md-2">
+                                                    <label for="holdername" th:text="#{text.viaje.list.filtro.origen}">
+                                                    </label>
+                                                    <input type="text" class="form-control"
+                                                        th:placeholder="#{text.viaje.list.input.origen}"
+                                                        th:value="${origen}" th:field="*{origen}" />
+                                                </div>
+
+                                                <div class="col-sm-2 col-md-2">
+                                                    <label for="holdername" th:text="#{text.viaje.list.filtro.destino}">
+                                                    </label>
+                                                    <input type="text" class="form-control"
+                                                        th:placeholder="#{text.viaje.list.input.destino}"
+                                                        th:value="${destino}" th:field="*{destino}" />
+                                                </div>
+
+                                                <div class="col-sm-1 col-md-1">
+                                                    <label for="holdername" th:text="#{text.viaje.list.filtro.salida}">
+                                                    </label>
+                                                    <input type="date" class="form-control" th:value="${fechaDesde}"
+                                                        th:field="*{fechaDesde}" />
+                                                </div>
+
+                                                <div class="col-sm-1 col-md-1">
+                                                    <label for="holdername" th:text="#{text.viaje.list.filtro.llegada}">
+                                                    </label>
+                                                    <input type="date" class="form-control" placeholder="Destino..."
+                                                        th:value="${fechaHasta}" th:field="*{fechaHasta}" />
+                                                </div>
+
+
+                                                <div class="col-sm-2 col-md-2">
+                                                    <label for="holdername" th:text="#{text.viaje.list.filtro.otros}">
+                                                    </label>
+                                                    <input type="text" class="form-control"
+                                                        th:placeholder="#{text.viaje.list.input.buscar}" th:value="${q}"
+                                                        th:field="*{q}" />
+                                                </div>
+
+                                                <div class="col-sm-2 col-md-2 mt-2 float-right">
+                                                    <button type="submit" name="search" id="search-btn"
+                                                        class="btn btn-success square">
+                                                        <i class="la la-search"></i>
+                                                    </button>
+                                                    <a type="button" class="btn btn-info square text-white"
+                                                        th:href="@{/viajepersonal/listado}"
+                                                        th:text="#{text.btn.limpiar.filtros}">
+                                                    </a>
+
+                                                </div>
+
+
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="table-responsive">
+                                        <table class="table alt-pagination customer-wrapper">
+                                            <thead class="thead-dark">
+                                                <tr>
+                                                    <th
+                                                        th:replace="fragments/componentes/paginador :: columna(campo=m.nombre,columna='__#{text.viaje.list.td.uno}__')">
+                                                    </th>
+                                                    <th
+                                                        th:replace="fragments/componentes/paginador :: columna(campo=tr.caracteristicas,columna='__#{text.viaje.list.td.dos}__')">
+                                                    </th>
+                                                    <th
+                                                        th:replace="fragments/componentes/paginador :: columna(campo=ui.direccion,columna='__#{text.viaje.list.td.tres}__')">
+                                                    </th>
+                                                    <th
+                                                        th:replace="fragments/componentes/paginador :: columna(campo=uf.direccion,columna='__#{text.viaje.list.td.cuatro}__')">
+                                                    </th>
+                                                    <th
+                                                        th:replace="fragments/componentes/paginador :: columna(campo=vp.fecha_inicio,columna='__#{text.viaje.list.td.cinco}__')">
+                                                    </th>
+                                                    <th
+                                                        th:replace="fragments/componentes/paginador :: columna(campo=vp.fecha_final,columna='__#{text.viaje.list.td.seis}__')">
+                                                    </th>
+                                                    <th
+                                                        th:replace="fragments/componentes/paginador :: columna(campo=vp.estado_viaje,columna='__#{text.filtro.estado}__')">
+                                                    </th>
+                                                    <th th:text="#{text.acciones}"></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr th:each="entidad : ${page}">
+                                                    <td class="align-left">
+                                                        <div class="name" th:if="${entidad.vehiculo != null}"
+                                                            th:text="${entidad.vehiculo} + ' ' + ${entidad.dominioV}">
+                                                        </div>
+                                                    </td>
+                                                    <td class="align-left">
+                                                        <div class="name" th:if="${entidad.remolque != null}"
+                                                            th:text="${entidad.remolque} + ' ' + ${entidad.dominioR}">
+                                                        </div>
+                                                    </td>
+                                                    <td class="align-left">
+                                                        <div class="name" th:if="${entidad.ubicaciones != null}"
+                                                            th:text="${entidad.ubicaciones[0].direccion}"></div>
+                                                    </td>
+                                                    <td class="align-left">
+                                                        <div class="name" th:if="${entidad.ubicaciones != null}"
+                                                            th:text="${entidad.ubicaciones[#lists.size(entidad.ubicaciones) -1].direccion}">
+                                                        </div>
+                                                    </td>
+                                                    <td class="align-middle">
+                                                        <div class="last-login" th:if="${entidad.fechaInicio != null}"
+                                                            th:text="${entidad.fechaInicio}"></div>
+                                                    </td>
+                                                    <td class="align-middle">
+                                                        <div class="last-login" th:if="${entidad.fechaFinal != null}"
+                                                            th:text="${entidad.fechaFinal}"></div>
+                                                    </td>
+                                                    <td class="align-middle">
+                                                        <div class="last-login">
+
+
+                                                            <span
+                                                                th:if="${entidad.estadoViaje.toString() == 'Listo para Cargar' OR entidad.estadoViaje.toString() == 'Listo para Descargar' }"
+                                                                style="font-weight: 700!important;"
+                                                                class="badge badge-info"
+                                                                th:text="${entidad.estadoViaje}"></span>
+                                                            <span
+                                                                th:if="${entidad.estadoViaje.toString() == 'Cargando' OR entidad.estadoViaje.toString() == 'Descargando' }"
+                                                                style="font-weight: 700!important;"
+                                                                class="badge badge-success"
+                                                                th:text="${entidad.estadoViaje}"></span>
+                                                            <span
+                                                                th:if="${entidad.estadoViaje.toString() == 'En tránsito'}"
+                                                                style="font-weight: 700!important;"
+                                                                class="badge badge-warning"
+                                                                th:text="${entidad.estadoViaje}"></span>
+                                                            <span
+                                                                th:if="${entidad.estadoViaje.toString() == 'Finalizado'}"
+                                                                style="font-weight: 700!important;"
+                                                                class="badge badge-danger"
+                                                                th:text="${entidad.estadoViaje}"></span>
+                                                            <!--                                                         <p th:text="${entidad.modificacion} ? ${#dates.format(entidad.modificacion, 'dd-MM-yyyy')}"></p> -->
+                                                        </div>
+
+                                                        <div class="dropdown">
+                                                            <a class="btn btn-warning btn-sm dropdown-toggle mt-1"
+                                                                th:id="'divEstado'+${entidad.id}" href="#" role="button"
+                                                                id="dropdownMenuLink" data-toggle="dropdown"
+                                                                aria-haspopup="true" aria-expanded="false">
+                                                            </a>
+                                                            <div class="dropdown-menu">
+                                                                <a class="dropdown-item" href="#"
+                                                                    th:each="e : ${estados}" th:text="${e}"
+                                                                    th:onclick="actualizarEstado([[${entidad.id}]], [[${e}]])">
+                                                                </a>
+                                                            </div>
+                                                        </div>
+
+
+
+                                                    </td>
+                                                    <td class="align-middle">
+                                                        <div class="option"
+                                                            style="display: flex; justify-content: space-between;">
+                                                            <a th:if="${session.rolActual == 'transportador'}"
+                                                                th:href="@{/viajepersonal/formulario(accion=actualizar,id=__${entidad.id}__)}">
+                                                                <i class="la la-pencil success"></i>
+                                                            </a>
+
+                                                            <a th:if="${session.rolActual == 'transportador'}"
+                                                                th:href="@{/viajepersonal/formulario(accion=eliminar,id=__${entidad.id}__)}">
+                                                                <i class="la la-trash danger"></i>
+                                                            </a>
+
+                                                            <a data-toggle="modal" data-target="#detalle"
+                                                                title="Ver Detalle"
+                                                                th:attr="onclick=|cargarDetalle('${entidad.id}','${entidad.vehiculo != null ? entidad.vehiculo : 'No Asignado'}','${entidad.remolque != null ? entidad.remolque : 'No Asignado'}',
+                                                                                                    '${entidad.ubicaciones[0].direccion}', '${entidad.ubicaciones[#lists.size(entidad.ubicaciones) -1].direccion}', 
+                                                                                            '${entidad.fechaInicio != null ? entidad.fechaInicio : 'Sin fecha asignada'}', 
+                                                                                            '${entidad.fechaFinal != null ? entidad.fechaFinal : 'Sin fecha asignada'}',
+                                                                                            '${entidad.chofer != null ? entidad.chofer : 'No Asignado'}')|">
+                                                                <i class="la la-eye info"></i>
+                                                            </a>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+
+                                            </tbody>
+                                        </table>
+                                        <div th:replace="fragments/componentes/paginador :: paginador">...</div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <div class="sidenav-overlay"></div>
+    <div class="drag-target"></div>
+    <!-- Modal Detalle-->
+    <div class="modal fade bd-example-modal-lg" id="detalle" tabindex="-1" role="dialog" aria-labelledby="detalle"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-dark">
+                    <h5 class="modal-title text-white" id="exampleModalLabel"
+                        th:text="#{text.viaje.list.h5.detalles.viaje}">
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6 col-sm-6">
+                            <div class="form-group">
+                                <label class="form-control text-center"
+                                    th:text="#{text.viaje.list.label.direccion.salida}">
+                                </label>
+                                <strong class="text-center" id="salidaText"></strong>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-sm-6">
+                            <div class="form-group">
+                                <label class="form-control text-center"
+                                    th:text="#{text.viaje.list.label.direccion.destino}">
+                                </label>
+                                <strong class="text-center" id="llegadaText"></strong>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-sm-12">
+                            <div class="contenedor-mapa">
+                                <div id="map"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-4">
+                            <div class="form-group">
+                                <label class="form-control text-center" th:text="#{text.viaje.form.label.vehiculo}">
+                                </label>
+                                <strong class="text-center" id="vehiculoText"></strong>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-4">
+                            <div class="form-group">
+                                <label class="form-control text-center" th:text="#{text.viaje.form.label.remolque}">
+                                </label>
+                                <strong class="text-center" id="remolqueText"></strong>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-4">
+                            <div class="form-group">
+                                <label class="form-control text-center"
+                                    th:text="#{text.viaje.personal.list.label.chofer}">
+                                </label>
+                                <strong class="text-center" id="choferText"></strong>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-sm-6">
+                            <div class="form-group">
+                                <label class="form-control text-center" th:text="#{text.viaje.form.label.fecha.salida}">
+                                </label>
+                                <strong class="text-center" id="fechaSalidaText"></strong>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-sm-6">
+                            <div class="form-group">
+                                <label class="form-control text-center"
+                                    th:text="#{text.viaje.form.label.fecha.llegada}">
+                                </label>
+                                <strong class="text-center" id="fechallegadaText"></strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        <span th:text="#{text.cerrar}"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <div class="sidenav-overlay"></div>
+    <div class="drag-target"></div>
+    <!-- Modal Detalle-->
+    <div class="modal fade bd-example-modal-lg" id="detalle" tabindex="-1" role="dialog" aria-labelledby="detalle"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-dark">
+                    <h5 class="modal-title text-white" id="exampleModalLabel">Detalles
+                        del viaje</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6 col-sm-6">
+                            <div class="form-group">
+                                <label class="form-control text-center"> Direccion de
+                                    salida </label> <strong class="text-center" id="salidaText"></strong>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-sm-6">
+                            <div class="form-group">
+                                <label class="form-control text-center"> Direccion de
+                                    destino </label> <strong class="text-center" id="llegadaText"></strong>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-sm-12">
+                            <div class="contenedor-mapa">
+                                <div id="map"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-4">
+                            <div class="form-group">
+                                <label class="form-control text-center"> Vehículo </label> <strong class="text-center"
+                                    id="vehiculoText"></strong>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-4">
+                            <div class="form-group">
+                                <label class="form-control text-center"> Remolque </label> <strong class="text-center"
+                                    id="remolqueText"></strong>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-4">
+                            <div class="form-group">
+                                <label class="form-control text-center"> Chofer </label> <strong class="text-center"
+                                    id="choferText"></strong>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-sm-6">
+                            <div class="form-group">
+                                <label class="form-control text-center"> Fecha de
+                                    salida </label> <strong class="text-center" id="fechaSalidaText"></strong>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-sm-6">
+                            <div class="form-group">
+                                <label class="form-control text-center"> Fecha de
+                                    llegada </label> <strong class="text-center" id="fechallegadaText"></strong>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-sm-12">
+                            <div class="form-group text-center" id="box-documentos">
+                                <label class="form-control text-center">Documentos</label>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <th:block th:replace="fragments/componentes/plantilla :: footer"></th:block>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"
+        integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+
+
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+    <script
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDz6kEuRri8bQ3TXQn2e5t0KVBqQpQHbwM&libraries=places&callback=initMap"
+        defer></script>
+
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script th:inline="javascript">
+        // VIAJE PERSONAL HERE!
+        var page = [[${ page }]]
+        var lista = page.content;
+        let directionsService;
+        let directionsRenderer;
+        let arrayWayPoint = [];
+        var map;
+        var marca;
+        var marker
+
+
+        function cargarId(id) {
+            $("#inputIdEntidad").val(id);
+        }
+
+        function cargarDetalle(id, vehiculo, remolque, desde, hasta, salida, llegada, chofer) {
+
+            let lista = page.content;
+            for (let i = 0; i < lista.length; i++) {
+
+                if (id == lista[i].id) {
+                    let coincidencias = lista[i].coincidencias;
+                    for (let z = 0; z < coincidencias.length; z++) {
+                        let link = "href='/pedido/ver?id=" + coincidencias[z].idPedido + "&format=pdf'";
+                        $("#box-documentos").append("<a class='badge badge-info m-1' " + link + " target='_blank'>Documento: " + (z + 1) + "</a>");
+                    }
+                }
+
+            }
+
+            for (let i = 0; i < lista.length; i++) {
+                if (id === lista[i].id) {
+                    $("#salidaText").text(desde);
+                    $("#llegadaText").text(hasta);
+                    $("#vehiculoText").text(vehiculo);
+                    $("#remolqueText").text(remolque);
+                    $("#fechaSalidaText").text(salida);
+                    $("#choferText").text(chofer);
+                    $("#fechallegadaText").text(llegada);
+
+                    let puntoInicio = lista[i].ubicaciones[0].latitud + " " + lista[i].ubicaciones[0].longitud;
+                    let puntoFinal;
+                    puntoFinal = lista[i].ubicaciones[lista[i].ubicaciones.length - 1].latitud + " " + lista[i].ubicaciones[lista[i].ubicaciones.length - 1].longitud;
+
+                    if (lista[i].ubicaciones.length > 2) {
+                        for (let z = 1; z < lista[i].ubicaciones.length - 1; z++) {
+                            arrayWayPoint.push({
+                                location: lista[i].ubicaciones[z].latitud + " " + lista[i].ubicaciones[z].longitud
+                            });
+                        }
+                    } else {
+                        arrayWayPoint = [];
+                    }
+                    displayRoute(puntoInicio, puntoFinal, directionsService, directionsRenderer)
+                }
+            }
+        }
+
+        var initialPos = {
+            lat: -33.6091754,
+            lng: -63.4685812
+        };
+
+
+
+        function initMap() {
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: initialPos,
+                zoom: 6.22,
+                mapTypeId: 'roadmap',
+                zoomControl: true,
+                mapTypeControl: false
+            });
+
+            directionsService = new google.maps.DirectionsService();
+            directionsRenderer = new google.maps.DirectionsRenderer({
+                draggable: false,
+                map: map,
+            });
+
+
+        }
+
+
+        function displayRoute(ubicacionInicio, ubicacionFinal, service, display) {
+            service.route({
+                origin: ubicacionInicio,
+                destination: ubicacionFinal,
+                waypoints: arrayWayPoint,
+                travelMode: "DRIVING",
+            }, function (result, status) {
+                if (status === "OK") {
+                    dir = result;
+                    display.setDirections(result);
+                } else {
+                    alert("Error: " + status);
+                }
+            });
+
+        }
+
+        function actualizarEstado(id, estado) {
+
+            Swal.fire({
+                title: [[#{ text.viaje.form.script.actualizar.estado }]],
+                showCancelButton: true,
+                confirmButtonText: [[#{text.tittle.actualizar}]],
+                cancelButtonText: [[#{text.btn.cancelar}]],
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    llamadaAjax(id, estado)
+                } else {
+                    Swal.fire([[#{ text.viaje.form.script.cambios.desestimados }]])
+                }
+            })
+
+
+        }
+
+        function llamadaAjax(id, estado) {
+
+            let entidad = {
+                id: id,
+                estadoViaje: estado,
+
+            }
+            console.log(entidad)
+            $.ajax({
+                url: '/api/viajepersonal/actualizarestado',
+                data: JSON.stringify(entidad),
+                type: 'POST',
+                contentType: 'application/json',
+                dataType: 'json',
+                success: function (data) {
+                    console.log(data)
+                    if (data.error) {
+                        Swal.fire(data.error)
+                    } else {
+                        Swal.fire({
+                            title: [[#{ text.viaje.form.script.actualizado.exito }]],
+                            confirmButtonText: `OK`,
+                        }).then((result) => {
+                            /* Read more about isConfirmed, isDenied below */
+                            if (result.isConfirmed) {
+                                window.location.href = "/viajepersonal/listado";
+                            }
+                        })
+
+
+                    }
+                }
+            })
+
+        }
+
+    </script>
+</body>
+
+</html>

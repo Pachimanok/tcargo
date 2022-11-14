@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/componentes/plantilla :: head"></head>
+
+<body class="horizontal-layout horizontal-menu 2-columns  " data-open="hover" data-menu="horizontal-menu" data-col="2-columns">
+<nav th:replace="fragments/componentes/plantilla :: header"></nav>
+<nav th:replace="fragments/componentes/plantilla :: menu"></nav>
+
+<div class="app-content content">
+    <div class="content-overlay"></div>
+    <div class="content-wrapper">
+        <div class="content-header row">
+            <div class="content-header-left col-md-6 col-12 mb-2">
+                <h3 class="content-header-title"
+                    th:text="#{text.usuario.form.h3.gestionUsuarios}">
+                </h3>
+                <div class="row breadcrumbs-top">
+                    <div class="breadcrumb-wrapper col-12">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a th:href="@{/dashboard}">
+                                    <span th:text="#{text.tittle.home}"></span>
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item active" th:text="#{text.usuario.form.li.Usuarios}"></li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+            <div class="content-header-right col-md-6 col-12">
+                <div class="media width-250 float-right">
+                    <div class="media-body media-right text-right">
+                        <a href="#" onclick="history.back()" class="btn btn-icon btn-secondary mr-1 mb-1">
+                            <i class="la la-chevron-left"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="content-body">
+            <section id="pagination">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title" th:if="${accion == null or accion == 'guardar'}"
+                                    th:text="#{text.usuario.form.h4.crearUsuario}">
+                                </h4>
+                                <h4 class="card-title" th:if="${accion == 'actualizar'}"
+                                    th:text="#{text.usuario.form.h4.actualizarUsuario}">
+                                </h4>
+                                <h4 class="card-title" th:if="${accion == 'eliminar'}"
+                                    th:text="#{text.usuario.form.h4.eliminarUsuario}">
+                                </h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="card-text">
+                                    <div th:if="${error != null}" class="alert alert-danger" role="alert">
+                                        <strong th:text="#{text.usuario.form.strong.error}"></strong>
+                                        <span th:text="${error}">error</span>
+                                    </div>
+
+                                    <div th:if="${accion == 'eliminar'}" class="alert alert-danger" role="alert">
+                                        <strong th:text="#{text.usuario.form.strong.alto}"></strong>
+                                        <span th:text="#{text.usuario.form.span.seEncuentraSeguro}"></span>
+                                    </div>
+                                </div>
+                                <form method="POST"
+                                      th:action="@{/usuario/} + ${accion == null or accion == 'actualizar' ? 'guardar' : accion}"
+                                      id="formulario" novalidate="novalidate" th:object="${usuario}">
+                                    <input th:if="${usuario.id != null}" type="hidden" th:field="*{id}" th:value="*{id}"/>
+                                    <input th:if="${usuario.clave != null}" type="hidden" th:field="*{clave}" th:value="*{clave}"/>
+                                    <div class="row">
+                                        <div class="col-12 col-md-6">
+                                            <div class="form-group">
+                                                <label class="font-weight-bold" for="nombre">
+                                                    <span th:text="#{text.nombre}"></span>
+                                                    <span class="danger"> * </span>
+                                                </label>
+                                                <input class="form-control" id="nombre" th:field="*{nombre}"
+                                                       th:value="*{nombre}" type="text" required
+                                                       th:placeholder="#{text.usuario.form.input.ingresaNombre}"
+                                                       onkeydown="if(event.key==='.'){event.preventDefault();}" maxlength="30"
+                                                       oninput="event.target.value = event.target.value.replace(/[^a-zA-Z ]*/g,'');"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-md-6">
+                                            <div class="form-group">
+                                                <label class="font-weight-bold" for="mail">
+                                                    <span th:text="#{text.usuario.form.label.mail}"></span>
+                                                    <span class="danger"> * </span>
+                                                </label>
+                                                <input class="form-control" id="mail" th:field="*{mail}"
+                                                       th:value="*{mail}" type="email" required
+                                                       th:placeholder="#{text.usuario.form.input.ingresaCorreo}"
+                                                       pattern="[a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*@[a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*[.][a-zA-Z]{1,5}"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-md-6">
+                                            <div class="form-group">
+                                                <label class="font-weight-bold" for="telefono">
+                                                    <span th:text="#{text.usuario.form.label.telefono}"></span>
+                                                    <span class="danger"> * </span>
+                                                </label>
+                                                <input class="form-control" id="telefono" th:field="*{telefono}"
+                                                       th:value="*{telefono}" type="text" required
+                                                       th:placeholder="#{text.usuario.form.input.ingresaTelefono}"
+                                                       onkeydown="if(event.key==='.'){event.preventDefault();}" maxlength="30"
+                                                       oninput="event.target.value = event.target.value.replace(/[^0-9+]*/g,'');"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-md-6">
+                                            <div class="form-group">
+                                                <label class="font-weight-bold" for="cuit">
+                                                    <span th:text="#{text.usuario.form.label.cuit}"></span>
+                                                    <span class="danger"> * </span>
+                                                </label>
+                                                <input class="form-control" id="cuit" th:field="*{cuit}"
+                                                       th:value="*{cuit}" type="text" required pattern="[0-9]+"
+                                                       th:placeholder="#{text.usuario.form.input.ingresaCuit}"
+                                                       onkeydown="if(event.key==='.'){event.preventDefault();}" maxlength="12"
+                                                       oninput="event.target.value = event.target.value.replace(/[^0-9]*/g,'');"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-md-6">
+                                            <div class="form-group">
+                                                <label class="font-weight-bold" for="rolSelect">
+                                                    <span th:text="#{text.usuario.form.label.rol}"></span>
+                                                    <span class="danger"> * </span>
+                                                </label>
+                                                <select th:field="*{rol}" class="custom-select" id="rolSelect" required>
+                                                    <option value="" th:text="#{text.select.placeholder}">
+                                                    <option th:unless="${#strings.contains(rol, 'ADMIN') && session.usuario.rol.toString() != 'ADMINISTRADOR'}"
+                                                            th:each="rol : ${roles}" th:value="${rol}" th:text="${rol}"></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div id="div-comision-dador">
+                                            <div class="form-group" id="comisionDador" style="display : none;">
+                                                <label class="font-weight-bold" for="comision-dador">
+                                                    <span th:text="#{text.usuario.form.label.comisionDador}"></span>
+                                                    <span class="danger"> * </span>
+                                                </label>
+                                                <input class="form-control" type="number" id="comision-dador" th:field="*{comisionDador}"
+                                                       th:placeholder="#{text.usuario.form.input.ingresaComision}"
+                                                       max="100" min="0" th:value="${usuario.comisionDador}"/>
+                                            </div>
+                                        </div>
+                                        <div id="div-comision-transportador">
+                                            <div class="form-group" id="comisionTransportador" style="display : none;">
+                                                <label class="font-weight-bold" for="comision-transportador">
+                                                    <span th:text="#{text.usuario.form.label.comisionTransportador}"></span>
+                                                    <span class="danger"> * </span>
+                                                </label>
+                                                <input class="form-control" id="comision-transportador" type="number"
+                                                      j th:field="*{comisionTransportador}"
+                                                       th:placeholder="#{text.usuario.form.input.ingresaComision}"
+                                                       th:value="${usuario.comisionTransportador}"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-md-6"
+                                             th:if="${session.usuario.rol.toString() == 'ADMINISTRADOR'}">
+                                            <div class="form-group">
+                                                <label for="pais" class="font-weight-bold">
+                                                    <span th:text="#{text.pais}"></span>
+                                                    <span class="danger"> * </span>
+                                                </label>
+                                                <select class="form-control" id="pais" th:field="*{idPais}">
+                                                    <option th:each="pais : ${paises}" th:text="${pais.nombre}"
+                                                            th:value="${pais.id}" th:select="${usuario.idPais == pais.id}">
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-actions text-right">
+                                        <a th:if="${(session.usuario.rol.toString() == 'ADMINISTRADOR' || session.usuario.rol.toString() == 'ADMINISTRADOR_LOCAL') && usuario.id != null}"
+                                           th:href="@{/usuario/blanquearpassword(id=__${usuario.id}__)}">
+                                            <button type="button" class="btn btn-light">
+                                                <i class="la la-key"></i>
+                                                <span th:text="#{text.usuario.form.span.blanquearPassword}"></span>
+                                            </button>
+                                        </a>
+
+                                        <a th:href="@{/usuario/listado}">
+                                            <button type="button" class="btn btn-secondary">
+                                                <i class="ft-x"></i>
+                                                <span th:text="#{text.btn.cancelar}"></span>
+                                            </button>
+                                        </a>
+                                        <button type="submit" class="btn btn-danger" form="formulario"
+                                                th:if="${accion == 'eliminar'}">
+                                            <i class="la la-trash"></i>
+                                            <span th:text="#{text.btn.eliminar}"></span>
+                                        </button>
+                                        <button id="guardar" type="submit" class="btn btn-primary" form="formulario"
+                                                th:if="${accion == null or accion == 'guardar'}">
+                                            <i class="la la-check"></i>
+                                            <span th:text="#{text.btn.guardar}"></span>
+                                        </button>
+                                        <button id="submit" hidden type="submit" class="btn btn-primary" form="formulario"
+                                                th:if="${accion == null or accion == 'guardar'}">
+                                        </button>
+                                        <button type="submit" class="btn btn-primary" form="formulario"
+                                                th:if="${accion == 'actualizar'}">
+                                            <i class="la la-check"></i>
+                                            <span th:text="#{text.btn.actualizar}"></span>
+                                        </button>
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+
+<div class="sidenav-overlay"></div>
+<div class="drag-target"></div>
+
+<nav th:replace="fragments/componentes/plantilla :: footer"></nav>
+<!--VALIDACION DE INPUTS-->
+<script>
+    let guardar = $("#guardar");
+    let submit = $("submit");
+
+</script>
+<script th:inline="javascript">
+    const rolUsuario = [[${usuario.rol}]];
+    const divComisionDador = $("#div-comision-dador");
+    const divComisionTransportador = $("#div-comision-transportador");
+
+    window.onload = () => manejarVentanas(rolUsuario);
+
+    function manejarVentanas(rol) {
+        if (rol === 'DADOR_CARGA') {
+            $("#comisionDador").show();
+            $("#comisionTransportador").hide();
+            setClassesDador();
+        } else if (rol === 'TRANSPORTADOR') {
+            $("#comisionTransportador").show();
+            $("#comisionDador").hide();
+            setClassesTransportador();
+        } else if (rol === 'AMBAS') {
+            $("#comisionTransportador").show();
+            $("#comisionDador").show();
+            setClassesAmbas();
+        } else {
+            $("#comisionDador").hide();
+            $("#comisionTransportador").hide();
+        }
+    }
+
+    function setClassesDador() {
+        divComisionDador.addClass("col-sm-12 col-md-12");
+        divComisionDador.removeClass("col-sm-6 col-md-6");
+        divComisionTransportador.removeClass("col-sm-12 col-md-12 col-sm-6 col-md-6");
+    }
+
+    function setClassesTransportador() {
+        divComisionTransportador.addClass("col-sm-12 col-md-12");
+        divComisionTransportador.removeClass("col-sm-6 col-md-6");
+        divComisionDador.removeClass("col-sm-12 col-md-12 col-sm-6 col-md-6");
+    }
+
+    function setClassesAmbas() {
+        divComisionTransportador.addClass("col-sm-6 col-md-6");
+        divComisionTransportador.removeClass("col-sm-12 col-md-12");
+        divComisionDador.addClass("col-sm-6 col-md-6");
+        divComisionDador.removeClass("col-sm-12 col-md-12");
+    }
+
+    $("#rolSelect").change(function () {
+        manejarVentanas($("#rolSelect").val());
+    });
+</script>
+</body>
+</html>

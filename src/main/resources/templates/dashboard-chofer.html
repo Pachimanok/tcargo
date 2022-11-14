@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:insert="fragments/componentes/plantilla :: head"></head>
+<body class="horizontal-layout horizontal-menu 2-columns  " data-open="hover" data-menu="horizontal-menu"
+      data-col="2-columns">
+
+<nav th:replace="fragments/componentes/plantilla :: header"></nav>
+<nav th:replace="fragments/componentes/plantilla :: menu"></nav>
+
+<div class="app-content content">
+    <div class="content-overlay"></div>
+    <div class="content-wrapper">
+        <div class="content-header row">
+            <div class="content-header-left col-md-6 col-12 mb-2">
+                <h3 class="content-header-title" th:text="#{text.dash.chofer}"></h3>
+                <div class="row breadcrumbs-top">
+                    <div class="breadcrumb-wrapper col-12">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item active" th:text="#{text.dash.bienvenido}">
+                                <span th:text="${session.usuario.nombre}"></span></li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="content-body">
+            <section id="pagination">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title float-left" th:text="#{text.dash.estadisticas}"></h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-12 col-sm-12">
+                                        <canvas id="graficoUno" width="400" height="150"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--                             <div class="col-md-12 col-sm-12"> -->
+                            <!--                                     <div class="form-group" th:each="t : ${page.totales}"> -->
+                            <!-- 										<label th:text="'Moneda: ' + ${t.nombre}"></label> -->
+                            <!-- 										<h3 th:text="${t.sumas}"></h3> -->
+                            <!-- 									</div> -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+
+<nav th:replace="fragments/componentes/plantilla :: footer"></nav>
+
+<script th:inline="javascript">
+    let reporte = [[${page}]];
+    console.log(reporte)
+    var grafico1 = document.getElementById('graficoUno').getContext('2d');
+    var Chart1 = new Chart(grafico1, {
+        type: 'bar',
+        data: {
+            labels: [ [[#{text.dash.script.mis.fletes}]],
+                [[#{text.dash.script.mis.viajes.consolidados}]] ],
+            datasets: [{
+                label: '#' + [[#{text.btn.estadistica}]],
+                data: [reporte.viajes, reporte.cargasNegativas],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+//                 'rgba(255, 206, 86, 0.2)',
+//                 'rgba(75, 192, 192, 0.2)',
+//                 'rgba(153, 102, 255, 0.2)',
+//                 'rgba(255, 159, 64, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+//                 'rgba(75, 192, 192, 1)',
+//                 'rgba(153, 102, 255, 1)',
+//                 'rgba(255, 159, 64, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            },
+            title: {
+                display: false,
+                text: [[#{text.dash.script.estadistica}]]
+            }
+        }
+    });
+
+    document.getElementById("graficoUno").onclick = function (evt) {
+
+        var activePoints = Chart1.getElementsAtEvent(evt);
+
+        if (activePoints.length > 0) {
+            var clickedElementindex = activePoints[0]["_index"];
+            var label = Chart1.data.labels[clickedElementindex];
+            switch (label) {
+                case "Mis fletes":
+                    window.location.href = "/pedido/chofer/matchs";
+                    break;
+                case "Mis viajes consolidados":
+                    window.location.href = "/viajepersonal/listado";
+                    break;
+//       case "Matchs":
+//     	  window.location.href = "/pedido/dador/matcheados";
+//         break; 
+            }
+        }
+    };
+</script>
+</body>
+</html>

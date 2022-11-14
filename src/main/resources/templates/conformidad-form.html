@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="fragments/componentes/plantilla :: head"></head>
+  <body
+    class="horizontal-layout horizontal-menu 2-columns"
+    data-open="hover"
+    data-menu="horizontal-menu"
+    data-col="2-columns"
+  >
+    <nav th:replace="fragments/componentes/plantilla :: header"></nav>
+    <nav th:replace="fragments/componentes/plantilla :: menu"></nav>
+
+    <div class="app-content content">
+      <div class="content-overlay"></div>
+      <div class="content-wrapper">
+        <div class="content-header row">
+          <div class="content-header-left col-md-6 col-12 mb-2">
+            <h3
+              class="content-header-title"
+              th:text="#{text.conformidad.form.h3.formularioDeConformidad}"
+            ></h3>
+            <div class="row breadcrumbs-top">
+              <div class="breadcrumb-wrapper col-12">
+                <ol class="breadcrumb">
+                  <li class="breadcrumb-item">
+                    <a th:href="@{/dashboard}">
+                      <span th:text="#{text.conformidad.form.a.home}"></span>
+                    </a>
+                  </li>
+                  <li
+                    class="breadcrumb-item active"
+                    th:text="#{text.conformidad.form.li.conformidad}"
+                  ></li>
+                </ol>
+              </div>
+            </div>
+          </div>
+          <div class="content-header-right col-md-6 col-12">
+            <div class="media width-250 float-right">
+              <div class="media-body media-right text-right">
+                <a
+                  href="#"
+                  onclick="history.back()"
+                  class="btn btn-icon btn-secondary mr-1 mb-1"
+                >
+                  <i class="la la-chevron-left"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="content-body">
+          <section id="pagination">
+            <div class="row">
+              <div class="col-12">
+                <div class="card">
+                  <div class="card-header">
+                    <h4
+                      class="card-title"
+                      th:text="#{text.conformidad.form.h4.formularioDeConformidad}"
+                    ></h4>
+                  </div>
+                  <div class="card-body">
+                    <div class="card-text">
+                      <div
+                        th:if="${error != null}"
+                        class="alert alert-danger"
+                        role="alert"
+                      >
+                        <strong
+                          th:text="#{text.conformidad.form.strong.error}"
+                        ></strong>
+                        <span th:text="${error}"></span>
+                      </div>
+                    </div>
+                    <form
+                      method="POST"
+                      th:action="@{/match/conformidad/} + ${accion == null or accion == 'actualizar' ? 'guardar' : accion}"
+                      id="formulario"
+                      novalidate="novalidate"
+                      th:object="${match}"
+                    >
+                      <input
+                        type="hidden"
+                        class="form-control"
+                        th:field="*{id}"
+                        th:value="*{id}"
+                      />
+                      <div class="row">
+                        <div class="col-md-12 col-sm-12">
+                          <div class="form-group">
+                            <div class="alert alert-info" role="alert">
+                              <strong
+                                th:text="#{text.conformidad.form.strong.info}"
+                              ></strong>
+                              <span
+                                th:text="#{text.conformidad.form.span.haSidoRegistrado}"
+                              ></span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="col-md-12 col-sm-12">
+                          <div class="form-group">
+                            <label
+                              for="descripcion"
+                              th:text="#{text.conformidad.form.label.descripcion}"
+                            >
+                            </label>
+                            <textarea
+                              class="form-control"
+                              id="descripcion"
+                              th:field="*{conformidadDador}"
+                              th:value="*{conformidadDador}"
+                            >
+                            </textarea>
+                          </div>
+                        </div>
+
+                        <div class="col-md-12 col-sm-12">
+                          <div class="form-group">
+                            <label for="regex">
+                              <span
+                                th:text="#{text.conformidad.form.label.indicasLaConformidad}"
+                              ></span>
+                              <span class="danger"> * </span>
+                            </label>
+                            <select
+                              class="form-control select2"
+                              th:field="*{finalizado}"
+                            >
+                              <option
+                                value="true"
+                                th:text="#{text.option.si}"
+                              ></option>
+                              <option
+                                value="false"
+                                th:text="#{text.option.no}"
+                              ></option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="form-actions text-right">
+                        <button
+                          type="submit"
+                          class="btn btn-primary"
+                          form="formulario"
+                          th:if="${accion == null or accion == 'guardar'}"
+                        >
+                          <i class="la la-check"></i>
+                          <span th:text="#{text.btn.guardar}"></span>
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidenav-overlay"></div>
+    <div class="drag-target"></div>
+    <nav th:replace="fragments/componentes/plantilla :: footer"></nav>
+    <script th:inline="javascript">
+      $(".select2").select2();
+      let match = [[${match}]];
+      console.log(match)
+    </script>
+  </body>
+</html>

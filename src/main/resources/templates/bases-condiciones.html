@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" class="loading" lang="en" data-textdirection="ltr">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+	<meta name="description"
+		content="Modern admin is super flexible, powerful, clean &amp; modern responsive bootstrap 4 admin template with unlimited possibilities with bitcoin dashboard.">
+	<meta name="keywords"
+		content="admin template, modern admin template, dashboard template, flat admin template, responsive admin template, web app, crypto dashboard, bitcoin dashboard">
+	<meta name="author" content="PIXINVENT">
+	<title>T-Cargo | Ingreso a la Plataforma</title>
+	<link rel="apple-touch-icon" th:href="@{/assets/img/icono.png}">
+	<link rel="shortcut icon" type="image/x-icon" th:href="@{/assets/img/icono.png}">
+	<link
+		href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i%7CQuicksand:300,400,500,700"
+		rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="../../../app-assets/fonts/material-icons/material-icons.css">
+
+	<!-- BEGIN: Vendor CSS-->
+	<link rel="stylesheet" type="text/css" href="../../../app-assets/vendors/css/material-vendors.min.css">
+	<link rel="stylesheet" type="text/css" href="../../../app-assets/vendors/css/forms/icheck/icheck.css">
+	<link rel="stylesheet" type="text/css" href="../../../app-assets/vendors/css/forms/icheck/custom.css">
+	<!-- END: Vendor CSS-->
+
+	<!-- BEGIN: Theme CSS-->
+	<link rel="stylesheet" type="text/css" href="../../../app-assets/css/material.css">
+	<link rel="stylesheet" type="text/css" href="../../../app-assets/css/components.css">
+	<link rel="stylesheet" type="text/css" href="../../../app-assets/css/bootstrap-extended.css">
+	<link rel="stylesheet" type="text/css" href="../../../app-assets/css/material-extended.css">
+	<link rel="stylesheet" type="text/css" href="../../../app-assets/css/material-colors.css">
+	<!-- END: Theme CSS-->
+	<link rel="stylesheet" type="text/css" href="/assets/css/intlTelInput.css">
+	<!-- BEGIN: Page CSS-->
+	<link rel="stylesheet" type="text/css"
+		href="../../../app-assets/css/core/menu/menu-types/material-vertical-menu.css">
+	<link rel="stylesheet" type="text/css" href="../../../app-assets/css/pages/login-register.css">
+	<!-- END: Page CSS-->
+
+	<!-- BEGIN: Custom CSS-->
+	<link rel="stylesheet" type="text/css" href="../../../assets/css/style.css">
+	<!-- END: Custom CSS-->
+
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-120793348-1"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag(){dataLayer.push(arguments);}
+		gtag('js', new Date());
+
+		gtag('config', 'UA-120793348-1');
+	</script>
+
+</head>
+<!-- END: Head-->
+
+<!-- BEGIN: Body-->
+
+<body
+	class="vertical-layout vertical-menu material-vertical-layout material-layout 1-column  bg-full-screen-image blank-page"
+	data-open="click" data-menu="vertical-menu" data-col="1-column" style="opacity: 0.9">
+	<!-- BEGIN: Content-->
+	<div class="app-content content">
+		<div class="content-header row"></div>
+		<div class="content-overlay"></div>
+		<div class="content-wrapper">
+			<div class="content-body">
+				<section class="row">
+					<div class="col-12 d-flex align-items-center justify-content-center">
+						<div class="col-10 box-shadow-2 p-0">
+							<div class="card border-grey border-lighten-3 px-1 py-1 m-0">
+								<div class="card-header border-0">
+									<div class="card-title text-center">
+										<img class="brand-logo" alt="modern admin logo" src="/img/logo-gde.png" />
+										<br>										
+										<br>
+										<br>
+										<strong style="font-size: 22px;">Condiciones Generales de T-Cargo</strong>
+									</div>
+								</div>
+								<div class="card-content">
+
+									<div class="card-body">
+										<div th:if="${error != null}" class="alert alert-danger" role="alert">
+											<strong>¡Error!</strong> <span th:text="${error}">error</span>
+										</div>
+										<fieldset class="form-group position-relative">
+											<div class="text-left">
+												<span class="text-left" style="line-height: 1.8;">
+													<strong>1. De la Aplicación de las Condiciones
+														Generales</strong>
+													<br>
+													<br>
+													Las presentes condiciones generales (las “Condiciones Generales”)
+													son de aplicación general para toda persona que haga uso del sitio
+													webapp: ​app.tcargo.la (el “Sitio”) de titularidad de TCARGO
+													ARGENTINA S.A., con domicilio en Rufino Ortega 540, de la Ciudad de
+													Mendoza, CUIT 30-71662133-9 (en adelante “T-Cargo”). Asimismo, toda
+													persona que haga uso del Sitio acepta las Políticas de Privacidad.
+													En caso que para una oferta, transacción o situación especial se
+													especifiquen condiciones particulares, las Condiciones Generales se
+													aplicarán supletoriamente.
+													Las Condiciones Generales se aplican a las personas que utilicen el
+													Sitio, quienes por el mero uso del Sitio aceptan completa, plena e
+													irrestrictamente las Condiciones Generales. El acceso al Sitio es
+													gratuito, sin perjuicio de las comisiones devengadas por el uso de
+													los servicios pagos que se ofrecen en el sitio y para los cuales se
+													requiere ser un usuario registrado (sujeto a las demás condiciones
+													que se especifican más abajo y que se denominan “Usuarios”).
+													T-Cargo se reserva el derecho de actualizar, modificar, reemplazar o
+													anular las Condiciones Generales. En su caso T-Cargo notificará a
+													los Usuarios del Sitio por los medios previstos en las Condiciones
+													Generales a las direcciones de correo electrónico provistas o por
+													otros medios. El uso que hagan los Usuarios del Sitio con
+													posterioridad a la notificación de la actualización,
+													modificación, reemplazo o anulación de las Condiciones Generales
+													importará su pleno conocimiento y aceptación. Las Condiciones
+													Generales requieren que los usuarios del Sitio las hayan leído y
+													las comprendan. Sin perjuicio de lo cual, en caso que los usuarios
+													del Sitio no comprendan las Condiciones Generales, es
+													responsabilidad de dichos usuarios ponerse en contacto con T-Cargo
+													antes de utilizar el Sitio a fin de recabar la información o las
+													explicaciones adicionales que fueran necesarias para comprender
+													adecuadamente las Condiciones Generales, así como la forma de uso
+													correcta del Sitio, los riesgos derivados de su empleo y en cabeza
+													de quién recaen dichos riesgos. Las Condiciones Generales se rigen
+													por el derecho vigente en la República Argentina.
+
+													<br><br><br>
+													<strong>2. De T-Cargo</strong><br><br>
+													En el Sitio se pone a disposición de los usuarios registrados, una
+													plataforma a la cual acceden personas interesadas en prestar
+													servicios de transporte de carga (denominadas las personas
+													precedentemente mencionadas los “Transportistas” y los servicios
+													prestados las “Prestaciones”) y personas interesadas en requerir
+													ofertas para la realización de las Prestaciones y contratar las
+													Prestaciones (los “Dadores de carga”). En el Sitio y a través de
+													aplicaciones para dispositivos móviles conexas, T-Cargo presta
+													servicios de publicación de requerimientos de ofertas, gestión de
+													requerimientos de ofertas, ofertas y aceptaciones, acercamiento de
+													partes y herramientas de seguimiento de carga (los “Servicios”).
+													T-Cargo no es prestador de las Prestaciones; titular, propietario o
+													poseedor de los vehículos y equipamiento que se utilicen para las
+													Prestaciones o de la carga objeto de las mismas; ni empleador,
+													socio, agente o mandatario de los Transportistas ni de los Dadores
+													de carga. T-Cargo no organiza, valida, ni verifica las Prestaciones,
+													ni las garantiza o de otra forma se hace responsable por las
+													Prestaciones, limitándose a poner a disposición de los Usuarios
+													los Servicios previstos en las Condiciones Generales. T-Cargo no es
+													parte en las operaciones que eventualmente pauten y realicen los
+													Dadores de carga con los Transportistas, no fiscaliza ni controla
+													los requerimientos de ofertas o las ofertas que efectúan los
+													Usuarios en el Sitio, ni es responsable respecto de la existencia,
+													calidad, cantidad, estado, integridad o legitimidad de las
+													Prestaciones e información y condiciones relativas a las mismas que
+													sean proporcionadas por los Usuarios a través del Sitio. T-Cargo
+													tampoco es responsable de verificar la capacidad de los Usuarios
+													para contratar las Prestaciones o la veracidad de los datos
+													personales utilizados por los Usuarios al momento de su registro.
+													Los Transportistas aceptan ser los únicos responsables por las
+													Prestaciones que ofrezcan y los Dadores de
+													carga aceptan ser los únicos responsables por la carga que
+													requieran sea transportada; sin perjuicio de la responsabilidad por
+													los Servicios que presta T-Cargo sujeta a las Condiciones Generales.
+													Asimismo, los Usuarios registrados reconocen y aceptan al utilizar
+													el Sitio y los Servicios que al realizar operaciones con otros
+													Usuarios lo hacen bajo su propio riesgo y deslindan de cualquier
+													responsabilidad a T-Cargo. Los Usuarios reconocen que las ofertas de
+													Prestaciones utilizando los Servicios del Sitio por parte de los
+													Transportistas, podrán ser aceptadas por los Dadores de carga
+													utilizando el Sitio, y que, tras la ratificación de las condiciones
+													de la oferta aceptada por parte del correspondiente Transportista,
+													se concertará un pre-contrato bilateral de transporte entre el
+													respectivo Transportista y el respectivo Cargador, en el que T-Cargo
+													participa únicamente al efecto de proporcionar la tecnología
+													necesaria para acercar a las partes, mediante la prestación de los
+													Servicios. Transcurrida la fecha acordada para la Prestación, los
+													Usuarios podrán calificar a su contraparte a través del Sitio,
+													indicando si la Prestación fue cumplimentada en tiempo y forma y
+													realizando todo otro comentario adicional que consideren relevante.
+													En su calificación, los Usuarios deberán abstenerse de utilizar
+													términos que pudieran resultar ofensivos para los Usuarios del
+													Sitio o terceros y T-Cargo se reserva el derecho de eliminar
+													cualquier calificación, sin expresión de causa. Los Usuarios
+													comprenden que T-Cargo únicamente presta los Servicios, y que por
+													consiguiente no participa de la ejecución del contrato de
+													transporte para la prestación efectiva de las Prestaciones, que
+													deberá ser concluido entre los Transportistas y los Dadores de
+													carga, fuera del Sitio. Asimismo, T-Cargo no garantiza que las
+													partes cumplan con sus obligaciones originadas en los respectivos
+													contratos mencionados. Las garantías y la responsabilidad de
+													T-Cargo son única y exclusivamente las indicadas en las Condiciones
+													Generales. Las eventuales cargas impositivas y obligaciones legales
+													y fiscales derivadas o que recaen sobre las Prestaciones o las
+													operaciones concertadas son a cargo de los Transportistas o los
+													Dadores de carga, según corresponda. Los Usuarios deberán
+													abstenerse de utilizar el Sitio con fines ilícitos, para perpetuar
+													fraudes o para hacer publicidad engañosa, o cuando su uso viole las
+													Condiciones Generales. Ante un hecho de esas características, los
+													Usuarios deberán defender, indemnizar y a mantener indemne a
+													T-Cargo, sus sociedades controlantes y relacionadas, sus respectivos
+													administradores y empleados frente a toda demanda y acción legal o
+													administrativa contra T-Cargo, iniciada por Usuarios, la
+													administración pública o terceros. T-Cargo no presta por cuenta
+													propia servicios de transporte.
+
+													<br><br><br><strong>3. De los Usuarios</strong><br><br>
+													El uso del Sitio y de los Servicios ofrecidos a través del mismo
+													está limitado a personas que realicen en forma profesional y
+													habitual las actividades de transportistas o Dadores de carga de
+													cosas, conforme las define el artículo 1280 del Código Civil y
+													Comercial de la Nación, debidamente habilitados por las autoridades
+													nacionales y/o provinciales conforme a la legislación vigente en la
+													materia. Deberán abstenerse del uso del Sitio y de los Servicios
+													aquellas personas que requieran las Prestaciones como destinatarios
+													finales, en beneficio propio o de su grupo familiar o social, así
+													como toda otra persona que pueda ser considerada un consumidor por
+													la legislación vigente. En definitiva, el Sitio apunta a facilitar
+													el acercamiento de partes interesadas en perfeccionar operaciones
+													comerciales, regidas por el derecho comercial y no por el derecho
+													civil o de consumo, y en ningún caso se hace oferta de los
+													Servicios al público general. Para utilizar los Servicios del
+													Sitio, es necesario crear una cuenta de Usuario. Para ello, el
+													sistema del Sitio presentará un formulario a completar por los
+													Usuarios con sus datos personales. Es responsabilidad de los
+													Usuarios completar el formulario de registro con información veraz,
+													completa y actualizada. A tales efectos, los Usuarios garantizan la
+													autenticidad de sus datos personales utilizados para completar el
+													formulario de registro. Los Usuarios deberán mantener sus datos
+													personales permanentemente actualizados. En las Condiciones
+													Generales, los Usuarios pueden ser llamados Transportistas o Dadores
+													de carga según la calidad que asuman en el proceso de requerimiento
+													y oferta de las Prestaciones. En caso de que el Sitio requiera la
+													confirmación de aceptación de las Condiciones
+													Generales, y un Usuario logre abrir una cuenta sin haber aceptado
+													expresamente las Condiciones Generales, igualmente éstas serán de
+													aplicación por la utilización del Sitio por parte de ese Usuario.
+													Los Usuarios deben ser mayores de edad. Para acceder a su cuenta en
+													el Sitio, el Usuario deberá elegir un nombre de usuario y una clave
+													de acceso (las “Credenciales”), las que deberán reunir las
+													condiciones que se especifican en el formulario de registro. Es
+													responsabilidad del Usuario custodiar y no divulgar a terceros sus
+													Credenciales. T-Cargo tratará como realizado por el Usuario, sin
+													posibilidad de prueba en contrario, cualquier acceso al Sitio y
+													operación concertada utilizando la cuenta del Usuario mediante el
+													ingreso de sus Credenciales. T-Cargo podrá no admitir o excluir a
+													Usuarios específicos en todo momento, en forma inapelable y sin
+													expresión de causa. T-Cargo podrá requerir información y/o
+													documentación adicional antes de dar de alta la cuenta de un
+													Usuario o aún en caso de que la cuenta del Usuario se encuentre
+													vigente. La falta de cumplimiento a satisfacción de T-Cargo de la
+													presentación de toda la información y/o documentación que sea
+													requerida podrá, a exclusivo criterio de T-Cargo, resultar en la
+													denegación del alta de la cuenta de Usuario o en la terminación
+													inapelable de la misma.
+
+													<br><br><br><strong>4. De los Dadores de carga y los Requerimientos de
+														Ofertas</strong><br><br>
+													El Sitio ofrece la posibilidad de que los Dadores de carga publiquen
+													en el Sitio un detalle de sus necesidades de transporte de carga e
+													inviten a los Transportistas registrados a hacerles ofertas
+													revocables para transportar la carga, indicando las condiciones para
+													la correspondiente Prestación (el “Requerimiento de Ofertas”). En
+													función de las condiciones de su Requerimiento de Oferta, los
+													Dadores de carga podrán recibir ofertas de uno o más
+													Transportistas y podrán seleccionar la que consideren más adecuada
+													en función de sus necesidades. Una vez seleccionada una oferta por
+													el Cargador, T-Cargo notificará al correspondiente Transportista la
+													aceptación del Cargador, y el Transportista podrá confirmar su
+													oferta, perfeccionándose en ese caso un pre-contrato de transporte,
+													o revocarla, dejándola sin efecto. En caso de que el Transportista
+													revoque la oferta, T-Cargo notificará al Cargador y este podrá, de
+													así desearlo y de existir, seleccionar alguna de las otras ofertas
+													vigentes que haya recibido, repitiéndose en tal caso el
+													procedimiento antes mencionado. T-Cargo no garantiza al Cargador que
+													todo Requerimiento de Oferta publicado en el Sitio vaya a ser
+													satisfecho ni que, en caso de recibir una o más ofertas de un
+													Transportista, cualquiera de ellas no vaya a ser revocada
+													posteriormente. Para realizar el Requerimiento de Oferta, los
+													Dadores de carga deben completar un formulario preestablecido con
+													información sobre las Prestaciones requeridas, tipo y cantidad de
+													carga, fechas y horarios de retiro y entrega y toda otra
+													información que el formulario requiera. Son responsabilidad de los
+													Dadores de carga todas las manifestaciones que hagan en el
+													formulario. En caso de que el formulario preestablecido no ofreciera
+													un campo para información relevante, el Cargador debe ponerse en
+													contacto con T-Cargo y no completar el formulario con información
+													incorrecta o insuficiente. En caso de que un Cargador celebre un
+													pre-contrato con un Transportista, se compromete a respetar lo
+													convenido a través del Sitio, dándole prioridad frente a cualquier
+													otra operación concertada por terceros fuera del Sitio. El proceso
+													de publicación de los Requerimientos de Ofertas es automático y
+													T-Cargo no realiza ningún control ni supervisión sobre las
+													condiciones de que resulten publicadas, siendo los Dadores de carga
+													los únicos responsables de la información y términos contenidos
+													en el Requerimiento de Ofertas publicado. Cada vez que se complete
+													el proceso de publicación, ello importará una ratificación de las
+													Condiciones Generales por parte del Cargador, y en particular la
+													aceptación de los términos de los Servicios. Completado el proceso
+													indicado arriba, T-Cargo publicará en el Sitio el Requerimiento de
+													Ofertas con la información provista por el Cargador. La
+													publicación del Requerimiento de Ofertas se realiza por cuenta y
+													orden del Cargador, quien podrá solicitar su retiro, modificación
+													o baja. Los Dadores de carga autorizan a T-Cargo a rechazar, retirar
+													o dar de baja la publicación de Requerimiento de Ofertas en
+													cualquier circunstancia, incluyendo pero no limitado al caso de que
+													T-Cargo recibiera una notificación por parte de un tercero en la
+													cual le intima o indica que procederá
+													con acciones legales o administrativas con motivo de la publicación
+													, y T-Cargo considerara –a su exclusivo juicio– que tales acciones
+													serían inminentes si no se retirara o diera de baja la
+													publicación, sin perjuicio que dicho tercero tuviera o no derecho
+													subjetivo a una sentencia o acto administrativo ordenando el retiro
+													o la baja de la publicación.
+													Los Dadores de carga reconocen y aceptan que no podrán utilizar el
+													Sitio ni los Servicios para requerir Ofertas en relación a cargas
+													peligrosas, nocivas para la salud o el medio ambiente.
+													Los Dadores de carga que utilicen el Sitio lo hacen bajo su propia y
+													entera responsabilidad y, al aceptar estas Condiciones Generales,
+													declaran conocer la normativa aplicable a las Prestaciones por ellos
+													requeridas, incluyendo el articulado del Código Civil y Comercial
+													de la Nación aplicable a los contratos de transporte de cosas. Los
+													Dadores de carga se comprometen a no infringir ninguna disposición
+													legal, entendiendo ser los exclusivos responsables de verificar que
+													cualquier Requerimiento de Oferta que publiquen en el Sitio y
+													pre-contrato que celebren a través del mismo se adecúen a la
+													normativa correspondiente y a las presentes Condiciones Generales y
+													garantizan a T-Cargo y al Transportista contar con los permisos y
+													habilitaciones correspondientes.
+													Al aceptar estas Condiciones Generales los Dadores de carga se
+													obligan a mantener indemne y libre de cualesquiera y todos los
+													reclamos, demandas, juicios, daños y perjuicios, penas, multas,
+													responsabilidades, costas y gastos (inclusive, y sin limitaciones,
+													honorarios judiciales, costas, desembolsos, etc.) incurridos,
+													sufridos o contraídos por T-Cargo o atribuidos a T-Cargo con
+													respecto a cualquier acción u omisión en relación con las
+													obligaciones de los Dadores de carga relativas al cumplimiento de
+													las normas que resulten aplicables, las presentes Condiciones
+													Generales y a los pre- contratos y contratos que regulen la
+													prestación de las Prestaciones, así como en relación a la
+													responsabilidad de cualquier tipo, incluyendo extracontractual,
+													relativa a las mismas.
+													<br><br><br><strong>5. De los Transportistas y las Ofertas
+														Revocables</strong><br><br>
+													A través del Sitio y ante un Requerimiento de Ofertas, los
+													Transportistas que se consideren en condiciones de cumplimentar las
+													condiciones requeridas podrán realizar ofertas revocables y no
+													exclusivas al Cargador,
+													indicándole las condiciones ofrecidas para realizar la Prestación
+													(las “Ofertas”). En tal sentido, informarán al correspondiente
+													Cargador el precio solicitado para realizar la Prestación y toda
+													otra condición o información relevante. A tales efectos, los
+													Transportistas deberán seguir las instrucciones del Sitio, y
+													proveer la información adicional que les requiera el Sitio. Las
+													Ofertas no serán consideradas aceptadas por el Cargador hasta tanto
+													T-Cargo no notifique al Transportista de acuerdo a lo indicado a
+													continuación. Al finalizar el proceso de aceptación de la Oferta,
+													T-Cargo enviará un email y un mensaje a través del Sitio al
+													Transportista una vez que ingrese a su cuenta en el Sitio), en el
+													cual se le notificará el detalle de la Prestación requerida y la
+													Oferta aceptada, incluyendo los detalles de la carga, la fecha y
+													horario requeridos, los datos del Cargador, el precio pactado y toda
+													información adicional que T-Cargo considere pertinente. Una vez
+													notificado, el Transportista tendrá 12 horas –o el plazo restante
+													para el horario acordado para la Prestación, lo que sea menor– para
+													confirmar su Oferta o revocarla. El silencio del Transportista se
+													entenderá como revocación. En caso de confirmación de la Oferta
+													se perfeccionará entre Transportista y Cargador un pre-contrato de
+													transporte sujeto a las condiciones acordadas por los Usuarios
+													intervinientes a través del Sitio y T-Cargo pondrá a disposición
+													de los Usuarios intervinientes la información de contacto
+													proporcionada por cada Usuario y otra información relevante, como
+													ser, por ejemplo, la información proporcionada por el Transportista
+													en relación al vehículo, personal y equipamiento que utilizará
+													para la Prestación . La realización de una Oferta y la
+													confirmación de la misma importarán una ratificación de las
+													Condiciones Generales por parte del Transportista, y en particular
+													la aceptación de los términos de los
+													Servicios. El Transportista reconoce que su Oferta no es exclusiva y
+													que otros Usuarios del Sitio podrán realizar Ofertas ante un
+													Requerimiento de Ofertas. T-Cargo no garantiza al Transportista que
+													sus Ofertas vayan a ser aceptadas ni que vaya a existir un número
+													mínimo de Requerimiento de Ofertas a los que se encuentre en
+													condiciones de aplicar. Para realizar la Oferta, los Transportistas
+													deben completar un formulario preestablecido con información sobre
+													las Prestaciones ofrecidas y toda otra información que el
+													formulario requiera. Son responsabilidad de los Transportistas todas
+													las manifestaciones que hagan en el formulario. En caso de que el
+													formulario preestablecido no ofreciera un campo para información
+													relevante, el Transportista debe ponerse en contacto con T-Cargo y
+													no completar el formulario con información incorrecta o
+													insuficiente. En caso de que un Transportista celebre un
+													pre-contrato con un Cargador, se compromete a respetar lo convenido
+													a través del Sitio, dándole prioridad frente a cualquier otra
+													operación concertada por terceros fuera del Sitio. T-Cargo no
+													realiza ningún control ni supervisión sobre las condiciones
+													publicadas por un Transportista en su Oferta, siendo los
+													Transportistas los únicos responsables de la información y
+													términos transmitidos al Cargador. T-Cargo no establece tarifas de
+													transporte máximas ni mínimas, teniendo la posibilidad el
+													Transportista de cotizar la Prestación libremente. T-Cargo puede
+													informar al Transportista tarifas de referencia, únicamente a
+													efectos orientativos.
+													Los Transportistas que utilicen el Sitio lo hacen bajo su propia y
+													entera responsabilidad y, al aceptar estas Condiciones Generales,
+													declaran conocer la normativa aplicable a las Prestaciones por ellos
+													ofrecidas, incluyendo el articulado del Código Civil y Comercial de
+													la Nación aplicable a los contratos de transporte de cosas. Los
+													Transportistas se comprometen a no infringir ninguna disposición
+													legal, entendiendo ser los exclusivos responsables de verificar que
+													cualquier oferta que realicen a través del Sitio y pre-contrato que
+													celebren a través del mismo se adecúen a la normativa
+													correspondiente y garantizan a T-Cargo y al Cargador contar con los
+													permisos y habilitaciones correspondientes.
+													Al aceptar estas Condiciones Generales los Transportistas se obligan
+													a mantener indemne y libre de cualesquiera y todos los reclamos,
+													demandas, juicios, daños y perjuicios, penas, multas,
+													responsabilidades, costas y gastos (inclusive, y sin limitaciones,
+													honorarios judiciales, costas, desembolsos, etc.) incurridos,
+													sufridos o contraídos por T-Cargo o atribuidos a T-Cargo con
+													respecto a cualquier acción u omisión en relación con las
+													obligaciones de los Transportistas relativas al cumplimiento de las
+													normas que resulten aplicables y a los pre-contratos y contratos que
+													regulen la prestación de las Prestaciones, así como en relación a
+													la responsabilidad de cualquier tipo, incluyendo extracontractual,
+													relativa a las mismas.
+
+													<br><br><br><strong>6. Del pre-contrato y el contrato</strong><br><br>
+													Durante el proceso de negociación a través del Sitio
+													(Requerimiento de Ofertas, Ofertas y confirmación o revocación de
+													las Ofertas), Dadores de carga y Transportistas intercambiarán
+													información y
+													documentación a través del Sitio, con o sin la intervención de
+													T-Cargo y, en función de dicho intercambio, podrán decidir
+													obligarse por un pre-contrato de transporte de mercaderías. Por la
+													naturaleza de Internet, T-Cargo no puede garantizar a los Usuarios
+													la exactitud o veracidad de la información y documentación que se
+													transmita a través del Sitio, que puede ser relevante al momento de
+													decidir la efectiva contratación de las Prestaciones. En tal
+													sentido, a través del Sitio, los Usuarios acuerdan los términos
+													del pre-contrato antes mencionado, en el que se establecen las
+													condiciones para dicha operación. Dicho pre-contrato se encuentra
+													sujeto a que, al momento en el que los Usuarios entablen contacto
+													físico con el fin de realizar la carga, toda la información y
+													documentación proporcionada a través del Sitio por los Usuarios
+													pueda ser fehacientemente constatada por la contraparte. En caso de
+													que los Usuarios detecten incongruencias entre la información y/o
+													documentación presentada, la parte afectada podrá resolver sin
+													más el pre-contrato, no teniendo la parte incumplidora derecho a
+													indemnización alguna. En caso de que las partes se encuentren
+													satisfechas con la información y documentación presentadas, las
+													condiciones establecidas en el pre- contrato deberán volcarse en un
+													contrato de transporte de mercaderías que regulará la
+													correspondiente Prestación y, en consecuencia, las obligaciones y
+													derechos de las partes en relación a la misma. El contrato antes
+													mencionado no se instrumenta a través del Sitio y no está incluido
+													en los Servicios, siendo en consecuencia los Usuarios los únicos
+													responsables de su contenido, instrumentación y cumplimiento. En
+													consecuencia, T-Cargo no tendrá responsabilidad de ningún tipo en
+													relación al contrato de transporte de mercaderías ni injerencia en
+													su celebración o contenido.
+
+													<br><br><br><strong>7. Del Precio y la Comisión</strong><br><br>
+													En sus Ofertas, los Transportistas deberán indicar el precio que
+													desean recibir de los Dadores de carga en concepto de
+													contraprestación de la Prestación (el “Precio”). En caso de que la
+													Oferta sea aceptada por el Cargador y luego confirmada por el
+													Transportista, celebrándose en consecuencia el pre-contrato
+													indicado en el punto 6 de las presentes Condiciones Generales, el
+													Transportista se obliga a pagar a T-Cargo, hasta un 5% (cinco por
+													ciento) del Precio (la “Comisión”), en contraprestación por los
+													Servicios. La Comisión será facturada a los Transportistas por
+													T-Cargo de conformidad con la normativa vigente y se obligan a
+													pagarla dentro de los 15 (quince) días de recibida la
+													correspondiente factura.
+													El mero vencimiento de los plazos establecidos anteriormente
+													producirá la mora automática, sin necesidad de intimación
+													judicial o extrajudicial alguna. Aquellos saldos no cancelados en
+													las fechas pactadas deberán abonarse con un interés moratorio del
+													5% (cinco por ciento) mensual.
+													En caso de que el pre-contrato sea resuelto por culpa exclusiva de
+													uno de los Usuarios de conformidad con lo establecido en el punto 6
+													de las presentes Condiciones Generales y que, en consecuencia, no se
+													ejecute la Prestación, T-Cargo, de constatarse la efectiva culpa de
+													una parte y falta de culpa de la otra, podrá renunciar a la
+													Comisión adeudada por la parte cumplidora o restituirla si ya
+													hubiese sido pagada.
+													Los Usuarios reconocen que el Transportista es el único responsable
+													de facturar al Cargador el Precio y que el Cargador es el único
+													responsable de su pago, debiendo cumplirse dicha obligación, al
+													igual que todas las asumidas en el Contrato, fuera del Sitio o a
+													través de los medios de pago homologados por la el Sitio.
+													La falta de pago en tiempo y forma de la Comisión podrá resultar
+													en la inhabilitación de la cuenta del Usuario deudor, quien en tal
+													caso no podrá utilizar el Sitio ni los Servicios.
+
+													<br><br><br><strong>8. Impuestos</strong><br><br>
+													A los importes que correspondan ser facturados se adicionarán los
+													impuestos, tasas y contribuciones nacionales, provinciales o
+													municipales existentes o que se establecieren en el futuro, así
+													como cualquier gasto administrativo. Los pagos estarán sujetos a
+													cualquier percepción de impuesto al valor agregado (IVA), impuesto
+													a las ganancias u otro impuesto corresponda, sean existentes o que
+													se establecieren en el futuro, así como cualquier gasto
+													administrativo. El Usuario es responsable de pagar las facturas que
+													T-Cargo emita a su vencimiento junto con los impuestos, percepciones
+													y gravámenes aplicables. Cualquier pedido de facturación en
+													relación a condiciones especiales por ante los impuestos aplicables
+													debe ser informado y la documentación remitida a nuestras oficinas
+													antes de la emisión de la correspondiente factura. Los Usuarios son
+													los únicos responsables por todo tributo relativo a la Prestación
+													que contraten.
+
+													<br><br><br><strong>9. De la herramienta de seguimiento de
+														carga.</strong><br><br>
+													En el marco de la prestación de los Servicios, T-Cargo pone a
+													disposición de los Usuarios una aplicación para dispositivos
+													móviles que incluye una herramienta de geolocalización (la
+													“Aplicación). El Transportista o el chofer a cargo de la carga
+													podrán acceder a la Aplicación y, a través de la misma, el
+													Transportista y el Cargador podrán chequear la última ubicación
+													aproximada, en períodos de aproximadamente 20 minutos, del
+													dispositivo móvil correspondiente. En caso de que transcurran
+													aproximadamente 30 minutos desde la última información de
+													geolocalización recibida a través de la Aplicación sin que la
+													ubicación se actualice, T-Cargo enviará una alerta a los Usuarios.
+													Los Usuarios reconocen que, por cuestiones técnicas, la exactitud
+													temporal de la herramienta de geolocalización puede variar en
+													segundos o minutos y la exactitud espacial puede variar en
+													kilómetros.
+													Asimismo, los Usuarios reconocen que, para que funcione el sistema
+													de geolocalización, el correspondiente dispositivo móvil deberá
+													encontrarse encendido y la Aplicación deberá estar en ejecución.
+													La Aplicación es una herramienta puesta a disposición de los
+													Usuarios y su uso es exclusiva responsabilidad de los mismos. En tal
+													sentido, T-Cargo no garantiza que los Usuarios efectivamente hagan
+													uso de la Aplicación de acuerdo a lo aquí establecido y que, en
+													consecuencia, la carga pueda seguirse en todo momento. Sin perjuicio
+													de lo antes establecido, los Usuarios podrán informar a T-Cargo en
+													caso de que detecten la falta de uso o el uso irregular de la
+													Aplicación por su contraparte, lo que, a exclusivo criterio de
+													T-Cargo, podrá resultar en la inhabilitación de la cuenta del
+													Usuario que haga un uso inadecuado de la Aplicación. Asimismo, el
+													uso inadecuado de la Aplicación podrá resultar en un
+													incumplimiento contractual, dependiendo de las condiciones del
+													contrato de transporte celebrado entre los Usuarios.
+													Los Usuarios comprenden que a través de la Aplicación podrán
+													acceder a información sensible y que no deberán divulgar la
+													ubicación de la carga a terceros, siendo los únicos responsables
+													de cualquier daño y perjuicio que pudiera generarse ante dicha
+													divulgación.
+													Los Transportistas podrán compartir con T-Cargo, de existir, la
+													información de rastreo satelital que les proporcionen terceros
+													proveedores (el “Seguimiento Privado”). T-Cargo no requiere de los
+													Transportistas información de Seguimiento Privado, y su provisión
+													es absolutamente facultativa por parte de los Transportistas,
+													quienes, en caso de optar por ello, deberán brindar cualquier
+													autorización a favor de T-Cargo que requiera el proveedor del
+													Seguimiento Privado. En caso de que un Transportista opte por
+													compartir la información de Seguimiento Privado, autoriza
+													expresamente a T-Cargo a transmitir dicha información a los Dadores
+													de carga con los que el Transportista contrate una Prestación,
+													únicamente en relación a dicha Prestación. T-Cargo tratará la
+													información de Seguimiento Privado como información confidencial
+													del correspondiente Transportista y, en relación a la custodia y
+													conservación de la misma, aplicará, en lo pertinente, lo
+													establecido en la cláusula 17 de las presentes Condiciones
+													Generales. Los Usuarios comprenden que T-Cargo no garantiza en forma
+													alguna la exactitud ni el correcto funcionamiento del Seguimiento
+													Privado ni tendrá responsabilidad alguna en relación al mismo.
+
+													<br><br><br><strong>10. De las Garantías</strong><br><br>
+													T-Cargo prestará los Servicios con garantía de privacidad de los
+													Usuarios, la confidencialidad de los datos facilitados y su
+													encriptación. Dado que T-Cargo no es el prestador de la
+													Prestación, T-Cargo no garantiza la efectiva concreción de la
+													Prestación ni su calidad, debiendo el Usuario afectado realizar
+													cualquier reclamo respecto a la Prestación directamente a su
+													contraparte. A todo evento, la responsabilidad de T-Cargo en
+													relación al uso del Sitio se verá limitada a la Comisión
+													efectivamente pagada por el Usuario en relación a la Prestación en
+													cuestión, y bajo ninguna circunstancia podrá ser mayor a ésta. En
+													su caso, los Usuarios conservarán las acciones legales que
+													correspondan contra su respectiva contraparte. T-Cargo podrá
+													comunicarse con los Usuarios mediante el envío de correos
+													electrónicos, mensajes a sus cuentas en el
+													Sitio e incluso telefónicamente al número de teléfono indicado
+													por el Usuario. En cualquiera de tales casos, el Usuario será
+													reputado con conocimiento de la comunicación que T-Cargo le
+													transmitió. Asimismo, los Usuarios podrán realizar consultas
+													comerciales a T-Cargo enviando un mensaje a través de la página de
+													contacto. En caso de comunicaciones legales o que requieran ser
+													enviadas por medios fehacientes, deberán hacerlo a Rufino Ortega
+													540 de la Ciudad de Mendoza, dirigidas a nombre de T-Cargo, los
+													días hábiles de 9 a 17 hs. A efectos del cálculo de plazos, se
+													tomarán la fecha y la hora oficiales en la Provincia de Mendoza,
+													República Argentina.
+
+
+													<br><br><br><strong>11. Del Funcionamiento del Sitio y la
+														Aplicación</strong><br><br>
+													T-Cargo no garantiza la disponibilidad o el funcionamiento
+													permanente del Sitio, la Aplicación o de los Servicios. Cuando sea
+													comercialmente posible, T-Cargo anunciará las interrupciones del
+													Sitio, de la Aplicación o de los Servicios con cierta
+													anticipación. T-Cargo tampoco garantiza la infalibilidad del Sitio
+													o la Aplicación, en particular, aunque no de modo exclusivo, que
+													los Usuarios puedan efectivamente utilizar el Sitio, la Aplicación
+													o los Servicios, acceder a las distintas páginas web que forman el
+													Sitio o a aquéllas otras desde las que se pueden prestar los
+													Servicios. T-Cargo excluye, con toda la extensión permitida por el
+													derecho aplicable, toda responsabilidad por los daños y perjuicios
+													de toda naturaleza que puedan deberse a la indisponibilidad o mal
+													funcionamiento del Sitio, la Aplicación y de los Servicios, y a la
+													falibilidad del Sitio, la Aplicación y los Servicios.
+
+
+													<br><br><br><strong>12. De la Garantía por los Contenidos</strong><br><br>
+													T-Cargo no controla ni garantiza la ausencia de virus o malware ni
+													de otros elementos en los Contenidos del Sitio que puedan producir
+													alteraciones en sus servidores o los sistemas informáticos de los
+													Usuarios (software y hardware) o en los archivos almacenados en sus
+													sistemas informáticos.
+
+
+													<br><br><br><strong>13. De la Garantía por los Usuarios</strong><br><br>
+													T-Cargo no asume ninguna obligación de controlar y no controla la
+													utilización que los Usuarios hagan del Sitio, de los Servicios y de
+													los Contenidos del Sitio. En particular, T-Cargo no garantiza que
+													los Usuarios utilicen el Sitio de conformidad con las Condiciones
+													Generales. T-Cargo tampoco asume la obligación de verificar y no
+													verifica la identidad o datos personales de los Usuarios, ni la
+													veracidad, vigencia, exhaustividad y/o autenticidad de los datos y
+													documentación que los Usuarios proporcionan sobre sí mismos a
+													otros Usuarios y/o a T-Cargo. Adicionalmente, T-Cargo no asume
+													ninguna responsabilidad ante la posibilidad de que un tercero logre
+													hacerse pasar por un Usuario (identity theft).
+
+
+													<br><br><br><strong>14. Del Uso del Sitio</strong><br><br>
+													Los Usuarios deberán utilizar el Sitio y los Servicios para fines
+													lícitos, de conformidad con la ley, estas Condiciones Generales,
+													las instrucciones impartidas por T-Cargo y el espíritu de tales
+													instrucciones. En particular queda prohibida la utilización del
+													Sitio para cualquier otro fin distinto a la contratación de
+													servicios de transporte de mercaderías. Los Usuarios deberán
+													abstenerse de utilizar cualesquiera de los Servicios con fines o
+													consecuencias lesivos de los derechos de terceros o de T-Cargo, o
+													que de cualquier forma puedan dañar, inutilizar, sobrecargar,
+													deteriorar o impedir la normal utilización de los Servicios o del
+													Sitio, los servidores o los archivos y toda clase de contenidos
+													almacenados en cualquier servidor utilizado por T-Cargo, o equipos o
+													computadores de otros Usuarios o de cualquier usuario de Internet
+													(hacking)
+
+
+													<br><br><br><strong>15. De los Contenidos del Sitio</strong><br><br>
+													De conformidad con lo anterior, los Usuarios deberán utilizar los
+													contenidos publicados en el Sitio, incluyendo, pero sin limitarse a,
+													textos, fotografías, gráficos, imágenes, iconos, aplicaciones
+													(widgets), software, hipervínculos y demás contenidos
+													audiovisuales o sonoros, así como su diseño gráfico y códigos
+													fuente (los “Contenidos”), de conformidad con la ley, estas
+													Condiciones Generales, las instrucciones impartidas por T-Cargo y el
+													espíritu de tales instrucciones. Asimismo, los Usuarios deberán
+													abstenerse de: (i) reproducir, copiar, distribuir, poner a
+													disposición o de cualquier otra forma comunicar públicamente,
+													alterar, truncar, modificar o capturar Contenidos; (ii) suprimir o
+													modificar de cualquier forma la atribución de los derechos de
+													propiedad intelectual (copyright) y demás datos identificativos de
+													la atribución de paternidad de sus respectivos titulares, según
+													pudiere corresponder, de las huellas digitales o de cualesquiera
+													otros medios técnicos establecidos para tales fines. Los Usuarios
+													deberán abstenerse de intentar obtener los Contenidos empleando
+													para ello medios o procedimientos intencionalmente utilizados para
+													tales fines, o distintos de los que se hayan puesto a su
+													disposición al simple efecto de utilizar el Sitio o, en general, de
+													los que se empleen habitualmente en Internet a ese efecto.
+
+
+
+													<br><br><br><strong>16. De los Derechos de Propiedad Industrial o
+														Intelectual</strong><br><br>
+													El uso del Sitio o la Aplicación o haberse registrado como un
+													Usuario no otorgan a los Usuarios ninguna licencia de ningún tipo,
+													o ningún otro derecho o permiso sobre los derechos de propiedad
+													industrial o intelectual publicados en el Sitio, o la Aplicación,
+													los cuales permanecerán en todo momento siendo propiedad de T-Cargo
+													o sus respectivos titulares.
+													En relación al Sitio y la Aplicación, los Usuarios aceptan que,
+													entre las actividades prohibidas, están incluidas (pero no
+													limitadas) a las siguientes:
+													i. La recopilación de datos o de cualquier contenido del Sitio o la
+													Aplicación para crear cualquier compilación o base de datos, sin
+													el permiso escrito de T-Cargo.
+													ii. Utilizar el Sitio o la Aplicación de cualquier modo con el
+													propósito de competir con T-Cargo.
+													iii. Descifrar, decompilar, desensamblar o utilizar ingeniería
+													inversa sobre cualquier software o código que conforma el Sitio o
+													la Aplicación, o permitir o autorizar a cualquier otra persona o
+													entidad para hacerlo.
+													iv. Eludir de cualquier modo cualquier medida diseñada para impedir
+													o restringir el acceso al Sitio o la Aplicación.
+
+
+													<br><br><br><strong>17. De la Protección de Datos Personales</strong><br><br>
+													Para registrarse como Usuarios se requiere proporcionar ciertos
+													datos de carácter personal (los “Datos Personales”). Los Datos
+													Personales serán utilizados por T-Cargo para la provisión o
+													promoción de los
+													Servicios y no serán cedidos o accesibles por terceros, excepto en
+													virtud de lo que sea necesario para los contactos entre los Usuarios
+													resultantes de los Requerimientos de Ofertas y las Ofertas. El Sitio
+													no solicitará a los Usuarios datos personales que puedan ser
+													considerados sensibles por la legislación aplicable. T-Cargo adopta
+													las prácticas comercialmente utilizadas para la protección de los
+													Datos Personales, sin otorgar una garantía de que la protección
+													utilizada sea inexpugnable. El Sitio puede utilizar cookies cuando
+													un Usuario visita el Sitio. Las cookies que se puedan utilizar en el
+													Sitio se asocian únicamente con el navegador de internet de una
+													computadora determinada, no con el Usuario, y no proporcionan por
+													sí mismas el nombre y apellido del Usuario. Con las cookies, el
+													Sitio puede reconocer los
+													navegadores de los Usuarios luego de haber ingresado con su cuenta
+													al Sitio por primera vez, sin que éstos tengan que ingresar su
+													nombre de usuario y contraseña cada vez que quieran acceder a
+													páginas web del Sitio reservadas para los Usuarios. Las cookies
+													utilizadas no pueden leer las cookies de otros proveedores. Los
+													Usuarios tienen la posibilidad de configurar su navegador para ser
+													avisados en pantalla de la recepción de cookies y para impedir la
+													instalación de cookies en su disco duro. Para utilizar el Sitio, no
+													resulta necesario que los Usuarios permitan la instalación de
+													cookies del Sitio, sin perjuicio de que en tal caso será necesario
+													que los Usuarios se registren cada vez que quieran acceder a
+													páginas web del Sitio reservadas para los Usuarios.
+
+													<br><br><br><strong>18. De la Cancelación de una Cuenta de
+														Usuario</strong><br><br>
+													T-Cargo se reserva la facultad de dejar de ofrecer o prestar los
+													Servicios a un Usuario específico, excluyendo del Sitio y
+													cancelando el acceso a la cuenta de un Usuario, cuando T-Cargo
+													considere probable que el Usuario haya estado haciendo uso del Sitio
+													y/o de los Servicios en violación a las Condiciones Generales o de
+													forma tal que pudiera violar derechos de terceros. En tales casos,
+													T-Cargo procederá inmediatamente y sin necesidad de notificar
+													previamente al Usuario. Sin perjuicio de lo cual, T-Cargo tendrá la
+													facultad, mas no la obligación, de recabar mayor información sobre
+													el uso del Sitio por parte del Usuario y en su caso rehabilitar su
+													acceso a su cuenta.
+
+													<br><br><br><strong>19. De los terceros proveedores de
+														servicios.</strong><br><br>
+													A través del Sitio, terceros ajenos a T-Cargo podrán promocionar y
+													ofrecer diversos servicios que puedan ser relevantes para los
+													Usuarios en relación a las Prestaciones, como ser, por ejemplo,
+													seguros de transporte. Los Usuarios comprenden que los servicios
+													objeto de la presente cláusula no son prestados por T-Cargo y no
+													están regulados por las presentes Condiciones Generales sino por
+													los correspondientes contratos o acuerdos que los Usuarios suscriban
+													con los terceros proveedores de servicios o por los términos y
+													condiciones que los Usuarios acepten en relación a dichos
+													servicios. En relación a los seguros de transporte antes indicados,
+													a través del Sitio, los Usuarios podrán solicitar una cotización,
+													pero, para verificar si aplican para la emisión de una póliza, y
+													para que la misma sea emitida, deberán entrar en contacto y
+													suscribir la correspondiente documentación con la compañía de
+													seguros y/o el productor de seguros respectivo. T-Cargo no tendrá
+													ninguna responsabilidad en relación a los servicios contratados por
+													los Usuarios con terceros proveedores de servicios y no garantiza
+													que los mencionados terceros cumplan adecuadamente los compromisos
+													que asuman para con los Usuarios.
+
+													<br><br><br><strong>20. Ley Aplicable</strong><br><br>
+													Las Condiciones Generales se rigen por el Derecho vigente en la
+													República Argentina. </span>
+											</div>
+										</fieldset>
+
+									</div>
+
+								</div>
+							</div>
+						</div>
+					</div>
+				</section>
+
+			</div>
+		</div>
+	</div>
+	<!-- END: Content-->
+
+
+	<!-- BEGIN: Vendor JS-->
+	<script src="../../../app-assets/vendors/js/material-vendors.min.js"></script>
+	<!-- BEGIN Vendor JS-->
+
+	<!-- BEGIN: Page Vendor JS-->
+	<script src="../../../app-assets/vendors/js/forms/validation/jqBootstrapValidation.js"></script>
+	<script src="../../../app-assets/vendors/js/forms/icheck/icheck.min.js"></script>
+	<!-- END: Page Vendor JS-->
+
+	<!-- BEGIN: Theme JS-->
+	<script src="../../../app-assets/js/core/app-menu.js"></script>
+	<script src="../../../app-assets/js/core/app.js"></script>
+	<!-- END: Theme JS-->
+
+	<!-- BEGIN: Page JS-->
+	<script src="../../../app-assets/js/scripts/pages/material-app.js"></script>
+	<script src="../../../app-assets/js/scripts/forms/form-login-register.js"></script>
+	<script src="../../../assets/js/plantillascripts.js"></script>
+	<!-- END: Page JS-->
+
+	<script src="/assets/js/intlTelInput.min.js"></script>
+	<script src="/assets/js/intlTelInput-jquery.min.js"></script>
+	<script src="/assets/js/utils.js"></script>
+	<script type="text/javascript" src="https://s.cliengo.com/weboptimizer/5b92cc98e4b022ea6fe37f04/5b93266fe4b0b3c966a76768.js?platform=5b92cc98e4b022ea6fe37f04-5b93266fe4b0b3c966a76768"></script>
+
+	<script>
+		var input = document.querySelector("#telefono");
+
+		var countryCode = window.intlTelInput(input, {
+			onlyCountries: ["ar", "cl", "br", "uy", "pr", "bo", "pe"],
+			preferredCountries: ["ar", "cl", "br", "uy", "pr", "bo", "pe"],
+			autoPlaceholder: "polite",
+			utilsScript: "/assets/js/utils.js",
+			customContainer: "form-group"
+
+		});
+
+		x = countryCode.getSelectedCountryData();
+		$("#telefono").val("+" + x.dialCode)
+
+		input.addEventListener("countrychange", function () {
+			x = countryCode.getSelectedCountryData();
+			$("#telefono").val("+" + x.dialCode)
+		});
+	</script>
+</body>
+<!-- END: Body-->
+
+</html>

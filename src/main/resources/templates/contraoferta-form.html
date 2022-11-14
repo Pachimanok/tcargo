@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="fragments/componentes/plantilla :: head"></head>
+
+  <body
+    class="horizontal-layout horizontal-menu 2-columns"
+    data-open="hover"
+    data-menu="horizontal-menu"
+    data-col="2-columns"
+  >
+    <nav th:replace="fragments/componentes/plantilla :: header"></nav>
+
+    <nav th:replace="fragments/componentes/plantilla :: menu"></nav>
+
+    <div class="app-content content">
+      <div class="content-overlay"></div>
+      <div class="content-wrapper">
+        <div class="content-header row">
+          <div class="content-header-left col-md-6 col-12 mb-2">
+            <h3
+              class="content-header-title"
+              th:text="#{text.contraOferta.form.h3.gestionContraOfertas}"
+            ></h3>
+            <div class="row breadcrumbs-top">
+              <div class="breadcrumb-wrapper col-12">
+                <ol class="breadcrumb">
+                  <li class="breadcrumb-item">
+                    <a th:href="@{/dashboard}">
+                      <span th:text="#{text.tittle.home}"></span>
+                    </a>
+                  </li>
+                  <li class="breadcrumb-item">
+                    <a th:href="@{/pedidos/listado}">
+                      <span
+                        th:text="#{text.contraOferta.form.a.pedidos}"
+                      ></span>
+                    </a>
+                  </li>
+                  <li
+                    class="breadcrumb-item active"
+                    th:text="#{text.contraOferta.form.li.ofertas}"
+                  ></li>
+                </ol>
+              </div>
+            </div>
+          </div>
+          <div class="content-header-right col-md-6 col-12">
+            <div class="media width-250 float-right">
+              <div class="media-body media-right text-right">
+                <a
+                  href="#"
+                  onclick="history.back()"
+                  class="btn btn-icon btn-secondary mr-1 mb-1"
+                >
+                  <i class="la la-chevron-left"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="content-body">
+          <section id="pagination">
+            <div class="row">
+              <div class="col-12">
+                <div class="card">
+                  <div class="card-header">
+                    <h4
+                      class="card-title"
+                      th:text="#{text.contraOferta.form.h4.match}"
+                    ></h4>
+                  </div>
+                  <div class="card-body">
+                    <div class="card-text">
+                      <div
+                        th:if="${error != null}"
+                        class="alert alert-danger"
+                        role="alert"
+                      >
+                        <strong
+                          th:text="#{text.contraOferta.form.strong.error}"
+                        ></strong>
+                        <span th:text="${error}"></span>
+                      </div>
+                    </div>
+
+                    <form
+                      method="POST"
+                      th:action="@{/contraoferta/guardar/}"
+                      id="formulario"
+                      novalidate="novalidate"
+                      th:object="${contraOferta}"
+                    >
+                      <input type="hidden" th:field="*{id}" />
+                      <input
+                        type="hidden"
+                        th:value="${session.usuario.id}"
+                        name="idUser"
+                      />
+                      <input
+                        type="hidden"
+                        th:value="${entidad.dador.id}"
+                        th:name="idDador"
+                      />
+                      <input
+                        type="hidden"
+                        th:value="${entidad.id}"
+                        th:name="idPedido"
+                      />
+                      <input
+                        type="hidden"
+                        th:if="${idPedidos != null}"
+                        id="idPedidos"
+                        th:name="idPedidos"
+                      />
+                      <div class="row">
+                        <div class="col-md-6 col-sm-6">
+                          <div class="form-group">
+                            <label for="valor">
+                              <span
+                                th:text="#{text.contraOferta.form.label.valor}"
+                              ></span>
+                              <span class="danger"> * </span>
+                            </label>
+                            <input
+                              id="valor"
+                              class="form-control"
+                              th:field="*{valor}"
+                              th:placeholder="#{text.contraOferta.form.input.ingresaElValor}"
+                              type="number"
+                              required
+                            />
+                          </div>
+                        </div>
+                        <div class="col-md-3 col-sm-3">
+                          <div class="form-group">
+                            <label for="moneda">
+                              <span
+                                th:text="#{text.contraOferta.form.label.moneda}"
+                              ></span>
+                              <span class="danger"> * </span>
+                            </label>
+                            <select
+                              id="moneda"
+                              class="form-control"
+                              th:field="*{idMoneda}"
+                              required
+                            >
+                              <option
+                                th:each="mon : ${monedas}"
+                                th:text="|${mon.simbolo} - ${mon.nombre}|"
+                                th:value="${mon.id}"
+                              ></option>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="col-md-3 col-sm-3">
+                          <div class="form-group">
+                            <label
+                              for="diasLibres"
+                              th:text="#{text.contraOferta.form.label.diasLibres}"
+                            ></label>
+                            <input
+                              id="diasLibres"
+                              class="form-control"
+                              type="number"
+                              th:field="*{diasLibres}"
+                            />
+                          </div>
+                        </div>
+                        <div class="col-md-6 col-sm-6">
+                          <label for="requisitosPedidos"
+                            >Requisitos pedidos por el dador</label
+                          >
+                          <div class="form-group">
+                            <select
+                              class="form-control select2"
+                              id="requisitosPedidos"
+                              multiple
+                              disabled
+                            >
+                              <option
+                                th:each="tr : ${entidad.tipoRequisitos}"
+                                th:text="${tr.nombre}"
+                                th:value="${tr.nombre}"
+                                th:selected="${entidad.tipoRequisitos.contains(tr)}"
+                              ></option>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="col-md-6 col-sm-6">
+                          <label
+                            for="requisitosSelect"
+                            th:text="#{text.contraOferta.form.label.requisitos}"
+                          >
+                          </label>
+                          <div class="form-group">
+                            <select
+                              class="form-control"
+                              id="requisitosSelect"
+                              th:field="*{idRequisitosContraOferta}"
+                              required
+                              multiple
+                            >
+                              <option
+                                th:each="requisito : ${tipoRequisitosOfertas}"
+                                th:text="${requisito.nombre}"
+                                th:value="${requisito.id}"
+                                th:select="${contraOferta.idRequisitosContraOferta == requisito.id}"
+                              ></option>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="col-md-12 col-sm-12">
+                          <div class="form-group">
+                            <label
+                              for="comentarios"
+                              th:text="#{text.contraOferta.form.label.comentarios}"
+                            >
+                            </label>
+                            <textarea
+                              id="comentarios"
+                              class="form-control"
+                              th:field="*{comentarios}"
+                            ></textarea>
+                          </div>
+                        </div>
+                        <div class="col-md-6 col-sm-6">
+                          <div class="form-group">
+                            <label for="vehiculo">
+                              <span
+                                th:text="#{text.contraOferta.form.label.vehiculo}"
+                              ></span>
+                              <span class="danger"> * </span>
+                            </label>
+                            <select
+                              class="form-control"
+                              id="vehiculo"
+                              name="idVehiculo"
+                            >
+                              <option
+                                th:value="${''}"
+                                th:text="#{text.select.placeholder}"
+                              ></option>
+                              <option
+                                th:each="vehiculo : ${vehiculos}"
+                                th:text="|${vehiculo.dominio} - ${vehiculo.modelo.marca.nombre} ${vehiculo.modelo.nombre}|"
+                                th:value="${vehiculo.id}"
+                              ></option>
+                            </select>
+                          </div>
+                        </div>
+
+                        <div class="col-md-6 col-sm-6">
+                          <div class="form-group">
+                            <label for="remolque">
+                              <span
+                                th:text="#{text.contraOferta.form.label.remolque}"
+                              ></span>
+                              <span class="danger"> * </span>
+                            </label>
+                            <select
+                              class="form-control"
+                              id="remolque"
+                              name="idRemolque"
+                            >
+                              <option
+                                th:value="${''}"
+                                th:text="#{text.select.placeholder}"
+                              ></option>
+                              <option
+                                th:each="remolque : ${remolques}"
+                                th:text="|${remolque.dominio} - ${remolque.tipoRemolque.caracteristicas}|"
+                                th:value="${remolque.id}"
+                              ></option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                      <!--                                     <div class="col-md-4 col-sm-4" -->
+                      <!--                                          th:if="${#strings.contains(#strings.toLowerCase(entidad.carga.tipoCarga.caracteristicas), 'peligros') }"> -->
+                      <!--                                         <div class="form-group"> -->
+                      <!--                                             <label for="holdername">Tengo cartelería para carga -->
+                      <!--                                                 peligrosa?</label> <input type="checkbox" -->
+                      <!--                                                                           th:field="*{carteleriaCargaPeligrosa}"/> -->
+                      <!--                                         </div> -->
+                      <!--                                     </div> -->
+                      <!--                                     <div class="col-md-4 col-sm-4" -->
+                      <!--                                          th:if="${#strings.toLowerCase(entidad.tipoDeViaje) == 'internacional'}"> -->
+                      <!--                                         <div class="form-group"> -->
+                      <!--                                             <label for="holdername">Incluye costo de bajada a -->
+                      <!--                                                 piso?</label> <br> <input type="checkbox" -->
+                      <!--                                                                           th:field="*{incluyeBajadaAPiso}"/> -->
+                      <!--                                         </div> -->
+                      <!--                                     </div> -->
+                      <!--                                     <div class="col-md-4 col-sm-4" -->
+                      <!--                                          th:if="${#strings.toLowerCase(entidad.tipoDeViaje) == 'internacional'}"> -->
+                      <!--                                         <div class="form-group"> -->
+                      <!--                                             <label for="holdername">Aduana</label> <br> <input -->
+                      <!--                                                 type="checkbox" th:field="*{aduana}"/> -->
+                      <!--                                         </div> -->
+                      <!--                                     </div> -->
+                      <div class="form-actions text-right">
+                        <a onclick="history.back()">
+                          <button type="button" class="btn btn-secondary mr-1">
+                            <i class="ft-x"></i>
+                            <span th:text="#{text.btn.cancelar}"></span>
+                          </button>
+                        </a>
+                        <button
+                          type="button"
+                          class="btn btn-primary float-right"
+                          th:if="${accion == null or accion == 'guardar'}"
+                          th:onclick="javascript:contraofertar([[${contraOfertaAdesestimar?.id}]],[[${contraOfertaAdesestimar?.idPedido}]])"
+                        >
+                          <i class="la la-check"></i>
+                          <span th:text="#{text.btn.guardar}"></span>
+                        </button>
+                        <button
+                          type="submit"
+                          class="btn btn-primary"
+                          form="formulario"
+                          th:if="${accion == 'actualizar'}"
+                        >
+                          <i class="la la-check"></i>
+                          <span th:text="#{text.btn.actualizar}"></span>
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidenav-overlay"></div>
+    <div class="drag-target"></div>
+
+    <nav th:replace="fragments/componentes/plantilla :: footer"></nav>
+
+    <script th:inline="javascript">
+      $("#requisitosSelect").select2();
+      $('#requisitosPedidos').select2();
+      let pedidos = [[${idPedidos}]];
+      $('#idPedidos').val(pedidos);
+
+
+      function contraofertar(contraOfertaId, idPedido) {
+          if (contraOfertaId != null && idPedido != null) {
+              desestimar(contraOfertaId, idPedido);
+          }
+          $('#formulario').submit();
+      }
+
+      function desestimar(contraofertaId, pedidoId) {
+          let entidad = {
+              id: contraofertaId,
+          }
+          $.ajax({
+              url: '/api/contraoferta/desestimarcontraoferta',
+              dataType: 'json',
+              contentType: "application/json",
+              data: JSON.stringify(entidad),
+              type: 'POST',
+              success: function (data) {
+
+                  if (data.OK) {
+                      window.location.assign('/contraoferta/listado/?&userId=[(${session.usuario.id})]&idPedido=' + pedidoId + '&rol=TRANSPORTADOR');
+                  } else {
+                      Swal.queue([{
+                          title: [[#{text.contraOferta.form.script.title.error}]],
+                          confirmButtonText: 'OK',
+                          icon: "info"
+                      }]);
+                  }
+              },
+              error: function () {
+                  console.log('ERROR');
+              }
+          });
+      }
+    </script>
+  </body>
+</html>

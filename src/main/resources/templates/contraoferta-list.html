@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/componentes/plantilla :: head"></head>
+
+<body class="horizontal-layout horizontal-menu 2-columns  " data-open="hover" data-menu="horizontal-menu"
+      data-col="2-columns">
+
+<nav th:replace="fragments/componentes/plantilla :: header"></nav>
+
+<nav th:replace="fragments/componentes/plantilla :: menu"></nav>
+
+
+<div class="app-content content">
+    <div class="content-overlay"></div>
+    <div class="content-wrapper">
+        <div class="content-header row">
+            <div class="content-header-left col-md-6 col-12 mb-2">
+                <h3 class="content-header-title"
+                    th:text="#{text.contraOferta.list.h3.gestionOfertas}">
+                </h3>
+                <div class="row breadcrumbs-top">
+                    <div class="breadcrumb-wrapper col-12">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a th:href="@{/dashboard}">
+                                    <span th:text="#{text.tittle.home}"></span>
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item active"
+                                th:text="#{text.contraOferta.list.li.ofertas}">
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="content-body">
+            <section id="pagination">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title float-left"
+                                    th:text="#{text.contraOferta.list.h4.listadoOfertas}">
+                                </h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="card-text">
+                                    <div th:if="${error != null}" class="alert alert-danger"
+                                         role="alert">
+                                        <strong th:text="#{text.contraOferta.list.strong.error}"></strong>
+                                        <span th:text="${error}">error</span>
+                                    </div>
+                                    <div id="alertaAceptada" class="alert alert-info" role="alert"
+                                         style="display: none">
+                                        <strong th:text="#{text.contraOferta.list.strong.info}"></strong>
+                                        <span th:text="#{text.contraOferta.list.span.ofertaAceptada}"></span>
+                                    </div>
+                                    <form th:action="@{/contraoferta/dador/listado}">
+
+                                        <div class="input-group">
+                                            <input type="text" name="q" class="form-control "
+                                                   th:placeholder="#{text.contraOferta.list.input.buscar}"
+                                                   th:value="${q}"/>
+                                            <span class="btn-group mb-1">
+												<button type="submit" name="search" id="search-btn"
+                                                        class="btn btn-success pull-right">
+													<i class="la la-search"></i>
+												</button>
+											</span>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table alt-pagination customer-wrapper">
+                                        <thead class="thead-dark">
+                                        <tr>
+                                            <th th:replace="fragments/componentes/paginador :: columna(campo=valor,columna='__#{text.contraOferta.list.dador.label.valor}__')"></th>
+                                           	<th th:replace="fragments/componentes/paginador :: columna(campo=requisitos,columna='__#{text.contraOferta.list.dador.label.requisitos}__')"></th>
+                                            <th th:replace="fragments/componentes/paginador :: columna(campo=comentarios,columna='__#{text.contraOferta.list.dador.label.comentarios}__')"></th>
+                                            <th th:replace="fragments/componentes/paginador :: columna(campo=estado,columna='__#{text.contraOferta.list.estado}__')"></th>
+                                            <th th:replace="fragments/componentes/paginador :: columna(campo=modificacion,columna='__#{text.modificacion}__')"></th>
+                                            <th th:replace="fragments/componentes/paginador :: columna(campo=idCreador,columna='__#{text.contraOferta.list.creador}__')"></th>
+
+                                            <th th:text="#{text.contraOferta.list.th.acciones}"></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="entidad : ${page}" th:if="${entidad.isFinal != true}">
+                                            <td class="align-left">
+                                                <div class="name" th:text="|${entidad.simboloMoneda} ${#numbers.formatDecimal(entidad.valor,1,'POINT',2,'COMMA')}|"></div>
+                                            </td>
+                                            <td class="align-left">
+                                                <ul th:each="requisito : ${entidad.requisitosNombres}">
+                                                    <li th:text="${requisito}"></li>
+                                                </ul>
+                                            </td>
+                                            <!--                                             <td class="align-left"> -->
+                                            <!--                                                 <input th:if="${entidad.seguroCarga != null}" type="checkbox" -->
+                                            <!--                                                        disabled="disabled" -->
+                                            <!--                                                        th:checked="${entidad.seguroCarga ? true : false}"/> -->
+                                            <!--                                                 <input th:unless="${entidad.seguroCarga != null}" type="checkbox" -->
+                                            <!--                                                        disabled="disabled"/> -->
+
+                                            <!--                                             </td> -->
+                                            <!--                                             <td class="align-left"> -->
+                                            <!--                                                 <div class="name" th:text="${entidad.diasLibres}"></div> -->
+                                            <!--                                             </td> -->
+                                            <!--                                             <td class="align-left"> -->
+                                            <!--                                                 <input th:if="${entidad.incluyeIva != null}" type="checkbox" -->
+                                            <!--                                                        disabled="disabled" -->
+                                            <!--                                                        th:checked="${entidad.incluyeIva ? true : false}"/> -->
+                                            <!--                                                 <input th:unless="${entidad.incluyeIva != null}" type="checkbox" -->
+                                            <!--                                                        disabled="disabled"/> -->
+
+                                            <!--                                             </td> -->
+                                            <!--                                             <td class="align-left"> -->
+                                            <!--                                                 <input th:if="${entidad.incluyeIva != null}" type="checkbox" -->
+                                            <!--                                                        disabled="disabled" -->
+                                            <!--                                                        th:checked="${entidad.incluyeIva ? true : false}"/> -->
+                                            <!--                                                 <label th:unless="${entidad.incluyeIva != null}">no requiere</label> -->
+
+                                            <!--                                             </td> -->
+                                            <!--                                             <td class="align-left"> -->
+                                            <!--                                                 <input th:if="${entidad.aduana != null}" type="checkbox" -->
+                                            <!--                                                        disabled="disabled" -->
+                                            <!--                                                        th:checked="${entidad.incluyeIva ? true : false}"/> -->
+                                            <!--                                                 <label th:unless="${entidad.aduana != null}">no requiere</label> -->
+
+                                            <!--                                             </td> -->
+                                            <!--                                             <td class="align-left"> -->
+                                            <!--                                                 <input th:if="${entidad.carteleriaCargaPeligrosa != null}" -->
+                                            <!--                                                        type="checkbox" disabled="disabled" -->
+                                            <!--                                                        th:checked="${entidad.incluyeIva ? true : false}"/> -->
+                                            <!--                                                 <label th:unless="${entidad.carteleriaCargaPeligrosa != null}">no -->
+                                            <!--                                                     requiere</label> -->
+
+                                            <!--                                             </td> -->
+                                            <td class="align-left">
+                                                <div class="name" th:text="${entidad.comentarios}"></div>
+                                            </td>
+                                            <td class="align-middle">
+                                                <div class="last-login" th:text="${entidad.estado}"></div>
+                                            </td>
+                                            <td class="align-middle">
+                                                <div class="last-login"
+                                                     th:text="${entidad.modificacion} ? ${#dates.format(entidad.modificacion, 'dd-MM-yyyy HH:mm')}"></div>
+                                            </td>
+                                            <td class="align-middle">
+                                                <span class="badge badge-info"
+                                                      th:if="${entidad.idCreador == session.usuario.id}"
+                                                      th:text="#{text.contraOferta.list.td.ofertaPropia}"></span>
+                                                <span class="badge badge-danger"
+                                                      th:if="${entidad.idCreador != session.usuario.id}"
+                                                      th:text="#{text.contraOferta.list.td.ofertaRecibida}"></span>
+                                            </td>
+
+
+                                            <td class="align-middle" th:id="${entidad.id} + 'div'">
+                                                <div class="option" id="div-acciones"
+                                                     style="display: flex; justify-content: space-between;">
+
+                                                    <button th:if="${session.usuario.rol.toString() != 'DADOR_CARGA' && entidad.estado != 'ACEPTADO' && entidad.estado != 'RECHAZADO' && entidad.idCreador != session.usuario.id}"
+                                                            type="button" class="btn btn-primary btn-sm text-white"
+                                                            th:onclick="javascript:aceptar([[${entidad.id}]],[[${entidad.idPedido}]])"
+                                                            th:id="${entidad.id}"
+                                                            th:text="#{text.contraOferta.list.button.aceptar}">
+                                                    </button>
+                                                    <a th:if="${session.usuario.rol.toString() != 'DADOR_CARGA' && entidad.estado.toString() != 'ACEPTADO' && entidad.estado.toString() != 'RECHAZADO' && entidad.idCreador != session.usuario.id}"
+                                                       type="button" class="btn btn-info btn-sm text-white"
+                                                       th:href="@{/contraoferta/formulario/(idPedidos=__${entidad.idPedido}__,idcontraOfertaDesastimar=__${entidad.id}__)}">
+                                                        <span th:text="#{text.contraOferta.list.a.contraOfertar}"></span>
+                                                    </a>
+                                                   	<a th:if="${session.usuario.id != entidad.idCreador}" 
+                                                           th:href="@{/valoracion/listado/__${entidad.idDador}__(propio=true)}"
+                                                           th:text="#{text.contraOferta.list.admin.th.valoraciones}">
+                                                            <i class="las la-star"></i>
+                                                        </a>
+                                                        
+                                                </div>
+                                            </td>
+                                        </tr>
+
+                                        </tbody>
+                                    </table>
+                                    <div th:replace="fragments/componentes/paginador :: paginador">...</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+<div class="sidenav-overlay"></div>
+<div class="drag-target"></div>
+
+
+<nav th:replace="fragments/componentes/plantilla :: footer"></nav>
+
+
+<script th:inline="javascript">
+
+    function contraofertar(contraOfertaId, idPedido) {
+        desestimar(contraOfertaId, idPedido);
+    }
+
+    /*<![CDATA[*/
+    var cOfertas = /*[[${page}]]*/"";
+    var usuarioEnSession = [[${session.usuario}]]
+    var n = [];
+    var contador = 0;
+    /*]]>*/
+    cOfertas.content.forEach(oferta =>
+        n.push(oferta.estado)
+    );
+    for (let i = 0; i < cOfertas.content.length; i++) {
+
+        if (cOfertas.content[i].estado == 'RECHAZADO') {
+            $('#' + cOfertas.content[i].id + 'div>div>a').removeAttr("href");
+            $('#' + cOfertas.content[i].id + 'div>div>a').addClass('btn btn-dark');
+            $('#' + cOfertas.content[i].id + 'div>div>button').prop('disabled', true);
+        }
+
+        if (cOfertas.content[i].isFinal == true && cOfertas.content[i].idCreador != usuarioEnSession.id) {
+            $("#alertaAceptada").show(100)
+        }
+
+        if (cOfertas.content[i].idCreador == usuarioEnSession.id) {
+            contador++
+        }
+        if (contador >= 2) {
+            desabilitar(i)
+        }
+    }
+
+    function desabilitar(i) {
+        $('#' + cOfertas.content[i].id + 'div>div>a').removeAttr("href");
+        $('#' + cOfertas.content[i].id + 'div>div>a').text([[#{text.contraOferta.list.script.deshabilitar}]])
+//         $('#' + cOfertas.content[i].id + 'div>div>a').addClass('btn btn-dark');
+//         $('#' + cOfertas.content[i].id + 'div>div>button').prop('disabled', true);
+//         Swal.queue([{
+//             title: 'Recuerda que solo puedes ofertar 2 veces!',
+//             confirmButtonText: 'OK',
+//             icon: "info"
+//         }]);
+    }
+
+    if (n.includes('ACEPTADO')) {
+        $('#div-acciones>button').prop('disabled', true);
+    }
+
+
+    function check(oferta) {
+        if (oferta.estado == 'ACEPTADO' || oferta.estado == 'RECHAZADO') {
+
+            $('#' + oferta.id).text([[#{text.contraOferta.list.script.aceptado}]]);
+            $('#' + oferta.id + 'div').append('<button  onClick="eliminar(\'' + oferta.id + '\',\'' + oferta.idPedido + '\')" ><i class="la la-trash danger" ></i>[[#{text.tittle.eliminar}]]</button>');
+        }
+    }
+
+
+    function eliminar(contraofertaId, pedidoId) {
+        console.log(contraofertaId + '-' + pedidoId);
+        Swal.queue([{
+            title: [[#{text.contraOferta.list.script.seguroDeseaDesestimar}]],
+            confirmButtonText: [[#{text.option.si}]],
+            showCancelButton: true,
+            cancelButtonText: [[#{text.option.no}]],
+            cancelButtonColor: '#d33',
+            icon: "question",
+            showLoaderOnConfirm: true,
+            preConfirm: () => {
+                desestimar(contraofertaId, pedidoId);
+            }
+        }]);
+    };
+
+    function desestimar(contraofertaId, pedidoId) {
+    	entidad = {
+    			id: contraofertaId,
+    	}
+        $.ajax({
+            url: '/api/contraoferta/desestimarcontraoferta',
+            dataType: 'json',
+            contentType: "application/json",
+            data: JSON.stringify(entidad),
+            type: 'POST',
+
+            success: function (data) {
+
+                if(data.OK == true){
+                	window.location.assign('/contraoferta/dador/listado/?idPedido=' + pedidoId + '&rol=DADOR_CARGA');
+                }else{
+                	Swal.queue([{
+                        title: [[#{text.contraOferta.form.script.title.error}]],
+                        confirmButtonText: 'OK',
+                        icon: "info"
+                    }]);
+                }
+
+            },
+            error: function (data) {
+                console.og('ERROR');
+            }
+        });
+    };
+
+
+    function aceptar(contraofertaId, idPedido) {
+        Swal.queue([{
+            title: [[#{text.contraOferta.list.script.seguroDeseaAceptar}]],
+            confirmButtonText: [[#{text.option.si}]],
+            showCancelButton: true,
+            cancelButtonText: [[#{text.option.no}]],
+            cancelButtonColor: '#d33',
+            icon: "question",
+            showLoaderOnConfirm: true,
+            preConfirm: () => {
+                confirmacion(contraofertaId, idPedido);
+            }
+        }]);
+    };
+
+
+    function confirmacion(contraofertaId, idPedido) {
+    	
+    	entidad = {
+    			id: contraofertaId,
+    			idPedidoLong: idPedido,
+    			idCreador: usuarioEnSession.id,
+    	}
+
+        $.ajax({
+            url: '/api/contraoferta/aceptarcontraoferta',
+            dataType: 'json',
+            contentType: "application/json",
+            data: JSON.stringify(entidad),
+            type: 'POST',
+            success: function (data) {
+            	console.log("OK")
+            	console.log(data)
+                if(data.OK == true){
+                	generarViaje(contraofertaId, idPedido);
+                }else{
+                	Swal.queue([{
+                     title: [[#{text.contraOferta.form.script.title.error}]],
+                     confirmButtonText: 'OK',
+                     icon: "info"
+                 }]);
+                }
+            },
+            error: function (data) {
+                console.log('ERROR');
+            	console.log(data)
+
+            }
+        });
+    };
+
+    function generarViaje(contraOfertaid, idPedido) {
+
+        let entidad = {
+            id: contraOfertaid,
+            idPedido: idPedido,
+        }
+
+        $.ajax({
+            url: '/api/viaje/guardarDesdeContraOferta',
+            type: 'POST',
+            contentType: 'application/json',
+            dataType: 'json',
+            data: JSON.stringify(entidad),
+            success: function (data) {
+                console.log("DATA GENERAR VIAJE");
+
+                generarmatch(contraOfertaid, idPedido, data.id);
+            }
+        });
+    }
+
+    function generarmatch(contraofertaId, idPedido, idViaje) {
+        let entidad = {
+            id: contraofertaId,
+            idPedido: idPedido,
+            comentarios: idViaje,
+        };
+
+
+        $.ajax({
+            url: '/api/match/guardarDesdeContraOferta',
+            type: 'POST',
+            contentType: 'application/json',
+            dataType: 'json',
+            data: JSON.stringify(entidad),
+            success: function (data) {
+                window.location.assign('/contraoferta/listado/?idPedido=' + idPedido + '&rol=TRANSPORTADOR');
+
+            }
+        });
+    }
+
+</script>
+
+
+</body>
+
+</html>

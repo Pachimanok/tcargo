@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/componentes/plantilla :: head"></head>
+
+<body class="horizontal-layout horizontal-menu 2-columns  " data-open="hover" data-menu="horizontal-menu"
+      data-col="2-columns">
+
+<nav th:replace="fragments/componentes/plantilla :: header"></nav>
+
+<nav th:replace="fragments/componentes/plantilla :: menu"></nav>
+
+
+<div class="app-content content">
+    <div class="content-overlay"></div>
+    <div class="content-wrapper">
+        <div class="content-header row">
+            <div class="content-header-left col-md-6 col-12 mb-2">
+                <h3 class="content-header-title"
+                    th:text="#{text.transportador.form.h3.gestionTransportador}">
+                </h3>
+                <div class="row breadcrumbs-top">
+                    <div class="breadcrumb-wrapper col-12">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a th:href="@{/dashboard}">
+                                    <span th:text="#{text.tittle.home}"></span>
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item active"
+                                th:text="#{text.transportador.form.li.transportador}">
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+            <div class="content-header-right col-md-6 col-12">
+                <div class="media width-250 float-right">
+                    <div class="media-body media-right text-right">
+                        <a href="#" onclick="history.back()" class="btn btn-icon btn-secondary mr-1 mb-1">
+                            <i class="la la-chevron-left"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="content-body">
+            <section id="pagination">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title" th:if="${accion == null or accion == 'guardar'}"
+                                    th:text="#{text.transportador.form.h4.crearTransportador}">
+                                </h4>
+                                <h4 class="card-title" th:if="${accion == 'actualizar'}"
+                                    th:text="#{text.transportador.form.h4.actualizarTransportador}">
+                                </h4>
+                                <h4 class="card-title" th:if="${accion == 'eliminar'}"
+                                    th:text="#{text.transportador.form.h4.eliminarTransportador}">
+                                </h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="card-text">
+                                    <div th:if="${error != null}" class="alert alert-danger" role="alert">
+                                        <strong th:text="#{text.transportador.form.strong.error}"></strong> 
+                                        <span th:text="${error}">error</span>
+                                    </div>
+
+                                    <div th:if="${accion == 'eliminar'}" class="alert alert-danger" role="alert">
+                                        <strong th:text="#{text.transportador.form.strong.alto}"></strong>
+                                        <span th:text="#{text.transportador.form.span.seEncuentraSeguro}"></span>
+                                    </div>
+                                </div>
+                                <form method="POST"
+                                      th:action="@{/transportador/} + ${accion == null or accion == 'actualizar' ? 'guardar' : accion}"
+                                      id="formulario" novalidate="novalidate" th:object="${transportador}">
+                                    <input type="hidden" class="form-control" th:field="*{id}" th:value="*{id}"/>
+                                    <div class="row">
+                                        <div class="col-md-12 col-sm-12" th:if="(${session.usuario.rol.toString() == 'ADMIN_AMBAS'} OR
+                                                ${session.usuario.rol.toString() == 'ADMIN_DADOR'} OR
+                                                ${session.usuario.rol.toString() == 'ADMIN_TRANSPORTADOR'} OR
+                                                ${session.usuario.rol.toString() == 'ADMINISTRADOR'}) AND ${usuarios != null}">
+                                            <div class="form-group">
+                                                <label for="usuarios" >
+                                                       <span th:text="#{text.transportador.form.label.usuario}"></span>
+                                                       <span class="danger"> * </span>
+                                                </label>
+                                                <select class="form-control select2" id="usuarios"
+                                                        th:field="*{idUsuario}">
+                                                    <option th:each="usuario : ${usuarios}" th:text="${usuario.nombre}"
+                                                            th:value="${usuario.id}"
+                                                            th:select="${transportador.idUsuario == usuario.id}">
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12 col-sm-12" th:unless="(${session.usuario.rol.toString() == 'ADMIN_AMBAS'} OR
+                                                ${session.usuario.rol.toString() == 'ADMIN_DADOR'} OR
+                                                ${session.usuario.rol.toString() == 'ADMIN_TRANSPORTADOR'} OR
+                                                ${session.usuario.rol.toString() == 'ADMINISTRADOR'}) AND ${usuarios != null}">
+                                            <input class="form-control" type="hidden"
+                                                   th:field="*{idUsuario}"
+                                                   th:value="${usuario}" readonly/>
+                                        </div>
+                                        <div class="col-md-12 col-sm-12">
+                                            <div class="form-group">
+                                                <label for="nombre">
+                                                       <span th:text="#{text.transportador.form.label.nombreTransportadora}"></span>
+                                                       <span class="danger"> * </span>
+                                                </label>
+                                                <input id="nombre" class="form-control" th:field="*{nombre}"
+                                                       th:value="*{nombre}"
+                                                       th:placeholder="#{text.transportador.form.input.ingreseNombre}"
+                                                       type="text"
+                                                       required="required"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12 col-sm-12">
+                                            <div class="form-group">
+                                                <label for="razon">
+                                                       <span th:text="#{text.transportador.form.label.razonSocial}"></span>
+                                                       <span class="danger"> * </span>
+                                                </label>
+                                                <input id="razon" class="form-control" th:field="*{razonSocial}"
+                                                       th:value="*{razonSocial}"
+                                                       th:placeholder="#{text.transportador.form.input.ingreseRazon}"
+                                                       type="text" required="required"/>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- 							OBJETO UBICACION -->
+                                    <div th:object="${ubicacion}">
+                                        <input id="idProvisiorio" type="hidden" class="form-control"
+                                               th:field="*{idProvisiorio}"/>
+                                        <div class="row">
+                                            <div class="col-md-8 col-sm-8">
+                                                <div class="form-group">
+                                                    <label for="inputDireccion">
+                                                           <span th:text="#{text.transportador.form.label.domicilio}"></span>
+                                                           <span class="danger"> * </span>
+                                                    </label>
+                                                    <input class="form-control" id="inputDireccion"
+                                                           th:field="*{direccion}" th:value="*{direccion}" type="text"
+                                                           readonly/>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4 col-sm-4">
+                                                <div class="form-group text-center">
+                                                    <button type="button" class="btn btn-primary m-2"
+                                                            data-toggle="modal" data-target="#tu-direccion"
+                                                            th:text="#{text.transportador.form.button.buscaDomicilio}">
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <!--                                            <div class="col-md-12 col-sm-12">-->
+                                            <!--                                                <div class="form-group">-->
+                                            <!--                                                    <label for="holdername">-->
+                                            <!--                                                        Localidad <span class="danger"> * </span>-->
+                                            <!--                                                    </label>-->
+                                            <!--                                                    <select class="form-control select2" id="localidades"-->
+                                            <!--                                                            th:field="*{idLocalidad}">-->
+                                            <!--                                                        <option th:each="localidad : ${localidades}"-->
+                                            <!--                                                                th:text="${localidad.nombre}" th:value="${localidad.id}"-->
+                                            <!--                                                                th:select="${ubicacion.idLocalidad == localidad.id}">-->
+                                            <!--                                                    </select>-->
+                                            <!--                                                </div>-->
+                                            <!--                                            </div>-->
+                                            <div class="col-md-12 col-sm-12">
+                                                <div class="form-group">
+                                                    <label for="descripcion"
+                                                           th:text="#{text.descripcion}"> 
+                                                    </label>
+                                                    <textarea id="descripcion" class="form-control"
+                                                              th:field="*{descripcion}"
+                                                              th:value="*{descripcion}"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <input style="display:none" id="inputlatitud" th:field="*{latitud}"
+                                               th:value="*{latitud}" type="text"/>
+                                        <input style="display:none" id="inputlongitud" th:field="*{longitud}"
+                                               th:value="*{longitud}" type="text"/>
+                                        <input style="display:none" id="codigoPostal" th:field="*{codigoPostal}"
+                                               th:value="*{codigoPostal}" type="text"/>
+                                    </div>
+                                    <!-- 					FIN OBJETO UBICACION	 -->
+
+
+                                    <div class="form-actions text-right">
+                                        <a th:href="@{/transportador/listado}">
+                                            <button type="button" class="btn btn-secondary">
+                                                <i class="ft-x"></i>
+                                                <span th:text="#{text.btn.cancelar}"></span>
+                                            </button>
+                                        </a>
+                                        <button type="submit" class="btn btn-danger" form="formulario"
+                                                th:if="${accion == 'eliminar'}">
+                                            <i class="la la-trash"></i>
+                                            <span th:text="#{text.btn.eliminar}"></span>
+                                        </button>
+                                        <button type="submit" class="btn btn-primary" form="formulario"
+                                                th:if="${accion == null or accion == 'guardar'}">
+                                            <i class="la la-check"></i>
+                                            <span th:text="#{text.btn.guardar}"></span>
+                                        </button>
+                                        <button type="submit" class="btn btn-primary" form="formulario"
+                                                th:if="${accion == 'actualizar'}">
+                                            <i class="la la-check"></i>
+                                            <span th:text="#{text.btn.actualizar}"></span>
+                                        </button>
+                                    </div>
+
+                                </form>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+
+<div class="sidenav-overlay"></div>
+<div class="drag-target"></div>
+
+<th:block th:replace="fragments/componentes/plantilla :: footer"></th:block>
+
+
+<script type="text/javascript">
+    $("#usuarios").select2();
+</script>
+
+<script type="text/javascript">
+    $("#localidades").select2();
+</script>
+
+<!-- SCRIPT QUE CAMBIA VALOR DE LA UBICACIONPROVISORIO A LA FINAL -->
+<script th:inline="javascript">
+    /*<![CDATA[*/
+
+    var id = /*[[${ubicacion.id}]]*/'id';
+    if (id) {
+        $('#idProvisiorio').val(id);
+    }
+
+    /*]]>*/
+</script>
+<!-- 	PASAR ESTOS SCRIPT DE MANERA LOCAL -->
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+
+
+<!-- MODAL AUTOCOMPLETE GOOGLE MAPS -->
+<div class="modal fade bd-example-modal-lg" id="tu-direccion" tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-dark">
+
+                <h5 class="modal-title text-white" id="exampleModalLabel"
+                    th:text="#{text.transportador.form.h5.ubicacionActual}">
+                </h5>
+                <button type="button" class="close" data-dismiss="modal"
+                        aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="contenedor-mapa">
+                    <input id="pac-input" class="controls" type="text" 
+                           th:placeholder="#{text.transportador.form.input.buscaUbicacion}">
+                    <div id="map"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" 
+                            class="btn btn-primary" 
+                            data-dismiss="modal">OK
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- FIN MODAL AUTOCOMPLETE GOOGLE MAPS -->
+<!-- SCRIPT GOOGLE MAPS API == AUTOCOMPLETE -->
+<script>
+    const initialPos = {
+        lat: -33.6091754,
+        lng: -63.4685812
+    };
+    var map, searchBox, input, markers, geocoder, infowindow;
+
+    function initAutocomplete() {
+
+        map = new google.maps.Map(document.getElementById('map'), {
+            center: initialPos,
+            zoom: 6.22,
+            mapTypeId: 'roadmap',
+            zoomControl: false,
+            mapTypeControl: false
+        });
+
+        geocoder = new google.maps.Geocoder;
+        infowindow = new google.maps.InfoWindow;
+
+        markers = [];
+
+//         // Si el usuario y el navegador lo permiten, centra el mapa en la ubicación actual y pone un marcador
+//         if (navigator.geolocation) {
+//             navigator.geolocation.getCurrentPosition((pos) => {
+//                 map.setCenter({lat: pos.coords.latitude, lng: pos.coords.longitude});
+//                 map.setZoom(16);
+
+//                 markers.push(new google.maps.Marker({
+//                     position: map.getCenter(),
+//                     map: map
+//                 }));
+
+//                 geocoder.geocode({
+//                     location: map.getCenter()
+//                 }, (res, sta) => {
+//                     if (sta === 'OK') {
+//                         if (res[0]) {
+//                             $('#pac-input').val(res[0].formatted_address);
+//                             $('#inputDireccion').val(res[0].formatted_address);
+//                             console.log(res[0])
+//                             infowindow.setContent(`<h5 style="font-weight: bold;">${res[0].formatted_address}</h5><br/><small>Si esta dirección no es correcta, cámbiela en el cuadro de búsqueda</small>`);
+//                             infowindow.open(map, markers[0]);
+//                         } else {
+//                             console.log("GEOCODER: No se encontraron resultados para la ubicación actual");
+//                         }
+//                     } else {
+//                         console.log("Geocoder failed due to " + sta);
+//                     }
+//                 });
+//             });
+//         } else {
+//             x.innerHTML = "Geolocation is not supported by this browser.";
+//         }
+
+        // Create the search box and link it to the UI element.
+        input = document.getElementById('pac-input');
+        searchBox = new google.maps.places.SearchBox(input);
+        map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+        // Bias the SearchBox results towards current map's viewport.
+        map.addListener('bounds_changed', function () {
+            searchBox.setBounds(map.getBounds());
+        });
+
+        // Listen for the event fired when the user selects a prediction and retrieve
+        // more details for that place.
+        searchBox.addListener('places_changed', function () {
+            var places = searchBox.getPlaces();
+
+            if (places.length === 0) {
+                return;
+            }
+
+            // Clear out the old markers.
+            markers.forEach(function (marker) {
+                marker.setMap(null);
+            });
+            markers = [];
+
+            // For each place, get the icon, name and location.
+            var bounds = new google.maps.LatLngBounds();
+            places.forEach(function (place) {
+                if (!place.geometry) {
+                    console.log("Returned place contains no geometry");
+                    return;
+                }
+
+                // Create a marker for each place.
+                markers.push(new google.maps.Marker({
+                    map: map,
+                    title: place.name,
+                    position: place.geometry.location
+                }));
+
+                if (place.geometry.viewport) {
+                    // Only geocodes have viewport.
+                    bounds.union(place.geometry.viewport);
+                } else {
+                    bounds.extend(place);
+                }
+            });
+            map.fitBounds(bounds);
+
+            // 				ASIGNACION DE LAT Y LONG A INPUTS HIDDENS, Y CADENA STRINA A INPUT DE DIRECCION
+            var lat = map.getCenter().lat();
+            var lon = map.getCenter().lng();
+
+            console.log(lat, lon);
+            $('#inputlatitud').val(lat);
+            $('#inputlongitud').val(lon);
+
+            var cadenas = $("#pac-input").val().split(",");
+            var direccion = cadenas[0];
+            $('#inputDireccion').val(direccion);
+
+            // OBTIENE CODIGO POSTAL Y LO ASIGNA
+            geocoder.geocode({
+                location: map.getCenter()
+            }, (res, sta) => {
+                if (sta === 'OK') {
+                    if (res[0]) {
+                        for (let adComp of res[0].address_components) {
+                            if (adComp.types[0] === 'postal_code') {
+                                console.log(adComp.short_name);
+                                console.log(adComp.long_name);
+                                $('#codigoPostal').val(adComp.short_name);
+                            }
+                        }
+                    } else {
+                        console.log("GEOCODER: Error al buscar el código postal");
+                    }
+                } else {
+                    console.log("Geocoder failed due to " + sta);
+                }
+            });
+        });
+    }
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCIQdfMaSyq_gUH_BkD4mkpGLeccAB6Sd4&libraries=places&callback=initAutocomplete"
+        async defer></script>
+<!-- FINAL SCRIPT GOOGLE MAPS API == AUTOCOMPLETE -->
+
+</body>
+
+</html>

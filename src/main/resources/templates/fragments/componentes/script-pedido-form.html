@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<script th:fragment="script" th:inline="javascript">
+    const valorCheck = $("#valor");
+    const recibirOfertas = $("#recibirOfertas");
+    $(".select2").select2();
+    $('#retiroSelect').select2();
+    $('#localidadHasta').select2();
+    $('#localidadDesde').select2();
+    $("#custodia").iCheck({
+        checkboxClass: 'icheckbox_square-red',
+        radioClass: 'iradio_square-red',
+    });
+    $("#seguro").iCheck({
+        checkboxClass: 'icheckbox_square-red',
+        radioClass: 'iradio_square-red',
+    });
+    $("#indivisible").iCheck({
+        checkboxClass: 'icheckbox_square-red',
+        radioClass: 'iradio_square-red',
+    });
+    valorCheck.iCheck({
+        checkboxClass: 'icheckbox_square-red',
+        radioClass: 'iradio_square-red',
+    });
+    recibirOfertas.iCheck({
+        checkboxClass: 'icheckbox_square-red',
+        radioClass: 'iradio_square-red',
+    });
+
+    let inicioCargaPedidoEditado = /*[[${pedido.periodoDeCarga.inicio}]]*/ "";
+    let finalCargaPedidoEditado = /*[[${pedido.periodoDeCarga.finalizacion}]]*/ "";
+    let inicioDescargaPedidoEditado = /*[[${pedido.periodoDeDescarga.inicio}]]*/ "";
+    let finalDescargaPedidoEditado = /*[[${pedido.periodoDeDescarga.finalizacion}]]*/ "";
+    const dateInicioCarga = document.getElementById("dateInicioCarga");
+    const dateFinalCarga = document.getElementById("dateFinalCarga");
+    const dateInicioDescarga = document.getElementById("dateInicioDescarga");
+    const dateFinalDescarga = document.getElementById("dateFinalDescarga");
+
+    if (inicioCargaPedidoEditado && finalCargaPedidoEditado && inicioDescargaPedidoEditado && finalDescargaPedidoEditado) {
+        dateInicioCarga.value = inicioCargaPedidoEditado.replace(" ", "T");
+        dateFinalCarga.value = finalCargaPedidoEditado.replace(" ", "T");
+        dateInicioDescarga.value = inicioDescargaPedidoEditado.replace(" ", "T");
+        dateFinalDescarga.value = finalDescargaPedidoEditado.replace(" ", "T");
+    } else {
+        let dateInputs = document.getElementsByClassName("inputDate");
+        for (const dateInput of dateInputs) {
+            let date = new Date();
+            date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
+            dateInput.value = date.toJSON().slice(0, 16);
+        }
+    }
+
+    dateInicioCarga.addEventListener("change", () => {
+        dateFinalCarga.value = dateInicioCarga.value;
+        dateInicioDescarga.value = dateInicioCarga.value;
+        dateFinalDescarga.value = dateInicioCarga.value;
+        dateFinalCarga.setAttribute("min", dateInicioCarga.value);
+        dateInicioDescarga.setAttribute("min", dateInicioCarga.value);
+        dateFinalDescarga.setAttribute("min", dateInicioCarga.value);
+    });
+
+    dateFinalCarga.addEventListener("change", () => {
+        if (dateFinalCarga.value < dateInicioCarga.value) {
+            Swal.fire({
+                title: [[#{text.cargas.script.fecha.final.menor}]],
+                confirmButtonText: 'OK',
+                icon: "error"
+            });
+            dateFinalCarga.value = dateInicioCarga.value;
+        }
+    });
+
+    dateInicioDescarga.addEventListener("change", () => {
+        if (dateInicioDescarga.value < dateInicioCarga.value) {
+            Swal.fire({
+                title: [[#{text.cargas.script.fecha.descarga.menor}]],
+                confirmButtonText: 'OK',
+                icon: "error"
+            });
+            dateInicioDescarga.value = dateInicioCarga.value;
+        }
+        dateFinalDescarga.value = dateInicioDescarga.value;
+        dateFinalDescarga.setAttribute("min", dateInicioDescarga.value);
+    });
+
+    dateFinalDescarga.addEventListener("change", () => {
+        if (dateFinalDescarga.value < dateInicioDescarga.value) {
+            Swal.fire({
+                title: [[#{text.cargas.script.fecha.final.menor}]],
+                confirmButtonText: 'OK',
+                icon: "error"
+            });
+            dateFinalDescarga.value = dateInicioDescarga.value;
+        }
+    });
+
+    let tipoVehiculos = /*[[${tipoVehiculos}]]*/ "";
+    let idConRemolque;
+    const divTipoRemolque = document.getElementById("divTipoRemolque");
+    const tipoVehiculoSelect = document.getElementById("tipoVehiculoSelect");
+
+    for (const tv of tipoVehiculos) {
+        if (tv.nombre.toLowerCase() === "Con Remolque".toLowerCase()) {
+            idConRemolque = tv.id;
+            divTipoRemolque.style.display = "block";
+        }
+    }
+
+    $(tipoVehiculoSelect).change(() => {
+        if (tipoVehiculoSelect.value !== idConRemolque) {
+            divTipoRemolque.style.display = "none";
+        } else {
+            divTipoRemolque.style.display = "block";
+        }
+    });
+
+    let cargaCompleta = /*[[${pedido.carga.cargaCompleta}]]*/ "";
+    const ocultar = document.getElementsByClassName("ocultar");
+    const ocultar2 = document.getElementsByClassName("ocultar2");
+
+    if (cargaCompleta) {
+        for (const elem of ocultar) {
+            elem.style.display = "block";
+        }
+        for (const elem of ocultar2) {
+            elem.style.display = "none";
+        }
+    } else {
+        for (const elem of ocultar) {
+            elem.style.display = "none";
+        }
+        for (const elem of ocultar2) {
+            elem.style.display = "block";
+        }
+        divTipoRemolque.style.display = "none";
+    }
+
+    const contenedor = /*[[${pedido.contenedor}]]*/ "";
+    const contenedorRetiro = document.getElementsByClassName("contenedorRetiro");
+    const checkboxRequiereEntrega = document.getElementById("checkboxRequiereEntrega");
+    const contenedorEntrega = document.getElementsByClassName("contenedorEntrega");
+    const direccion = /*[[${pedido.ubicacionDesde.direccion}]]*/ "";
+    let pais;
+
+    if (direccion != null && direccion.length) {
+        let cadena = direccion.split(",");
+        pais = cadena[cadena.length - 1].substr(1);
+    }
+
+    if (contenedor != null && contenedor.length) {
+        if (contenedor["ubicacionRetiro"].direccion != null && contenedor["ubicacionRetiro"].direccion !== "") {
+            for (const elem of contenedorRetiro) {
+                elem.style.display = "block";
+            }
+        }
+        if (contenedor["ubicacionEntrega"].direccion != null && contenedor["ubicacionEntrega"].direccion !== "") {
+            checkboxRequiereEntrega.checked = true;
+            for (const elem of contenedorEntrega) {
+                elem.style.display = "block";
+            }
+        }
+    }
+
+    // SCRIPT MANEJO DE BOTONES
+    const pacInput = document.getElementById("pac-input");
+    const asignarRetiro = document.getElementById("asignarRetiro");
+    const asignarEntrega = document.getElementById("asignarEntrega");
+    const asignarInicio = document.getElementById("asignarInicio");
+    const asignarFinal = document.getElementById("asignarFinal");
+
+    document.getElementById("botonRetiro").addEventListener("click", () => {
+        mostrarBoton("block", "none", "none", "none");
+    });
+
+    document.getElementById("botonEntrega").addEventListener("click", () => {
+        mostrarBoton("none", "block", "none", "none");
+    });
+
+    document.getElementById("botonOrigen").addEventListener("click", () => {
+        mostrarBoton("none", "none", "block", "none");
+    });
+
+    document.getElementById("botonDestino").addEventListener("click", () => {
+        mostrarBoton("none", "none", "none", "block");
+    });
+
+    function mostrarBoton(btnRetiro, btnEntrega, btnInicio, btnFinal) {
+        pacInput.value = "";
+        asignarRetiro.style.display = btnRetiro;
+        asignarEntrega.style.display = btnEntrega;
+        asignarInicio.style.display = btnInicio;
+        asignarFinal.style.display = btnFinal;
+    }
+
+    // SCRIPT METRO CUBICOS
+    let alto = 0;
+    let longitud = 0;
+    let ancho = 0;
+    let total = 0;
+    const inputTotal = document.getElementById("total");
+
+    document.getElementById("alto").addEventListener("change", () => {
+        alto = document.getElementById("alto").value;
+        inputTotal.value = alto * longitud * ancho;
+    });
+
+    document.getElementById("longitud").addEventListener("change", () => {
+        longitud = document.getElementById("longitud").value;
+        inputTotal.value = alto * longitud * ancho;
+    });
+
+    document.getElementById("ancho").addEventListener("change", () => {
+        ancho = document.getElementById("ancho").value;
+        inputTotal.value = alto * longitud * ancho;
+    });
+
+    $("#modalidad").on('change', () => {
+        let completa = $("#modalidad").val();
+        if (completa == 'true') {
+            $('.ocultar').show(200);
+            $('.ocultar2').hide(200);
+            $(divTipoRemolque).show(200);
+        } else {
+            $('.ocultar').hide(200);
+            $('.ocultar2').show(200);
+            $(divTipoRemolque).hide(200);
+        }
+    });
+
+    // SCRIPT QUE OCULTA O MUESTRA CAMPO UBICACION ENTREGA DEPENDIENDO DEL CHECKBOX
+    checkboxRequiereEntrega.addEventListener("change", () => {
+        for (const elem of contenedorEntrega) {
+            elem.style.display = elem.style.display === "block" ? "none" : "block";
+        }
+    });
+
+    // SCRIPT QUE MUESTRA U OCULTA EL CAMPO DE IMPORTACION O EXPORTACION DEPENDIENDO DEL COMBO NACIONAL O INTERNACIONAL
+    const tipoViajeSelect = document.getElementById("tipoViajeSelect");
+    const tipoInternacional = document.getElementById("tipoInternacional");
+    const requisitosInternacional = document.getElementById("requisitosInter");
+    const requisitosNacional = document.getElementById("requisitosNac");
+
+    function chan() {
+        tipoInternacional.style.display = tipoViajeSelect.value === "INTERNACIONAL" ? "block" : "none";
+        requisitosInternacional.style.display = tipoViajeSelect.value === "INTERNACIONAL" ? "block" : "none";
+        requisitosNacional.style.display = tipoViajeSelect.value === "INTERNACIONAL" ? "none" : "block";
+    }
+
+    // SCRIPT QUE OCULTA O MUESRTA SELECCION DE CONTENEDOR Y REMOLQUE DEPENDIENDO DEL CHECKBOX DE TRANSPORTA CONTENEDOR
+    const contenedorCheckbox = document.getElementById("contenedor-checkbox");
+    const divTipoVehiculo = document.getElementById("tipo-de-vehiculo");
+    const tipoContenedor = document.getElementById("tipoContenedor");
+
+    contenedorCheckbox.addEventListener("change", () => {
+        for (const elem of contenedorRetiro) {
+            elem.style.display = elem.style.display === "block" ? "none" : "block";
+        }
+        divTipoRemolque.style.display = divTipoRemolque.style.display === "block" ? "none" : "block";
+        divTipoVehiculo.style.display = divTipoVehiculo.style.display === "block" ? "none" : "block";
+        tipoContenedor.value = "";
+    });
+
+    // SCRIPT QUE EVALUA CUANDO SE CARGA EL DOCUMENTO EL TIPO DE VIAJE PARA MOSTRAR CAMPOS DE UBICACION O NO
+    function ready(callback) {
+        if (document.readyState !== "loading") {
+            callback();
+        } else {
+            document.addEventListener("DOMContentLoaded", callback);
+        }
+    }
+
+    const inputValor = document.getElementById("inputValor");
+    const tipoMonedas = document.getElementById("tipoMonedas");
+
+    ready(() => {
+        tipoContenedor.value = "";
+        tipoInternacional.style.display = tipoViajeSelect.value === "INTERNACIONAL" ? "block" : "none";
+        requisitosInternacional.style.display = tipoViajeSelect.value === "INTERNACIONAL" ? "block" : "none";
+        requisitosNacional.style.display = tipoViajeSelect.value === "NACIONAL" ? "block" : "none";
+
+        const recibeOfertas = /*[[${pedido.recibirOfertas}]]*/ false;
+
+        if (recibeOfertas != null && recibeOfertas == true) {
+            valorCheck.iCheck("unchecked");
+            inputValor.value = "";
+            inputValor.setAttribute("disabled", "disabled");
+            tipoMonedas.setAttribute("disabled", "disabled");
+        } else {
+            recibirOfertas.iCheck("unchecked");
+            valorCheck.attr("checked", "checked");
+            inputValor.removeAttribute("disabled");
+            tipoMonedas.removeAttribute("disabled");
+        }
+
+        const hayContenedor = contenedor != null && contenedor.length && contenedor["tipoContenedor"].id != null;
+
+        contenedorCheckbox.checked = hayContenedor;
+        for (const elem of contenedorRetiro) {
+            elem.style.display = hayContenedor ? "block" : "none";
+        }
+        divTipoRemolque.style.display = hayContenedor ? "none" : "block";
+        divTipoVehiculo.style.display = hayContenedor ? "none" : "block";
+
+        $("#modalidad").change();
+
+        const fechas = document.querySelectorAll("input[type=datetime-local]");
+        fechas.forEach((f) => f.setAttribute("min", new Date().toISOString().substring(0, 16)));
+    });
+
+    // SCRIPT QUE BORRA Y DESACTIVA EL CAMPO VALOR EN EL CASO DE CLICKEAR RECIBIR OFERTAS
+    valorCheck.on("ifChecked", function () {
+        recibirOfertas.iCheck("uncheck");
+        inputValor.removeAttribute("disabled");
+        tipoMonedas.removeAttribute("disabled");
+    });
+
+    recibirOfertas.on("ifUnchecked", function () {
+        valorCheck.iCheck("check");
+        inputValor.removeAttribute("disabled");
+        tipoMonedas.removeAttribute("disabled");
+    });
+
+    recibirOfertas.on("ifChecked", function () {
+        valorCheck.iCheck("uncheck");
+        inputValor.value = "";
+        inputValor.setAttribute("disabled", "disabled");
+        tipoMonedas.setAttribute("disabled", "disabled");
+    });
+
+    const latitudInicio = document.getElementById("inputlatitudDesde");
+    const longitudInicio = document.getElementById("inputlongitudDesde");
+    const latitudFinal = document.getElementById("inputlatitudHasta");
+    const longitudFinal = document.getElementById("inputlongitudHasta");
+
+    function calcularGuardar() {
+        if (latitudInicio.value !== "" && longitudInicio.value !== "" && latitudFinal.value !== "" && longitudFinal.value !== "") {
+            let directionsService = new google.maps.DirectionsService();
+            let start = new google.maps.LatLng(latitudInicio.value, longitudInicio.value);
+            let end = new google.maps.LatLng(latitudFinal.value, longitudFinal.value);
+            let request = {
+                origin: start,
+                destination: end,
+                travelMode: google.maps.TravelMode.DRIVING,
+            };
+
+            directionsService.route(request, (result, status) => {
+                if (status == google.maps.DirectionsStatus.OK) {
+                    let kms = result.routes[0].legs[0].distance.text.split(" ")[0];
+                    kms = kms.replace(/,/g, "");
+                    document.getElementById("kilometrosTotalesObjeto").value = kms;
+                }
+                corregirPeso();
+                corregirFechas();
+                document.getElementById("formulario").submit();
+            });
+        } else {
+            document.getElementById("error").innerText = [[#{text.cargas.script.ubicaciones.completas}]];
+            document.getElementById("errorDiv").style.display = "block";
+            location.href = "#errorDiv";
+        }
+    }
+
+    function corregirPeso() {
+        let peso = document.getElementById("peso-carga");
+        let tipoPeso = document.getElementById("tipoPeso");
+        if (peso.value <= 0) {
+            peso.value = null;
+            return;
+        }
+        if (tipoPeso.value === "KG" && /\./.test(peso.value)) {
+            peso.value = peso.value.split(".")[0];
+        } else if (tipoPeso.value === "TON" && /\./.test(peso.value)) {
+            tipoPeso.value = "KG";
+            peso.value = parseFloat(peso.value) * 1000;
+        }
+    }
+
+    const initialPosition = {
+        lat: -33.6091754,
+        lng: -63.4685812,
+    };
+    let map, searchBox, markers, geocoder, infowindow;
+    let ocurrioUnError;
+
+    asignarInicio.addEventListener("click",() => {
+        console.log("pais asignarInicio::")
+        console.log(pais)
+        if (ocurrioUnError) {
+            direccionInput
+        }
+    });
+
+
+    asignarFinal.addEventListener("click",() => {
+        console.log("pais asignarFinal::")
+        console.log(pais)
+    });
+
+    function initAutocomplete() {
+        map = new google.maps.Map(document.getElementById("map"), {
+            center: initialPosition,
+            zoom: 6.22,
+            mapTypeId: "roadmap",
+            zoomControl: false,
+            mapTypeControl: false,
+        });
+        geocoder = new google.maps.Geocoder;
+        infowindow = new google.maps.InfoWindow;
+        markers = [];
+
+
+
+        searchBox = new google.maps.places.SearchBox(pacInput);
+        map.controls[google.maps.ControlPosition.TOP_LEFT].push(pacInput);
+
+        map.addListener("bounds_changed", () => {
+            searchBox.setBounds(map.getBounds());
+        });
+
+        searchBox.addListener("places_changed", () => {
+            let places = searchBox.getPlaces();
+            let bounds = new google.maps.LatLngBounds();
+
+            if (!places.length) {
+                return;
+            }
+
+            markers.forEach((marker) => {
+                marker.setMap(null);
+            });
+            markers = [];
+
+            places.forEach((place) => {
+                ocurrioUnError = false;
+                if (!place.geometry) {
+                    console.log("Returned place contains no geometry");
+                    return;
+                }
+
+                markers.push(new google.maps.Marker({
+                    map: map,
+                    title: place.name,
+                    position: place.geometry.location,
+                }));
+
+                if (place.geometry.viewport) {
+                    bounds.union(place.geometry.viewport);
+                } else {
+                    bounds.extend(place);
+                }
+                /*console.log("ANTES DE HACER EL fOR")*/
+
+                for (const component of place.address_components) {
+                    const addressType = component.types[0];
+                    /*console.log("addressType")
+                    console.log(addressType)*/
+                    if (addressType === "country") {
+                       /* console.log("pais ::")
+                        console.log(pais)
+                        console.log("component.long_name ::")
+                        console.log(component.long_name)
+                        console.log("tipoViajeSelect.value ::")
+                        console.log(tipoViajeSelect.value)*/
+
+                        if (component.long_name.toString() !== "Argentina" && component.long_name.toString() !== "Chile" && component.long_name.toString() !== "Brasil" ) {
+                            console.log("POr LANZAR EL ERROR pais fuera america");
+                            Swal.fire({
+                                title: [[#{text.cargas.script.direcciones.otro.pais}]],
+                                confirmButtonText: "OK",
+                                icon: "info",
+                            });
+                            ocurrioUnError = true;
+                            pacInput.value = "";
+                            pais="";
+                        } else if (pais == null || pais === "" ) {
+                            console.log("ENTRO")
+
+                            pais = component.long_name;
+                            console.log("pais :: "+pais.toString())
+                            console.log("component.long_name :: "+component.long_name.toString())
+                        } else if (pais.toString() !== component.long_name.toString() && tipoViajeSelect.value !== "INTERNACIONAL") {
+                            ocurrioUnError = true;
+                            console.log("POr LANZAR EL ERROR");
+                            console.log("pais ::"+pais.toString())
+                            console.log("component.long_name ::"+component.long_name.toString())
+                            Swal.fire({
+                                title: [[#{text.cargas.script.direcciones.mismo.pais}]],
+                                confirmButtonText: "OK",
+                                icon: "info",
+                            });
+                            pacInput.value = "";
+                            pais="";
+                        }
+                    }
+                }
+            });
+
+            map.fitBounds(bounds);
+            let lat = map.getCenter().lat();
+            let lng = map.getCenter().lng();
+            const inputDireccionDesde = document.getElementById("inputDireccionDesde");
+            const inputDireccionHasta = document.getElementById("inputDireccionHasta");
+            const inputDireccionRetiro = document.getElementById("inputDireccionRetiro");
+            const inputDireccionEntrega = document.getElementById("inputDireccionEntrega");
+            const latitudRetiro = document.getElementById("inputlatitudRetiro");
+            const longitudRetiro = document.getElementById("inputlongitudRetiro");
+            const latitudEntrega = document.getElementById("inputlatitudEntrega");
+            const longitudEntrega = document.getElementById("inputlongitudEntrega");
+            const modal = $("#direccionInicial");
+
+            asignarInicio.addEventListener("click",() => {
+                console.log("pais asignarInicio::")
+                console.log(pais)
+                if (ocurrioUnError) {
+                    pacInput.value = "";
+                }
+            });
+
+
+            asignarFinal.addEventListener("click",() => {
+                console.log("pais asignarFinal::")
+                console.log(pais)
+                if (ocurrioUnError) {
+                    pacInput.value = "";
+                }
+            });
+
+
+            const comprobarDesdeHasta = (direccion, latitud, longitud) => {
+                latitud.value = lat;
+                longitud.value = lng;
+                direccion.value = pacInput.value;
+                if (inputDireccionDesde.value === inputDireccionHasta.value && inputDireccionDesde.value !== "") {
+                    alertaDireccionesIguales();
+                    direccion.value = "";
+                    pacInput.value = "";
+                }
+                modal.modal("toggle");
+            };
+
+            const comprobarRetiroEntrega = (direccion, latitud, longitud) => {
+                latitud.value = lat;
+                longitud.value = lng;
+                direccion.value = pacInput.value;
+                if (inputDireccionRetiro.value === inputDireccionEntrega.value) {
+                    alertaDireccionesIguales();
+                    direccion.value = "";
+                    pacInput.value = "";
+                }
+            };
+
+            const alertaDireccionesIguales = () => {
+                Swal.fire({
+                    title: [[#{text.cargas.script.direcciones.no.iguales}]],
+                    confirmButtonText: "OK",
+                    icon: "warning",
+                });
+            };
+
+            asignarInicio.addEventListener("click", () => comprobarDesdeHasta(inputDireccionDesde, latitudInicio, longitudInicio));
+            asignarFinal.addEventListener("click", () => comprobarDesdeHasta(inputDireccionHasta, latitudFinal, longitudFinal));
+            asignarRetiro.addEventListener("click", () => comprobarRetiroEntrega(inputDireccionRetiro, latitudRetiro, longitudRetiro));
+            asignarEntrega.addEventListener("click", () => comprobarRetiroEntrega(inputDireccionEntrega, latitudEntrega, longitudEntrega));
+        });
+    }
+
+    // Si se usa Firefox, no se renderiza bien el input de tipo datetime-local, por eso lo pongo como hidden al input
+    // y uso dos inputs separados para la fecha y hora.
+    const isFirefox = /Firefox/.test(navigator.userAgent);
+
+    const divInputsIPC = document.getElementById("fipc-inputs");
+    const fechaInicioPeriodoCarga = document.getElementById("fipc");
+    const horaInicioPeriodoCarga = document.getElementById("hipc");
+
+    const divInputsFPC = document.getElementById("ffpc-inputs");
+    const fechaFinPeriodoCarga = document.getElementById("ffpc");
+    const horaFinPeriodoCarga = document.getElementById("hfpc");
+
+    const divInputsIPD = document.getElementById("fipd-inputs");
+    const fechaInicioPeriodoDescarga = document.getElementById("fipd");
+    const horaInicioPeriodoDescarga = document.getElementById("hipd");
+
+    const divInputsFPD = document.getElementById("ffpd-inputs");
+    const fechaFinPeriodoDescarga = document.getElementById("ffpd");
+    const horaFinPeriodoDescarga = document.getElementById("hfpd");
+
+    if (isFirefox) {
+        cambiarInputsFechas();
+
+        if (document.getElementById("id").value) {
+            const IPCBack = [[${pedido.periodoDeCarga.inicio}]];
+            const FPCBack = [[${pedido.periodoDeCarga.finalizacion}]];
+            const IPDBack = [[${pedido.periodoDeDescarga.inicio}]];
+            const FPDBack = [[${pedido.periodoDeDescarga.finalizacion}]];
+
+            fechaInicioPeriodoCarga.value = IPCBack.split(" ")[0];
+            fechaFinPeriodoCarga.value = FPCBack.split(" ")[0];
+            fechaInicioPeriodoDescarga.value = IPDBack.split(" ")[0];
+            fechaFinPeriodoDescarga.value = FPDBack.split(" ")[0];
+
+            horaInicioPeriodoCarga.value = IPCBack.split(" ")[1];
+            horaFinPeriodoCarga.value = FPCBack.split(" ")[1];
+            horaInicioPeriodoDescarga.value = IPDBack.split(" ")[1];
+            horaFinPeriodoDescarga.value = FPDBack.split(" ")[1];
+        }
+    }
+
+    function cambiarInputsFechas() {
+        dateInicioCarga.type = "hidden";
+        dateFinalCarga.type = "hidden";
+        dateInicioDescarga.type = "hidden";
+        dateFinalDescarga.type = "hidden";
+
+        divInputsIPC.style.display = "flex";
+        divInputsFPC.style.display = "flex";
+        divInputsIPD.style.display = "flex";
+        divInputsFPD.style.display = "flex";
+
+        document.getElementById("lipc").style.display = "inline";
+        document.getElementById("lfpc").style.display = "inline";
+        document.getElementById("lipd").style.display = "inline";
+        document.getElementById("lfpd").style.display = "inline";
+
+        document.querySelectorAll("input[type=date]").forEach(f => f.setAttribute("min", new Date().toISOString().substring(0, 10)));
+    }
+
+    fechaInicioPeriodoCarga.addEventListener("change", () => {
+        fechaFinPeriodoCarga.value = fechaInicioPeriodoCarga.value;
+        fechaInicioPeriodoDescarga.value = fechaInicioPeriodoCarga.value;
+        fechaFinPeriodoDescarga.value = fechaInicioPeriodoCarga.value;
+        fechaFinPeriodoCarga.setAttribute("min", fechaInicioPeriodoCarga.value);
+        fechaInicioPeriodoDescarga.setAttribute("min", fechaInicioPeriodoCarga.value);
+        fechaFinPeriodoDescarga.setAttribute("min", fechaInicioPeriodoCarga.value);
+    });
+
+    fechaFinPeriodoCarga.addEventListener("change", () => {
+        if (fechaFinPeriodoCarga.value < fechaInicioPeriodoCarga.value) {
+            Swal.fire({
+                title: [[#{text.cargas.script.fecha.final.menor}]],
+                confirmButtonText: 'OK',
+                icon: "error"
+            });
+            fechaFinPeriodoCarga.value = fechaInicioPeriodoCarga.value;
+        }
+    });
+
+    fechaInicioPeriodoDescarga.addEventListener("change", () => {
+        if (fechaInicioPeriodoDescarga.value < fechaInicioPeriodoCarga.value) {
+            Swal.fire({
+                title: [[#{text.cargas.script.fecha.descarga.menor}]],
+                confirmButtonText: 'OK',
+                icon: "error"
+            });
+            fechaInicioPeriodoDescarga.value = fechaInicioPeriodoCarga.value;
+        }
+        fechaFinPeriodoDescarga.value = fechaInicioPeriodoDescarga.value;
+        fechaFinPeriodoDescarga.setAttribute("min", fechaInicioPeriodoDescarga.value);
+    });
+
+    fechaFinPeriodoDescarga.addEventListener("change", () => {
+        if (fechaFinPeriodoDescarga.value < fechaInicioPeriodoDescarga.value) {
+            Swal.fire({
+                title: [[#{text.cargas.script.fecha.final.menor}]],
+                confirmButtonText: 'OK',
+                icon: "error"
+            });
+            fechaFinPeriodoDescarga.value = fechaInicioPeriodoDescarga.value;
+        }
+    });
+
+    horaFinPeriodoCarga.addEventListener("blur", () => {
+        if (horaFinPeriodoCarga.value < horaInicioPeriodoCarga.value && fechaInicioPeriodoCarga.value === fechaFinPeriodoCarga.value) {
+            Swal.fire({
+                title: [[#{text.cargas.script.hora.fin.pc.menor}]],
+                confirmButtonText: 'OK',
+                icon: 'error',
+            });
+            horaFinPeriodoCarga.value = horaInicioPeriodoCarga.value;
+        }
+    });
+
+    horaFinPeriodoDescarga.addEventListener("blur", () => {
+        if (horaFinPeriodoDescarga.value < horaInicioPeriodoDescarga.value && fechaInicioPeriodoDescarga.value === fechaFinPeriodoDescarga.value) {
+            Swal.fire({
+                title: [[#{text.cargas.script.hora.fin.pd.menor}]],
+                confirmButtonText: 'OK',
+                icon: 'error',
+            });
+            horaFinPeriodoDescarga.value = horaInicioPeriodoDescarga.value;
+        }
+    });
+
+    function corregirFechas() {
+        if (isFirefox) {
+            dateInicioCarga.value = fechaInicioPeriodoCarga.value + "T" + horaInicioPeriodoCarga.value;
+            dateFinalCarga.value = fechaFinPeriodoCarga.value + "T" + horaFinPeriodoCarga.value;
+            dateInicioDescarga.value = fechaInicioPeriodoDescarga.value + "T" + horaInicioPeriodoDescarga.value;
+            dateFinalDescarga.value = fechaFinPeriodoDescarga.value + "T" + horaFinPeriodoDescarga.value;
+        }
+    }
+</script>
+</html>

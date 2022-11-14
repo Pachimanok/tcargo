@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/componentes/plantilla :: head"></head>
+
+<body class="horizontal-layout horizontal-menu 2-columns  " data-open="hover" data-menu="horizontal-menu"
+      data-col="2-columns">
+
+<nav th:replace="fragments/componentes/plantilla :: header"></nav>
+
+<nav th:replace="fragments/componentes/plantilla :: menu"></nav>
+
+
+<div class="app-content content">
+    <div class="content-overlay"></div>
+    <div class="content-wrapper">
+        <div class="content-header row">
+            <div class="content-header-left col-md-6 col-12 mb-2">
+                <h3 class="content-header-title" 
+                    th:text="#{text.valoracion.list.tittle}">
+                </h3>
+                <div class="row breadcrumbs-top">
+                    <div class="breadcrumb-wrapper col-12">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a th:href="@{/dashboard}" 
+                                   th:text="#{text.tittle.home}">
+                                </a>
+                            </li>
+<!--                             <li class="breadcrumb-item active"  -->
+<!--                                 th:text="#{text.valoracion.list.subtittle}"> -->
+<!--                             </li> -->
+                        </ol>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="content-body">
+            <section id="pagination">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+<!--                                 <h4 class="card-title float-left"  -->
+<!--                                     th:text="#{text.valoracion.list.subtittle}"> -->
+<!--                                 </h4> -->
+                                <div class="media width-250 float-right" th:if="${promedio != null}">
+                               		<div class="row">
+                               			<div class="col-12 text-center">
+                                    		<h4 class="card-title float-left" 
+                                                    th:text="#{text.valoracion.list.generar} + ' ' + ${promedio}/10+'/10'">
+                                                </h4>
+                                    	</div>
+                                   		<div class="col-12 mt-1">
+                                     		<div th:id="general"></div>
+                                     	</div>
+                                     </div>
+                                </div>
+                               
+                                
+                            </div>
+                            <div class="card-body">
+                                <div class="card-text">
+                                    <form th:action="@{/pais/listado}">
+
+<!--                                         <div class="input-group"> -->
+<!--                                             <input type="text" name="q" class="form-control square" -->
+<!--                                                    placeholder="Buscar..." th:value="${q}"/> -->
+<!--                                             <span class="btn-group mb-1"> -->
+<!-- 												<button type="submit" name="search" id="search-btn" -->
+<!--                                                         class="btn btn-light square"> -->
+<!-- 													<i class="la la-search"></i> -->
+<!-- 												</button> -->
+<!-- 											</span> -->
+<!--                                         </div> -->
+                                    </form>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table alt-pagination customer-wrapper">
+                                        <thead class="thead-dark">
+                                        <tr>
+                                            <th th:replace="fragments/componentes/paginador :: columna-no-q-valoraciones(campo=valoracion,columna='__#{text.valoracion.list.table.td.uno}__')"></th>
+                                            <th th:replace="fragments/componentes/paginador :: columna-no-q-valoraciones(campo=comentarios,columna='__#{text.valoracion.list.table.td.dos}__')"></th>
+                                            <th th:replace="fragments/componentes/paginador :: columna-no-q-valoraciones(campo=valoracion,columna='__#{text.viaje.personal.form.carga}__')"></th>
+                                            <th th:replace="fragments/componentes/paginador :: columna-no-q-valoraciones(campo=modificacion,columna='__#{text.valoracion.list.table.td.tres}__')"></th>
+                                            <th th:replace="fragments/componentes/paginador :: columna-no-q-valoraciones(campo=modificacion,columna='__#{text.acciones}__')"></th>
+                                       
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="entidad : ${page}">
+                                            <td class="align-left">
+<!--                                                 <div class="name" th:text="${entidad.valoracion}"></div> -->
+                                                <div th:id="'puntos' + ${entidad.id}"></div>	
+                                            </td>
+                                            <td class="align-left">
+                                                <div class="name" th:text="${entidad.comentarios}"></div>
+                                            </td>
+                                             <td class="align-left">
+                                                <div class="name" th:text="${entidad.coincidencia.pedido.id}"></div>
+                                                
+                                            </td>
+                                            <td class="align-middle">
+                                                <div class="last-login"
+                                                     th:text="${entidad.modificacion} ? ${#dates.format(entidad.modificacion, 'dd-MM-yyyy HH:mm')}"></div>
+                                            </td>
+                                            <td class="align-middle">
+                                                <div class="last-login">
+                                            <a target="_blank" th:href="@{/pedido/ver(id=__${entidad.coincidencia.pedido.id}__,format='pdf')}" class="btn btn-sm btn-info white">
+																 <span th:text="#{text.cargas.btn.ver-contrato}"></span></a>
+												</div>
+											</td>																	 
+                                        </tr>
+
+                                        </tbody>
+                                    </table>
+
+                                    <div th:replace="fragments/componentes/paginador :: paginador-no-q-valoraciones(propio=true)">...</div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+
+<div class="sidenav-overlay"></div>
+<div class="drag-target"></div>
+
+<nav th:replace="fragments/componentes/plantilla :: footer"></nav>
+
+<script th:inline="javascript">
+	let valoracion = [[${page}]];
+	let valoracion_valor;
+	
+	for(let i = 0; i < valoracion.content.length; i++){
+		$(function() {$('#puntos' + valoracion.content[i].id).valoraciones({star_tot:10, star_max:100,star_ini: valoracion.content[i].valoracion , star_enable: false,color: '#FC3', star_size:10, callback:puntuaciones});});
+		$('#puntos' + valoracion.content[i].id).css('z-index',-1);
+	}
+	
+	var puntuaciones = function(datos) {
+			
+	};
+	if([[${promedio}]] != null){
+		let general = [[${promedio}]]; 
+		console.log(general)
+		$(function() {$('#general').valoraciones({star_tot:10, star_max:100,star_ini: general, active:false ,color: '#FC3', star_size:10, star_enable: false, callback:puntuaciones});});
+	}
+
+
+</script>
+
+</body>
+
+</html>

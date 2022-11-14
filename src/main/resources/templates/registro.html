@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" class="loading" lang="es" data-textdirection="ltr">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui"/>
+    <meta name="description"
+          content="Modern admin is super flexible, powerful, clean &amp; modern responsive bootstrap 4 admin template with unlimited possibilities with bitcoin dashboard.">
+    <meta name="keywords"
+          content="admin template, modern admin template, dashboard template, flat admin template, responsive admin template, web app, crypto dashboard, bitcoin dashboard">
+    <meta name="author" content="PIXINVENT">
+    <title th:text="#{text.registro.title}"></title>
+    <link rel="apple-touch-icon"
+          th:href="@{/assets/img/icono.png}">
+    <link rel="shortcut icon" type="image/x-icon"
+          th:href="@{/assets/img/icono.png}">
+    <link
+            href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i%7CQuicksand:300,400,500,700"
+            rel="stylesheet">
+    <link rel="stylesheet" type="text/css"
+          href="../../../app-assets/fonts/material-icons/material-icons.css">
+
+    <!-- BEGIN: Vendor CSS-->
+    <link rel="stylesheet" type="text/css"
+          href="../../../app-assets/vendors/css/material-vendors.min.css">
+    <link rel="stylesheet" type="text/css"
+          href="../../../app-assets/vendors/css/forms/icheck/icheck.css">
+    <link rel="stylesheet" type="text/css"
+          href="../../../app-assets/vendors/css/forms/icheck/custom.css">
+    <!-- END: Vendor CSS-->
+
+    <!-- BEGIN: Theme CSS-->
+    <link rel="stylesheet" type="text/css"
+          href="../../../app-assets/css/material.css">
+    <link rel="stylesheet" type="text/css"
+          href="../../../app-assets/css/components.css">
+    <link rel="stylesheet" type="text/css"
+          href="../../../app-assets/css/bootstrap-extended.css">
+    <link rel="stylesheet" type="text/css"
+          href="../../../app-assets/css/material-extended.css">
+    <link rel="stylesheet" type="text/css"
+          href="../../../app-assets/css/material-colors.css">
+    <!-- END: Theme CSS-->
+    <link rel="stylesheet" type="text/css" href="/assets/css/intlTelInput.css">
+    <!-- BEGIN: Page CSS-->
+    <link rel="stylesheet" type="text/css"
+          href="../../../app-assets/css/core/menu/menu-types/material-vertical-menu.css">
+    <link rel="stylesheet" type="text/css"
+          href="../../../app-assets/css/pages/login-register.css">
+    <!-- END: Page CSS-->
+
+    <!-- BEGIN: Custom CSS-->
+    <link rel="stylesheet" type="text/css"
+          href="../../../assets/css/style.css">
+    <!-- END: Custom CSS-->
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-120793348-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'UA-120793348-1');
+    </script>
+</head>
+<body class="vertical-layout vertical-menu material-vertical-layout material-layout 1-column  bg-full-screen-image blank-page"
+      data-open="click" data-menu="vertical-menu" data-col="1-column" style="opacity: 0.9">
+<div class="app-content content">
+    <div class="content-header row"></div>
+    <div class="content-overlay"></div>
+    <div class="content-wrapper">
+        <div class="content-body">
+            <section class="row flexbox-container">
+                <div class="col-12 d-flex align-items-center justify-content-center">
+                    <div class="col-lg-4 col-md-8 col-10 box-shadow-2 p-0">
+                        <div class="card border-grey border-lighten-3 px-1 py-1 m-0">
+                            <div class="card-header border-0">
+                                <div class="card-title text-center">
+                                    <img class="brand-logo" alt="modern admin logo"
+                                         src="/img/logo-gde.png"/>
+                                    <h3 th:text="#{text.registro.titulo}"></h3>
+                                </div>
+                            </div>
+                            <div class="card-content">
+
+                                <div class="card-body">
+                                    <div th:if="${error != null}" class="alert alert-danger" role="alert">
+                                        <strong th:text="#{text.registro.strong}"></strong>
+                                        <span th:text="${error}">error</span>
+                                    </div>
+                                    <form id="formulario" class="form-horizontal" th:action="@{/registro/registrar}" method="POST" th:object="${usuario}">
+                                        <fieldset class="form-group position-relative has-icon-left">
+                                            <div class="input-group">
+                                                <span class="danger" id="danger-mail"> * </span>
+                                                <input id="mail" type="email" class="form-control" th:field="*{mail}"
+                                                       th:placeholder="#{text.usuario.mail}" autocomplete="off" required/>
+                                                <div class="form-control-position"></div>
+                                            </div>
+                                        </fieldset>
+                                        <fieldset class="form-group position-relative">
+                                            <span class="danger"> * </span>
+                                            <select id="rol-select" class="custom-select" name="rol" required>
+                                                <option disabled th:value="${''}" th:text="#{text.edicionPerfil.form.option.seleccionaTipoUsuario}">
+                                                <option th:each="rol : ${roles}" th:value="${rol}" th:text="${rol.texto}"></option>
+                                            </select>
+                                        </fieldset>
+                                        <fieldset class="form-group position-relative has-icon-left">
+                                            <div class="input-group">
+                                                <span class="danger" id="danger-clave"> * </span>
+                                                <input type="password" class="form-control" id="clave" th:field="*{clave}"
+                                                       th:placeholder="#{text.usuario.clave}" autocomplete="off" required/>
+                                                <div class="input-group-append">
+                                                    <a onclick="verClave()">
+                                                        <i class="la la-eye"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12 text-center mt-1" id="alert-pass-corto" style="display: none">
+                                                <span class="alert alert-danger" th:text="#{text.clave.alertCaracteres}"></span>
+                                            </div>
+
+                                        </fieldset>
+                                        <fieldset class="form-group position-relative has-icon-left">
+                                            <div class="input-group">
+                                                <span class="danger" id="danger-clave1"> * </span>
+                                                <input type="password" class="form-control" id="clave1" th:field="*{clave1}"
+                                                       th:placeholder="#{text.registro.repiteClave}" autocomplete="off"
+                                                       required/>
+                                                <div class="input-group-append">
+                                                    <a onclick="verClave1()">
+                                                        <i class="la la-eye"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12 text-center mt-1" id="alert-pass-distintos" style="display: none">
+                                                <span class="alert alert-danger" th:text="#{text.clave.alertNoCoinciden}"></span>
+                                            </div>
+                                        </fieldset>
+                                        <fieldset class="form-group position-relative">
+                                            <div class="">
+                                                <span class="danger" id="danger-telefono"> * </span>
+                                                <input id="telefono" type="tel" class="form-control" th:field="*{telefono}"
+                                                       onkeypress="return soloNumeros(event)" autocomplete="off" required/>
+                                                <div class="form-control-position"></div>
+                                            </div>
+                                        </fieldset>
+
+                                        <fieldset class="form-group position-relative">
+                                            <div>
+                                                <span class="danger" id="danger-bases"> * </span>
+                                                <input id="basesYcondiciones" type="checkbox"/>
+                                                <span>He leído y acepto las</span>
+                                                <a class="text-center" th:href="@{/basesycondiciones}" target="_blank">
+                                                    <strong>bases y condiciones</strong>
+                                                </a>
+                                            </div>
+                                            <div class="col-md-12 text-center mt-1" id="alert-check-bases" style="display: none">
+                                                <span class="alert alert-danger"> Debes aceptar las bases y condiciones.</span>
+                                            </div>
+                                            <div class="col-md-12 text-center mt-1" id="alert-todos-los-campos" style="display: none">
+                                                <span class="alert alert-danger"> Debes completar todos los campos.</span>
+                                            </div>
+                                        </fieldset>
+
+                                        <button type="button" class="btn btn-red btn-block" onclick="validarRegistro()" th:text="#{text.login.btnRegistrate}"></button>
+                                        <a class="btn btn-secondary btn-block mt-1" th:href="@{/}" th:text="#{text.registro.btnVolver}"></a>
+                                    </form>
+
+                                    <div class="row pull-right mt-1">
+                                        <a class="mr-1" type="button" href="?lang=es_ES">
+                                            <img src="/img/arg.png" alt="bandera-argentina" width="30px"/>
+                                        </a>
+                                        <a class="mr-1" type="button" href="?lang=pt_PT">
+                                            <img src="/img/br.png" alt="bandera-brasil" width="30px"/>
+                                        </a>
+                                        <a class="mr-1" type="button" href="?lang=cl_CL">
+                                            <img src="/img/ch.png" alt="bandera-chile" width="30px"/>
+                                        </a>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </div>
+</div>
+<!-- END: Content-->
+
+
+<!-- BEGIN: Vendor JS-->
+<script src="../../../app-assets/vendors/js/material-vendors.min.js"></script>
+<!-- BEGIN Vendor JS-->
+
+<!-- BEGIN: Page Vendor JS-->
+<script
+        src="../../../app-assets/vendors/js/forms/validation/jqBootstrapValidation.js"></script>
+<script src="../../../app-assets/vendors/js/forms/icheck/icheck.min.js"></script>
+<!-- END: Page Vendor JS-->
+
+<!-- BEGIN: Theme JS-->
+<script src="../../../app-assets/js/core/app-menu.js"></script>
+<script src="../../../app-assets/js/core/app.js"></script>
+<!-- END: Theme JS-->
+
+<!-- BEGIN: Page JS-->
+<script src="../../../app-assets/js/scripts/pages/material-app.js"></script>
+<script
+        src="../../../app-assets/js/scripts/forms/form-login-register.js"></script>
+<script src="../../../assets/js/plantillascripts.js"></script>
+<!-- END: Page JS-->
+
+<script src="/assets/js/intlTelInput.min.js"></script>
+<script src="/assets/js/intlTelInput-jquery.min.js"></script>
+<script src="/assets/js/utils.js"></script>
+<script type="text/javascript" src="https://s.cliengo.com/weboptimizer/5b92cc98e4b022ea6fe37f04/5b93266fe4b0b3c966a76768.js?platform=5b92cc98e4b022ea6fe37f04-5b93266fe4b0b3c966a76768"></script>
+
+<script th:inline="javascript">
+    let input = document.querySelector("#telefono");
+
+    const initialCountry = (() => {
+        switch ([[${#locale}]]) {
+            case "es_ES":
+                return "ar";
+            case "pt_PT":
+                return "br";
+            case "cl_CL":
+                return "cl";
+        }
+    })();
+
+    let countryCode = window.intlTelInput(input, {
+        onlyCountries: ["ar", "cl", "br", "uy", "pr", "bo", "pe"],
+        preferredCountries: ["ar", "cl", "br", "uy", "pr", "bo", "pe"],
+        autoPlaceholder: "polite",
+        utilsScript: "/assets/js/utils.js",
+        customContainer: "form-group",
+        initialCountry: initialCountry
+    });
+
+    let x = countryCode.getSelectedCountryData();
+    $("#telefono").val("+" + x.dialCode);
+
+    input.addEventListener("countrychange", function () {
+        x = countryCode.getSelectedCountryData();
+        $("#telefono").val("+" + x.dialCode)
+    });
+
+    function validarRegistro() {
+        if (!$("#mail").val() || !$("#clave").val() || !$("#clave1").val() || !$("#telefono").val()) {
+            $("#alert-todos-los-campos").show(250);
+        } else {
+            $("#alert-todos-los-campos").hide(250);
+            if ($("#basesYcondiciones").prop('checked') == false) {
+                $("#alert-check-bases").show(250);
+            } else {
+                $("#alert-check-bases").hide(250);
+                $("#formulario").submit();
+            }
+        }
+    }
+</script>
+</body>
+</html>

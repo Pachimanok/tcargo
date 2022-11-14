@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:insert="fragments/componentes/plantilla :: head"></head>
+
+<body class="horizontal-layout horizontal-menu 2-columns  " data-open="hover" data-menu="horizontal-menu"
+      data-col="2-columns">
+<nav th:insert="fragments/componentes/plantilla :: header"></nav>
+<nav th:insert="fragments/componentes/plantilla :: menu"></nav>
+
+<div class="app-content content">
+    <div class="content-overlay"></div>
+    <div class="content-wrapper">
+        <div class="content-header row">
+            <div class="content-header-left col-md-6 col-12 mb-2">
+                <h3 class="content-header-title" th:text="#{text.transportador.list.h3.gestionTransportadoras}"></h3>
+                <div class="row breadcrumbs-top">
+                    <div class="breadcrumb-wrapper col-12">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a th:href="@{/dashboard}" th:text="#{text.tittle.home}"></a>
+                            </li>
+                            <li class="breadcrumb-item active" th:text="#{text.transportador.list.li.transportadoras}">
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-body">
+            <section id="pagination">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title float-left"
+                                    th:text="#{text.transportador.list.h4.listadoTransportadoras}">
+                                </h4>
+                                <div class="media width-250 float-right">
+                                    <div class="media-body media-right text-right mt-2">
+                                        <a th:href="@{/transportador/listado(excel='true',format='xlsx')}" class="m-2">
+                                            <i class="la la-download"></i>xlsx
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="card-text">
+                                    <form th:action="@{/transportador/listado}" th:object="${buscador}">
+                                        <div class="row">
+                                            <div class="col-12 col-sm-6 col-lg-2">
+                                                <div class="form-group">
+                                                    <label class="font-weight-bold" for="nombre" th:text="#{text.transportador.list.filtro.nombre}"></label>
+                                                    <input id="nombre" class="form-control square" type="text" th:field="*{nombre}"/>
+                                                </div>
+                                            </div>
+                                            <div class="col-12 col-sm-6 col-lg-2">
+                                                <div class="form-group">
+                                                    <label class="font-weight-bold" for="mail" th:text="#{text.transportador.list.filtro.mail}"></label>
+                                                    <input id="mail" class="form-control square" type="text" th:field="*{email}"/>
+                                                </div>
+                                            </div>
+                                            <div class="col-12 col-sm-6 col-lg-2">
+                                                <label class="font-weight-bold" for="telefono" th:text="#{text.transportador.list.filtro.telefono}"></label>
+                                                <input id="telefono" class="form-control square" type="text" th:field="*{telefono}"/>
+                                            </div>
+                                            <div class="col-12 col-sm-6 col-lg-3">
+                                                <div class="form-group">
+                                                    <label class="font-weight-bold" for="direccion" th:text="#{text.transportador.list.filtro.direccion}"></label>
+                                                    <input id="direccion" class="form-control square" type="text" th:field="*{domicilio}"/>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-12 col-lg-3 mt-2 text-right mb-1 mb-lg-0">
+                                                <button type="submit" name="search" id="search-btn"
+                                                        class="btn btn-success" >
+                                                    <i class="la la-search"></i>
+                                                </button>
+                                                <a type="button" class="btn btn-danger text-white"
+                                                   th:href="@{/transportador/listado}" >
+                                                    <span th:text="#{text.transportador.list.span.limpiarFiltros}"></span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+
+                                <div class="table-responsive">
+                                    <table class="table alt-pagination customer-wrapper">
+                                        <thead class="thead-dark">
+                                        <tr>
+                                            <th th:replace="fragments/componentes/paginador :: columna-no-q(campo='t.usuario.nombre',columna=__#{text.transportador.list.th.transportadora}__)"></th>
+                                            <th th:replace="fragments/componentes/paginador :: columna-no-q(campo='t.usuario.mail',columna=__#{text.transportador.list.th.email}__)"></th>
+                                            <th th:text="#{text.transportador.list.th.choferes}"></th>
+                                            <th th:text="#{text.transportador.list.th.remolques}"></th>
+                                            <th th:text="#{text.transportador.list.th.vehiculos}"></th>
+                                            <th th:text="#{text.transportador.list.th.matchs}"></th>
+                                            <th th:replace="fragments/componentes/paginador :: columna-no-q(campo='t.comision',columna=__#{text.transportador.list.th.comision}__)"></th>
+                                            <th th:replace="fragments/componentes/paginador :: columna-no-q(campo='t.usuario.ubicacion.direccion',columna=__#{text.transportador.list.th.domicilio}__)"></th>
+                                            <th th:replace="fragments/componentes/paginador :: columna-no-q(campo='t.usuario.telefono',columna=__#{text.transportador.list.th.telefono}__)"></th>
+                                            <th th:replace="fragments/componentes/paginador :: columna-no-q(campo='t.modificacion',columna=__#{text.transportador.list.th.modificacion}__)"></th>
+                                            <th th:text="#{text.acciones}"></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="entidad : ${page}">
+                                            <td class="align-left">
+                                                <div class="name" th:text="${entidad.nombre}"></div>
+                                            </td>
+                                            <td class="align-left">
+                                                <div class="name" th:text="${entidad.usuario.mail}"></div>
+                                            </td>
+                                            <td class="align-left">
+                                                <a class="name" th:text="${#lists.size(entidad.choferes)}"
+                                                   th:href="@{/chofer/listado/__${entidad.id}__}"></a>
+                                            </td>
+                                            <td class="align-left">
+                                                <a class="name" th:text="${#lists.size(entidad.remolques)}"
+                                                   th:href="@{/remolque/listado(transportadorid=__${entidad.id}__)}"></a>
+                                            </td>
+                                            <td class="align-left">
+                                                <a class="name" th:text="${#lists.size(entidad.vehiculos)}"
+                                                   th:href="@{/vehiculo/listado/__${entidad.id}__}"></a>
+                                            </td>
+                                            <td class="align-left">
+                                                <a class="name" th:text="${#lists.size(entidad.coincidencias)}"
+                                                   th:href="@{/match/listado(transportadorId=__${entidad.id}__)}"></a>
+                                            </td>
+                                            <td class="align-left">
+                                                <div class="name" th:text="${entidad.comision} ? '%' + ${entidad.comision} : ''"></div>
+                                            </td>
+                                            <td class="align-left">
+                                                <div class="name" th:text="${entidad.usuario.ubicacion?.direccion}"></div>
+                                            </td>
+                                            <td class="align-left">
+                                                <div class="name" th:text="${entidad.usuario.telefono}"></div>
+                                            </td>
+                                            <td class="align-middle">
+                                                <div class="last-login"
+                                                     th:text="${entidad.modificacion} ? ${#dates.format(entidad.modificacion, 'dd-MM-yyyy HH:mm')}"></div>
+                                            </td>
+                                            <td class="align-middle">
+                                                <div class="option"
+                                                     style="display: flex; justify-content: space-between;">
+                                                    <a th:if="${session.rolActual == 'transportador'}"
+                                                       th:href="@{/transportador/formulario(accion=actualizar,id=__${entidad.id}__)}"
+                                                       title="Editar">
+                                                        <i class="la la-pencil success"></i>
+                                                    </a>
+                                                    <a th:if="${session.rolActual != 'invitado'}"
+                                                       th:href="@{/transportador/formulario(accion=eliminar,id=__${entidad.id}__)}"
+                                                       title="Eliminar">
+                                                        <i class="la la-trash danger"></i>
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                    <div th:replace="fragments/componentes/paginador :: paginador-no-q">...</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+
+<div class="sidenav-overlay"></div>
+<div class="drag-target"></div>
+<nav th:insert="fragments/componentes/plantilla :: footer"></nav>
+</body>
+</html>

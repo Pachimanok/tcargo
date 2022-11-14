@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/componentes/plantilla :: head">
+<link rel="stylesheet"
+	href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" />
+</head>
+
+<body class="horizontal-layout horizontal-menu 2-columns"
+	data-open="hover" data-menu="horizontal-menu" data-col="2-columns">
+	<nav th:replace="fragments/componentes/plantilla :: header"></nav>
+
+	<nav th:replace="fragments/componentes/plantilla :: menu"></nav>
+
+	<div class="app-content content">
+		<div class="content-overlay"></div>
+		<div class="content-wrapper">
+			<div class="content-header row">
+				<div class="content-header-left col-md-6 col-12 mb-2">
+					<h3 class="content-header-title"
+						th:text="#{text.viaje.list.titulo}"></h3>
+					<div class="row breadcrumbs-top">
+						<div class="breadcrumb-wrapper col-12">
+							<ol class="breadcrumb">
+								<li class="breadcrumb-item"><a th:href="@{/dashboard}"
+									th:text="#{text.tittle.home}"> </a></li>
+								<li class="breadcrumb-item active"
+									th:text="#{text.viaje.list.subtitulo}"></li>
+							</ol>
+						</div>
+					</div>
+				</div>
+				<div class="content-header-right col-md-6 col-12">
+					<div class="media width-250 float-right">
+						<div class="media-body media-right text-right">
+							<a href="#" onclick="history.back()"
+								class="btn btn-icon btn-secondary mr-1 mb-1">
+								<i class="la la-chevron-left"></i>
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="content-body">
+				<section id="pagination">
+					<div class="row">
+						<div class="col-12">
+							<div class="card">
+								<div class="card-header">
+									<h4 class="card-title"
+										th:if="${accion == null or accion == 'guardar'}"
+										th:text="#{text.viaje.form.h4.crear.viaje}"></h4>
+									<h4 class="card-title" th:if="${accion == 'actualizar'}"
+										th:text="#{text.viaje.form.h4.actualizar.viaje}"></h4>
+									<h4 class="card-title" th:if="${accion == 'eliminar'}"
+										th:text="#{text.viaje.form.h4.eliminar.viaje}"></h4>
+								</div>
+								<div class="card-body">
+									<div class="card-text">
+										<div th:if="${error != null}" class="alert alert-danger"
+											role="alert">
+											<strong th:text="#{text.viaje.form.strong.error}"></strong>
+											<span th:text="${error}">error</span>
+										</div>
+										<div id="errorDiv" style="display: none"
+											class="alert alert-danger" role="alert">
+											<strong th:text="#{text.viaje.form.strong.error}"></strong>
+											<span id="error"></span>
+										</div>
+
+										<div th:if="${accion == 'eliminar'}"
+											class="alert alert-danger" role="alert">
+											<strong th:text="#{text.viaje.form.strong.alto}"></strong>
+											<span th:text="#{text.viaje.form.strong.alert}"></span>
+										</div>
+									</div>
+									<form method="POST"
+										th:action="@{/viaje/} + ${accion == null or accion == 'actualizar' ? 'guardar' : accion}"
+										id="formulario" novalidate="novalidate" th:object="${viaje}">
+										<div class="row">
+											<input type="hidden" th:field="*{id}" id="idViaje" />
+											<div class="col-md-8 col-sm-8">
+												<div class="contenedor-mapa">
+													<input id="pac-input" value="" class="controls" type="text"
+														th:placeholder="#{text.viaje.form.input.busca.ubicacion}" />
+													<div id="map"></div>
+													<br />
+												</div>
+											</div>
+											<div class="col-md-4 col-sm-4 mt-2" id="right-panel">
+												<div id="inicioDiv"></div>
+												<ul id="sortable" class=""></ul>
+												<div id="finalDiv"></div>
+											</div>
+											<div class="col-md-12 col-sm-12 mb-2">
+												<button type="button" class="btn btn-primary btn-sm"
+													id="asignarInicio" th:text="#{text.viaje.form.btn.inicio}"></button>
+												<button type="button" class="btn btn-primary btn-sm"
+													id="asignarIntermedio"
+													th:text="#{text.viaje.form.btn.punto.intermedio}"></button>
+												<button type="button" class="btn btn-primary btn-sm"
+													id="asignarFinal" th:text="#{text.viaje.form.btn.final}"></button>
+												<button type="button"
+													class="btn btn-primary btn-sm float-right"
+													id="asignarFechas"
+													th:text="#{text.viaje.form.btn.asignar.fechas}"></button>
+											</div>
+
+											<div class="col-md-6 col-sm-6">
+												<div class="form-group">
+													<label for="vehiculo"> <span
+														th:text="#{text.viaje.form.label.vehiculo}"></span>
+														<span class="danger"> * </span>
+													</label> <select class="form-control select2" id="vehiculo"
+														name="idVehiculo">
+														<option th:value="${''}"
+															th:text="#{text.select.placeholder}"></option>
+														<option th:each="vehiculo : ${vehiculos}"
+															th:text="|${vehiculo.dominio} - ${vehiculo.modelo.marca.nombre} ${vehiculo.modelo.nombre}|"
+															th:value="${vehiculo.id}"
+															th:selected="${viaje.idVehiculo = vehiculo.id}"></option>
+													</select>
+												</div>
+											</div>
+
+											<div class="col-md-6 col-sm-6">
+												<div class="form-group">
+													<label for="vehiculo"> <span
+														th:text="#{text.viaje.form.label.remolque}"></span>
+														<span class="danger"> * </span>
+													</label> <select class="form-control select2" id="remolque"
+														name="idRemolque">
+														<option th:value="${''}"
+															th:text="#{text.select.placeholder}"></option>
+														<option th:each="remolque : ${remolques}"
+															th:text="|${remolque.dominio} - ${remolque.tipoRemolque.caracteristicas}|"
+															th:value="${remolque.id}"
+															th:selected="${viaje.idRemolque = remolque.id}"></option>
+													</select>
+												</div>
+											</div>
+											<div class="col-md-6 col-sm-6 fechaCargaNegativa"
+												style="display: none">
+												<div class="form-group">
+													<label for="vehiculo"> <span
+														th:text="#{text.viaje.form.label.partida}"></span>
+														<span class="danger"> * </span>
+													</label> <input class="form-control" type="date" id="partida" />
+												</div>
+											</div>
+
+											<div class="col-md-6 col-sm-6 fechaCargaNegativa"
+												style="display: none">
+												<div class="form-group">
+													<label for="vehiculo"> <span
+														th:text="#{text.viaje.form.label.llegada}"></span>
+														<span class="danger"> * </span>
+													</label> <input class="form-control" type="date" id="llegada" />
+												</div>
+											</div>
+										</div>
+									</form>
+									<br />
+									<div class="text-right">
+										<a th:href="@{/viaje/listado/}">
+											<button type="button" class="btn btn-secondary">
+												<i class="ft-x"></i> <span th:text="#{text.btn.cancelar}"></span>
+											</button>
+										</a>
+										<button type="button" class="btn btn-primary"
+											onclick="validar()"
+											th:if="${accion == null or accion == 'guardar'}">
+											<i class="la la-check"></i> <span
+												th:text="#{text.btn.guardar}"></span>
+										</button>
+
+										<button type="submit" class="btn btn-danger" form="formulario"
+											th:if="${accion == 'eliminar'}">
+											<i class="la la-trash"></i> <span
+												th:text="#{text.btn.eliminar}"></span>
+										</button>
+										<button type="button" class="btn btn-primary"
+											onclick="validar()" th:if="${accion == 'actualizar'}">
+											<i class="la la-check"></i> <span
+												th:text="#{text.btn.actualizar}"></span>
+										</button>
+									</div>
+									<!-- 									</form> -->
+								</div>
+							</div>
+						</div>
+					</div>
+				</section>
+			</div>
+		</div>
+	</div>
+
+	<div class="sidenav-overlay"></div>
+	<div class="drag-target"></div>
+	<th:block th:replace="fragments/componentes/plantilla :: footer"></th:block>
+
+	<script src="https://code.jquery.com/jquery-3.5.1.min.js"
+		integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
+		crossorigin="anonymous"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+		integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+		crossorigin="anonymous"></script>
+	<script
+		src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+		integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+		crossorigin="anonymous"></script>
+
+	<script
+		src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDz6kEuRri8bQ3TXQn2e5t0KVBqQpQHbwM&libraries=places&callback=initAutocomplete"
+		defer></script>
+
+	<script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+	<script th:inline="javascript">
+      $(document).on("keypress", 'formulario', function (e) {
+          var code = e.keyCode || e.which;
+          if (code == 13) {
+              e.preventDefault();
+              return false;
+          }
+      });
+
+      $("#asignarFechas").click(function () {
+          if ($(".fechaCargaNegativa").css("display") === 'none') {
+              $(".fechaCargaNegativa").show(100);
+          } else {
+              $(".fechaCargaNegativa").hide(100);
+              $("#partida").val("")
+              $("#llegada").val("")
+          }
+      });
+
+      $(function () {
+          $("#sortable").sortable();
+          $("#sortable").disableSelection();
+      });
+
+      let datePartida = $("#partida");
+      let dateLlegada = $("#llegada");
+
+      datePartida.change(function () {
+          copiarFechaInicioAFinal(datePartida.val(), dateLlegada);
+      });
+
+      dateLlegada.change(function () {
+          validarDates();
+      })
+
+      function copiarFechaInicioAFinal(inicio, aCopiar) {
+          aCopiar.val(inicio);
+      }
+
+      function validarDates() {
+          if (dateLlegada.val() < datePartida.val()) {
+              Swal.queue([{
+                  title: [[#{ text.viaje.form.script.validar.menor }]],
+                  confirmButtonText: 'OK',
+                  icon: "info"
+              }]);
+              dateLlegada.val(datePartida.val());
+          }
+
+          if (datePartida.val() > dateLlegada.val()) {
+              Swal.queue([{
+                  title: [[#{ text.viaje.form.script.validar.mayor }]],
+                  confirmButtonText: 'OK',
+                  icon: "info"
+              }]);
+              datePartida.val(dateLlegada.val());
+          }
+      }
+
+
+
+      let directionsService;
+      let directionsRenderer;
+      var dir;
+      let wayPoint;
+      let arrayWayPoint = [];
+      let markers = [];
+      let ubicacionInicio;
+      let ubicacionFinal;
+
+
+      const initialPos = {
+          lat: -33.6091754,
+          lng: -63.4685812
+      };
+
+      function initAutocomplete() {
+
+          map = new google.maps.Map(document.getElementById('map'), {
+              center: initialPos,
+              zoom: 6.22,
+              mapTypeId: 'roadmap',
+              zoomControl: true,
+              mapTypeControl: false
+          });
+
+          infowindow = new google.maps.InfoWindow;
+          directionsService = new google.maps.DirectionsService();
+          directionsRenderer = new google.maps.DirectionsRenderer({
+              draggable: false,
+              map: map,
+          });
+
+          markers = [];
+
+          // Create the search box and link it to the UI element.
+          input = document.getElementById('pac-input');
+          searchBox = new google.maps.places.SearchBox(input);
+          map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+          // Bias the SearchBox results towards current map's viewport.
+          map.addListener('bounds_changed', function () {
+              searchBox.setBounds(map.getBounds());
+          });
+
+          // Listen for the event fired when the user selects a prediction and retrieve
+          // more details for that place.
+          searchBox.addListener('places_changed', function () {
+              var places = searchBox.getPlaces();
+              if (places.length === 0) {
+                  return;
+              }
+
+              // Clear out the old markers.
+              markers.forEach(function (marker) {
+                  marker.setMap(null);
+              });
+              markers = [];
+
+              // For each place, get the icon, name and location.
+              var bounds = new google.maps.LatLngBounds();
+              places.forEach(function (place) {
+                  if (!place.geometry) {
+                      console.log("Returned place contains no geometry");
+                      return;
+                  }
+
+                  // Create a marker for each place.
+                  markers.push(new google.maps.Marker({
+                      map: map,
+                      title: place.name,
+                      position: place.geometry.location
+                  }));
+
+                  if (place.geometry.viewport) {
+                      // Only geocodes have viewport.
+                      bounds.union(place.geometry.viewport);
+                  } else {
+                      bounds.extend(place);
+                  }
+              });
+
+              map.fitBounds(bounds);
+
+          });
+      }
+
+      window.onload = function () {
+          if ([[${ viaje.id != null }]]) {
+              let viaje = [[${ viaje }]];
+              let salida = [[${ ubicacionInicial }]];
+              let llegada = [[${ ubicacionFinal }]];
+
+              asignarEdicion(viaje, salida, llegada, viaje.partidaCargaNegativa, viaje.llegadaCargaNegativa);
+          }
+
+      };
+
+      function asignarEdicion(viaje, salida, llegada, datePartida, dateLlegada) {
+          $("#inicioDiv").append("<li id='inicio' class='ui-state-default list-group-item list-group-item-primary'>" + salida.direccion + "</li>");
+          ubicacionInicio = {
+              direccion: salida.direccion,
+              latitud: salida.latitud,
+              longitud: salida.longitud
+          }
+
+          $("#finalDiv").append("<li id='final' class='ui-state-default list-group-item list-group-item-warning'>" + llegada.direccion + "</li>");
+          ubicacionFinal = {
+              direccion: llegada.direccion,
+              latitud: llegada.latitud,
+              longitud: llegada.longitud
+          }
+
+          if (viaje.wayPoints != null && viaje.wayPoints.length > 0) {
+              $("#pac-input").val("")
+              for (let i = 0; i < viaje.wayPoints.length; i++) {
+                  let cadena = viaje.wayPoints[i].split([[#{ text.viaje.form.script.direccion }]]);
+                  let latLon = cadena[0].split(" ");
+                  var wayPoint = {
+                      direccion: cadena[1],
+                      latitud: latLon[0],
+                      longitud: latLon[1]
+                  }
+                  $("#sortable").append("<li class='ui-state-default list-group-item list-group-item-secondary' id='"
+                      + wayPoint.latitud + " " + wayPoint.longitud + "'>"
+                      + "<div class='row'><div class='col-10'><p>" + wayPoint.direccion + "</p></div><div class='col-2'><a onclick=\"eliminarItem(" + wayPoint.latitud + "," + wayPoint.longitud + ")\"><i class='la la-times danger'></i></a></div></div></li>")
+
+                  arrayWayPoint.push({
+                      location: wayPoint.latitud + " " + wayPoint.longitud,
+                      direccion: wayPoint.direccion
+                  });
+                  // 		 validarUbicaciones();
+              }
+          }
+
+          validarUbicaciones();
+
+          if (datePartida != null && datePartida != "" && dateLlegada != null && dateLlegada != "") {
+              $(".fechaCargaNegativa").show();
+              $("#partida").val(datePartida.split("T")[0]);
+              $("#llegada").val(dateLlegada.split("T")[0]);
+          }
+
+      }
+
+      function eliminarItem(lat, lng) {
+          var item = lat + " " + lng;
+          for (let i = 0; i < arrayWayPoint.length; i++) {
+              if (arrayWayPoint[i].location == item) {
+                  arrayWayPoint.splice(i, 1);
+              }
+          }
+          document.getElementById(item).remove();
+          validarUbicaciones();
+
+
+
+          // 		$("#final").remove()
+          // 		$("#finalDiv").append("<li id='final' class='ui-state-default list-group-item list-group-item-warning'>" + $("#pac-input").val()+ "</li>");
+          // 		ubicacionFinal = {
+          // 			direccion : $("#pac-input").val(),
+          // 			latitud : map.getCenter().lat(),
+          // 			longitud : map.getCenter().lng()
+          // 			}
+          // 			validarUbicaciones();
+      };
+
+
+      $("#asignarInicio").click(function () {
+
+          if ($("#pac-input").val() != null && $("#pac-input").val() != "") {
+
+              $("#inicio").remove()
+              $("#inicioDiv").append("<li id='inicio' class='ui-state-default list-group-item list-group-item-primary'>" + $("#pac-input").val() + "</li>");
+
+              ubicacionInicio = {
+                  direccion: $("#pac-input").val(),
+                  latitud: map.getCenter().lat(),
+                  longitud: map.getCenter().lng()
+              }
+              validarUbicaciones();
+          } else {
+              Swal.queue([{
+                  title: [[#{ text.viaje.form.script.asignar.inicio }]],
+                  confirmButtonText: 'Ok',
+                  icon: "warning",
+              }]);
+          }
+      });
+
+      $("#asignarIntermedio").click(function () {
+
+          var wayPoint = {
+              direccion: $("#pac-input").val(),
+              latitud: map.getCenter().lat(),
+              longitud: map.getCenter().lng()
+          }
+          var coincidencias = 0;
+          var comparar = { location: wayPoint.latitud + " " + wayPoint.longitud };
+          if (arrayWayPoint.length == 0) {
+              agregarWaypoint(wayPoint);
+          } else {
+              for (let i of arrayWayPoint) {
+                  if (i.location == comparar.location) {
+                      Swal.queue([{
+                          title: [[#{ text.viaje.form.script.asignar.intermedio }]],
+                          confirmButtonText: 'Ok',
+                          icon: "warning",
+                      }]);
+                      coincidencias++;
+                  }
+              }
+              if (coincidencias == 0) {
+                  agregarWaypoint(wayPoint)
+              }
+              coincidencias = 0;
+
+
+          }
+
+
+
+      });
+
+      $("#asignarFinal").click(function () {
+
+          if ($("#pac-input").val() != null && $("#pac-input").val() != "") {
+              $("#final").remove()
+              $("#finalDiv").append("<li id='final' class='ui-state-default list-group-item list-group-item-warning'>" + $("#pac-input").val() + "</li>");
+              ubicacionFinal = {
+                  direccion: $("#pac-input").val(),
+                  latitud: map.getCenter().lat(),
+                  longitud: map.getCenter().lng()
+              }
+              validarUbicaciones();
+          } else {
+              Swal.queue([{
+                  title: [[#{ text.viaje.form.script.asignar.inicio }]],
+                  confirmButtonText: 'Ok',
+                  icon: "warning",
+              }]);
+          }
+      });
+
+
+      function validarUbicaciones() {
+          if (ubicacionInicio != null && ubicacionFinal != null) {
+              puntoInicio = ubicacionInicio.latitud + " " + ubicacionInicio.longitud;
+              puntoFinal = ubicacionFinal.latitud + " " + ubicacionFinal.longitud;
+
+              displayRoute(puntoInicio, puntoFinal, directionsService, directionsRenderer);
+          }
+      }
+
+
+      // FUNCION SI CAMBIA EL ORDEN DE LOS WAYPOINTS BORRA LA LISTA Y LA VUELVE A ARMAR CON EL NUEVO ORDEN
+      let list = [];
+      var x;
+      $("#sortable").on("sortupdate", function (event, ui) {
+          let list = [];
+          x = $("#sortable>li");
+          for (let i = 0; i < x.length; i++) {
+              list.push(x[i].id);
+          }
+          arrayWayPoint = []
+          for (let i = 0; i < list.length; i++) {
+              arrayWayPoint.push({
+                  location: list[i],
+                  direccion: $(x[i]).text(),
+                  location: list[i],
+
+              });
+          }
+
+          validarUbicaciones();
+
+      });
+
+      function displayRoute(ubicacionInicio, ubicacionFinal, service, display) {
+          let paraRenderizar = [];
+
+          if (arrayWayPoint.length > 0) {
+              for (var j = 0; j < arrayWayPoint.length; j++) {
+                  paraRenderizar.push({ location: arrayWayPoint[j].location });
+              }
+
+          }
+          console.log(paraRenderizar)
+          service.route({
+              origin: ubicacionInicio,
+              destination: ubicacionFinal,
+              waypoints: paraRenderizar,
+              travelMode: "DRIVING",
+          }, function (result, status) {
+              if (status === "OK") {
+                  dir = result;
+                  display.setDirections(result);
+                  kmsTotales(result);
+              } else {
+                  alert([[#{ text.alert.error }]] + status);
+              }
+          });
+
+      };
+
+      var total = 0;
+      $(".contenedor-mapa").append("<span class='float-right' id='kmsInfo'>" + total + " Kms</span>");
+
+      function kmsTotales(result) {
+          $("#kmsInfo").remove();
+          var legs = result.routes[0].legs;
+
+          for (let i = 0; i < legs.length; i++) {
+              total += legs[i].distance.value;
+          }
+          total = parseInt(total / 1000);
+          $(".contenedor-mapa").append("<span class='float-right' id='kmsInfo'>" + total + " Kms</span>");
+
+      };
+
+      function agregarWaypoint(wayPoint) {
+
+          if ($("#pac-input").val() != null) {
+              $("#sortable").append("<li class='ui-state-default list-group-item list-group-item-secondary' id='"
+                  + wayPoint.latitud + " " + wayPoint.longitud + "'><div class='row'><div class='col-10'><p>"
+                  + $("#pac-input").val() + "</p></div><div class='col-2'><a onclick=\"eliminarItem(" + wayPoint.latitud + "," + wayPoint.longitud + ")\"><i class='la la-times danger'></i></a></div></div></li>")
+
+              arrayWayPoint.push({
+                  location: wayPoint.latitud + " " + wayPoint.longitud,
+                  direccion: wayPoint.direccion
+              });
+              validarUbicaciones();
+          } else {
+              Swal.queue([{
+                  title: [[#{ text.viaje.form.script.asignar.inicio }]],
+                  confirmButtonText: 'Ok',
+                  icon: "warning",
+              }]);
+          }
+      }
+
+
+      let viajeModel;
+
+      function validar() {
+          let wPoint = [];
+          for (let i = 0; i < arrayWayPoint.length; i++) {
+              wPoint.push(arrayWayPoint[i].location + "direccion:" + arrayWayPoint[i].direccion);
+          }
+          console.log(wPoint)
+          viajeModel = {
+              id: $('#idViaje').val(),
+              idVehiculo: $('#vehiculo').val(),
+              idRemolque: $('#remolque').val(),
+              kms: total,
+              ubicacionInicial: ubicacionInicio,
+              ubicacionFinal: ubicacionFinal,
+              wayPoints: wPoint,
+              cargaNegativa: true,
+              partidaCargaNegativa: $("#partida").val(),
+              llegadaCargaNegativa: $("#llegada").val()
+          };
+
+          if (viajeModel.idVehiculo == null || viajeModel.idVehiculo == "" || viajeModel.idRemolque == null || viajeModel.idRemolque == "") {
+              Swal.queue([{
+                  title: [[#{ text.viaje.form.script.validar.completar.campos }]],
+                  confirmButtonText: 'Ok',
+                  icon: "warning",
+              }]);
+          } else if (viajeModel.ubicacionInicial == null) {
+              Swal.queue([{
+                  title: [[#{ text.viaje.form.script.validar.seleccionar.inicio }]],
+                  confirmButtonText: 'Ok',
+                  icon: "warning",
+              }]);
+          } else {
+              guardar(viajeModel);
+          }
+      }
+
+      //     }
+
+      //     let viajeModel;
+
+      //     function validar() {
+      //         let wPoint = [];
+      //         for (let i = 0; i < arrayWayPoint.length; i++) {
+      //             wPoint.push(arrayWayPoint[i].location);
+      //         }
+      //         console.log(wPoint)
+      //         viajeModel = {
+      //             idVehiculo: $('#vehiculo').val(),
+      //             idRemolque: $('#remolque').val(),
+      //             kms: total,
+      //             ubicacionInicial: ubicacionInicio,
+      //             ubicacionFinal: ubicacionFinal,
+      //             wayPoints: wPoint,
+      //             cargaNegativa: true,
+      //             partidaCargaNegativa: $("#partida").val(),
+      //             llegadaCargaNegativa: $("#llegada").val()
+      //         };
+
+      //         if (viajeModel.idVehiculo == null || viajeModel.idRemolque == null) {
+      //             Swal.queue([{
+      //                 title: 'Debes completar todos los campos!',
+      //                 confirmButtonText: 'Ok',
+      //                 icon: "warning",
+      //             }]);
+      //         } else if (viajeModel.ubicacionInicial == null) {
+      //             Swal.queue([{
+      //                 title: 'Debes sellecionar al menos un inicio!',
+      //                 confirmButtonText: 'Ok',
+      //                 icon: "warning",
+      //             }]);
+      //         } else {
+      //             guardar(viajeModel);
+      //         }
+      //     }
+
+      function guardar(viajeModel) {
+
+          $.ajax({
+              url: '/api/viaje/guardarcarganegativa',
+              type: 'POST',
+              contentType: 'application/json',
+              dataType: 'json',
+              data: JSON.stringify(viajeModel),
+              success: function (data) {
+                  console.log(data)
+                  window.location.assign('/viaje/listado/');
+              },
+              error: function (data) {
+                  console.log(data)
+              }
+          });
+
+      }
+    </script>
+</body>
+</html>

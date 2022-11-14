@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:insert="fragments/componentes/plantilla :: head"></head>
+<body class="horizontal-layout horizontal-menu 2-columns  " data-open="hover" data-menu="horizontal-menu"
+      data-col="2-columns">
+
+<nav th:replace="fragments/componentes/plantilla :: header"></nav>
+<nav th:replace="fragments/componentes/plantilla :: menu"></nav>
+
+<div class="app-content content">
+    <div class="content-overlay"></div>
+    <div class="content-wrapper">
+        <div class="content-header row">
+            <div class="content-header-left col-md-6 col-12 mb-2">
+                <h3 class="content-header-title" th:text="#{text.dash.admin}"></h3>
+                <div class="row breadcrumbs-top">
+                    <div class="breadcrumb-wrapper col-12">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item active" th:text="#{text.dash.bienvenido}"> <span
+                                    th:text="${session.usuario.nombre}"></span></li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="content-body">
+            <section id="pagination">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+							<div class="card-header">
+                                <h4 class="card-title float-left" th:text="#{text.dash.estadisticas}"></h4>
+                            </div>
+<!--                             <div class="card-body"> -->
+<!-- 									<table class="table table-striped"> -->
+<!-- 										<thead class="bg-info text-white"> -->
+<!-- 											<tr> -->
+<!-- 												<th scope="col">Estadisticas</th> -->
+<!-- 												<th scope="col">#</th> -->
+<!-- 											</tr> -->
+<!-- 										</thead> -->
+<!-- 										<tbody> -->
+<!-- 											<tr> -->
+<!-- 												<th scope="row">Cargas totales</th> -->
+<!-- 												<td th:text="${page.cargasTotales}"></td> -->
+<!-- 											</tr> -->
+<!-- 											<tr> -->
+<!-- 												<th scope="row">Cargas con ofertas</th> -->
+<!-- 												<td th:text="${page.cargasConOfertas}"></td> -->
+<!-- 											</tr> -->
+<!-- 											<tr> -->
+<!-- 												<th scope="row">Cargas con fletes</th> -->
+<!-- 												<td th:text="${page.cargasMatcheados}"></td> -->
+<!-- 											</tr> -->
+<!-- 											<tr> -->
+<!-- 												<th scope="row">Cargas negativas</th> -->
+<!-- 												<td th:text="${page.cargasNegativas}"></td> -->
+<!-- 											</tr> -->
+<!-- 											<tr> -->
+<!-- 												<th scope="row">Transportadoras totales</th> -->
+<!-- 												<td th:text="${page.transportadorasTotales}"></td> -->
+<!-- 											</tr> -->
+<!-- 											<tr> -->
+<!-- 												<th scope="row">Vehiculos totales</th> -->
+<!-- 												<td th:text="${page.vehiculosTotales}"></td> -->
+<!-- 											</tr> -->
+<!-- 										</tbody> -->
+<!-- 									</table> -->
+									
+<!-- 									<table class="table table-striped mt-4"> -->
+<!-- 										<thead class="bg-info text-white"> -->
+<!-- 											<tr> -->
+<!-- 												<th scope="col">Tipos de camion  </th> -->
+<!-- 												<th scope="col">#</th> -->
+<!-- 											</tr> -->
+<!-- 										</thead> -->
+<!-- 										<tbody> -->
+<!-- 											<tr th:each="tipo, iStat : ${page.tipoCamiones}"> -->
+<!-- 												<th scope="row" th:text="${tipo}"></th> -->
+<!-- 												<td th:text="${page.cantidadCamionesPorTipo[iStat.index]}"></td> -->
+<!-- 										</tbody> -->
+<!-- 									</table> -->
+<!-- 									<table class="table table-striped mt-4"> -->
+<!-- 										<thead class="bg-info text-white "> -->
+<!-- 											<tr> -->
+<!-- 												<th scope="col">Transportadoras  </th> -->
+<!-- 												<th scope="col">#</th> -->
+<!-- 											</tr> -->
+<!-- 										</thead> -->
+<!-- 										<tbody> -->
+<!-- 											<tr th:each="t, iStat : ${page.nombres}"> -->
+<!-- 												<th scope="row" th:text="${t}"></th> -->
+<!-- 												<td th:text="${page.cantidadCamionerPorTransportador[iStat.index]}"></td> -->
+<!-- 										</tbody> -->
+<!-- 									</table> -->
+<!-- 							</div> -->
+<!-- 							DISEÑO DOS -->
+							<div class="col-md-12 col-sm-12">	
+								<canvas id="graficoUno" width="400" height="150"></canvas>
+							</div>	
+							<div class="col-md-12 col-sm-12">
+								<canvas id="graficoVehiculos" width="400" height="80"></canvas>
+							</div>
+								<div class="col-md-12 col-sm-12">	
+									<table class="table table-striped mt-4">
+										<thead class="bg-info text-white ">
+											<tr>
+												<th scope="col" th:text="#{text.nav.transportadoras}"></th>
+												<th scope="col" th:text="#{text.dash.cantidadCamiones}"></th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr th:each="t, iStat : ${page.nombres}">
+												<th scope="row" th:text="${t}"></th>
+												<td th:text="${page.cantidadCamionerPorTransportador[iStat.index]}"></td>
+										</tbody>
+									</table>
+								</div>	
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+
+<nav th:replace="fragments/componentes/plantilla :: footer"></nav>
+<script th:inline="javascript">
+let reporte = [[${page}]];
+var grafico1 = document.getElementById('graficoUno').getContext('2d');
+var Chart1 = new Chart(grafico1, {
+    type: 'bar',
+    data: {
+        labels: [ [[#{text.dash.script.cargas.totales}]],
+            [[#{text.dash.script.cargas.ofertas}]],
+            [[#{text.dash.script.cargas.fletes}]],
+            [[#{text.dash.script.cargas.negativas}]],
+            [[#{text.dash.script.transportadoras}]],
+            [[#{text.dash.script.vehiculos}]] ],
+        datasets: [{
+            label: '#' + [[#{text.btn.estadistica}]],
+            data: [reporte.cargasTotales, reporte.cargasConOfertas, reporte.cargasMatcheados, reporte.cargasNegativas, reporte.transportadorasTotales, reporte.vehiculosTotales],
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(255, 159, 64, 0.2)'
+            ],
+            borderColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)'
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true
+                }
+            }]
+        },
+        title: {
+			display: false,
+			text: [[#{text.dash.script.estadistica}]]
+		}
+    }
+});
+
+   
+
+var grafico2 = document.getElementById('graficoVehiculos').getContext('2d');
+var chart2 = new Chart(grafico2, {
+		type: 'horizontalBar',
+		data: {
+			 labels: [reporte.tipoCamiones[0], reporte.tipoCamiones[1]],
+		        datasets: [{
+		            label: '#' + [[#{text.btn.estadistica}]],
+		            data: [reporte.cantidadCamionesPorTipo[0], reporte.cantidadCamionesPorTipo[1]],
+		            backgroundColor: [
+		                'rgba(255, 99, 132, 0.2)',
+		                'rgba(54, 162, 235, 0.2)'
+		            ],
+		            borderColor: [
+		                'rgba(255, 99, 132, 1)',
+		                'rgba(54, 162, 235, 1)'
+		            ],
+		            borderWidth: 1
+		        }]
+		},
+		options: {
+			scales: {
+	            yAxes: [{
+	                ticks: {
+	                    beginAtZero: true
+	                }
+	            }]
+	        },
+			elements: {
+				rectangle: {
+					borderWidth: 2,
+				}
+			},
+			responsive: true,
+			legend: {
+				position: 'right',
+			},
+			title: {
+				display: true,
+				text: [[#{text.dash.script.vehiculos.tipo}]]
+			},
+			
+		}
+	});
+
+document.getElementById("graficoVehiculos").onclick = function(evt){   
+    
+	var activePoints = chart2.getElementsAtEvent(evt);
+
+	if(activePoints.length > 0){
+	      var clickedElementindex = activePoints[0]["_index"];
+	      var label = chart2.data.labels[clickedElementindex];
+	      switch (label) {
+	      case "Simple":
+	    	 window.location.href = "/vehiculo/listado?tipoVehiculo=Simple";
+	        break;
+	      case "Con Remolque":
+	    	  window.location.href = "/vehiculo/listado?tipoVehiculo=Con+Remolque";
+	        break;
+	         
+	    } 
+	}
+   
+}
+	
+document.getElementById("graficoUno").onclick = function(evt){   
+    
+	var activePoints = Chart1.getElementsAtEvent(evt);
+
+	if(activePoints.length > 0){
+	      var clickedElementindex = activePoints[0]["_index"];
+	      var label = Chart1.data.labels[clickedElementindex];
+	      switch (label) {
+	      case "Cargas totales":
+	    	 window.location.href = "/pedido/cargas";
+	        break;
+	      case "Cargas con ofertas":
+	    	  window.location.href = "/pedido/conofertas";
+	        break;
+	      case "Cargas con fletes":
+	    	  window.location.href = "/match/listado";
+	        break;
+	      case "Cargas negativas":
+	    	  window.location.href = "/viaje/listado";
+	        break;
+	      case "Transportadoras":
+	    	  window.location.href = "/transportador/listado";
+	        break;  
+	      case "Vehiculos":
+	    	  window.location.href = "/vehiculo/listado";
+	        break;      
+	    } 
+	}
+   
+}
+
+
+</script> 
+</body>
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/componentes/plantilla :: head"></head>
+<body class="horizontal-layout horizontal-menu 2-columns  " data-open="hover" data-menu="horizontal-menu"
+      data-col="2-columns">
+<nav th:replace="fragments/componentes/plantilla :: header"></nav>
+<nav th:replace="fragments/componentes/plantilla :: menu"></nav>
+
+<div class="app-content content">
+    <div class="content-overlay"></div>
+    <div class="content-wrapper">
+        <div class="content-header row">
+            <div class="content-header-left col-md-6 col-12 mb-2">
+                <h3 class="content-header-title" th:text="#{text.pais.list.tittle}"></h3>
+                <div class="row breadcrumbs-top">
+                    <div class="breadcrumb-wrapper col-12">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a th:href="@{/dashboard}" th:text="#{text.tittle.home}"></a>
+                            </li>
+                            <li class="breadcrumb-item active" th:text="#{text.pais.list.subtittle}"></li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+            <div class="content-header-right col-md-6 col-12">
+                <div class="media width-250 float-right">
+                    <div class="media-body media-right text-right">
+                        <a href="#" onclick="history.back()" class="btn btn-icon btn-secondary mr-1 mb-1">
+                            <i class="la la-chevron-left"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="content-body">
+            <section id="pagination">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title" th:if="${accion == null or accion == 'guardar'}" th:text="#{text.pais.btn.crear}"></h4>
+                                <h4 class="card-title" th:if="${accion == 'actualizar'}" th:text="#{text.pais.btn.actualizar}"></h4>
+                                <h4 class="card-title" th:if="${accion == 'eliminar'}" th:text="#{text.pais.btn.eliminar}"></h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="card-text">
+                                    <div th:if="${error != null}" class="alert alert-danger" role="alert">
+                                        <strong th:text="#{text.remolque.form.strong.error}"></strong>
+                                        <span th:text="${error}">error</span>
+                                    </div>
+
+                                    <div th:if="${accion == 'eliminar'}" class="alert alert-danger" role="alert">
+                                        <span th:text="#{text.pais.form.alert}"></span>
+                                    </div>
+                                </div>
+                                <form method="POST" id="formulario" novalidate="novalidate" th:object="${pais}"
+                                      th:action="@{/pais/} + ${accion == null or accion == 'actualizar' ? 'guardar' : accion}">
+                                    <input type="hidden" class="form-control" th:field="*{id}" th:value="*{id}"/>
+                                    <div class="row">
+                                        <div class="col-12 col-md-6">
+                                            <div class="form-group">
+                                                <label class="font-weight-bold" for="nombre">
+                                                    <span th:text="#{text.pais.list.td.uno}"></span>
+                                                    <span class="danger"> * </span>
+                                                </label>
+                                                <input class="form-control" id="nombre" th:field="*{nombre}"
+                                                       th:value="*{nombre}" placeholder="Ingrese el nombre del país"
+                                                       type="text" required
+                                                       onkeydown="if(event.key==='.'){event.preventDefault();}" maxlength="30"
+                                                       oninput="event.target.value = event.target.value.replace(/[^a-zA-Z ]*/g,'');"/>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-12 col-md-6">
+                                            <div class="form-group">
+                                                <label class="font-weight-bold" for="regex">
+                                                    <span th:text="#{text.pais.form.regex}"></span>
+                                                    <span class="danger"> * </span>
+                                                </label>
+                                                <input id="regex" type="text" class="form-control" required
+                                                       th:field="*{regexPatente}" placeholder="[a-zA-Z]{3}[0-9]{3}"/>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-12">
+                                            <div class="form-group">
+                                                <label class="font-weight-bold" for="descripcion" th:text="#{text.pais.list.td.dos}"></label>
+                                                <textarea class="form-control" id="descripcion" th:field="*{descripcion}"
+                                                          th:value="*{descripcion}"></textarea>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+
+                                    <div class="form-actions text-right">
+                                        <a th:href="@{/pais/listado}">
+                                            <button type="button" class="btn btn-secondary">
+                                                <i class="ft-x"></i>
+                                                <span th:text="#{text.btn.cancelar}"></span>
+                                            </button>
+                                        </a>
+                                        <button type="submit" class="btn btn-danger" form="formulario" th:if="${accion == 'eliminar'}">
+                                            <i class="la la-trash"></i>
+                                            <span th:text="#{text.btn.eliminar}"></span>
+                                        </button>
+                                        <button type="submit" class="btn btn-primary" form="formulario"
+                                                th:if="${accion == null or accion == 'guardar'}">
+                                            <i class="la la-check"></i>
+                                            <span th:text="#{text.btn.guardar}"></span>
+                                        </button>
+                                        <button type="submit" class="btn btn-primary" form="formulario" th:if="${accion == 'actualizar'}">
+                                            <i class="la la-check"></i>
+                                            <span th:text="#{text.btn.actualizar}"></span>
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+
+<div class="sidenav-overlay"></div>
+<div class="drag-target"></div>
+<nav th:replace="fragments/componentes/plantilla :: footer"></nav>
+
+<script>
+    const nombre = document.getElementById('nombre');
+    const regex = document.getElementById('regex');
+    const boton = document.getElementsByClassName('btn-primary')[0];
+
+    window.onload = () => {
+        boton.disabled = !(nombre.value && regex.value);
+    };
+
+    nombre.addEventListener("keyup", (e) => {
+        boton.disabled = !e.target.value || !regex.value;
+    });
+    regex.addEventListener("keyup", (e) => {
+        boton.disabled = !e.target.value || !nombre.value;
+    });
+</script>
+</body>
+</html>

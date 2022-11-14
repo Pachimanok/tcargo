@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:fragment="notificaciones">
+	<div class="alert alert-info" role="alert" th:if="${contraOfertasEstadoAceptado != null AND #lists.size(contraOfertasEstadoAceptado) > 0}" th:each="entidad : ${contraOfertasEstadoAceptado}">
+		<strong class="text-white">¡Info!</strong> <a th:attr="onclick=|notificacionOfertaAceptadaVista('${session.usuario.id}','${entidad.pedido.id}','${entidad.id}')|"><span class="text-white" th:text=" #{fragment.alert.pedido.aceptado} + ' ' + ${entidad.pedido.id}"></span></a>
+	</div>
+	<div class="alert alert-info" role="alert" th:if="${contraOfertaNotificionCreada != null AND #lists.size(contraOfertaNotificionCreada) > 0} " th:each="entidad : ${contraOfertaNotificionCreada}">
+		<strong class="text-white">¡Info! </strong><a  th:attr="onclick=|notificacionContraOfertaVista('${session.usuario.id}')|"><span class="text-white" th:text="#{fragment.alert.nueva.oferta} + ' ' + ${entidad.pedido.id}"></span>
+		</a>
+<!-- 		<p th:each="x : ${contraOfertaNotificionCreada}" th:text="${x.id} + ' / '"></p> -->
+	</div>
+	<div class="alert alert-info" role="alert" th:if="${coincidenciasNotifCreado != null AND #lists.size(coincidenciasNotifCreado) > 0}" th:each="entidad : ${coincidenciasNotifCreado}">
+		<strong class="text-white">¡Info!</strong> <a th:attr="onclick=|notificacionMatchVista('${entidad.pedido.id}','${entidad.id}')|"><span class="text-white" th:text=" #{fragment.alert.transportador.interezado} + ' ' + ${entidad.pedido.id}"></span></a>
+	</div>
+<!-- 	<div class="alert alert-warning" role="alert" th:if="${coincidenciasNotifConformidadCreado != null AND #lists.size(coincidenciasNotifConformidadCreado) > 0}" th:each="entidad : ${coincidenciasNotifConformidadCreado}"> -->
+<!-- 		<strong class="text-white">¡Info!</strong> <a th:attr="onclick=|notificacionConformidadVista('${entidad.pedido.id}','${entidad.id}')|"><span class="text-white" th:text="'El transportador indico que el pedido ' + ${entidad.pedido.id} + ' fué entregado.'"></span></a> -->
+<!-- 	</div> -->
+
+<!-- NOTIFICACION VALORACION DESCOMENTAR -->
+	<div class="alert alert-success" role="alert" th:if="${invitaciones != null AND #lists.size(invitaciones) > 0}" th:each="entidad : ${invitaciones}">
+		<strong class="text-white">¡Info!</strong> <a th:attr="onclick=|notificacionInvitacionVista('${entidad.id}')|"><span class="text-white" th:text=" #{fragment.alert.chofer.solicitud.tittle} + ' ' + ${entidad.chofer.nombre} + ' ' + #{fragment.alert.chofer.solicitud.body}"></span></a>
+	</div>
+<!-- 	NOTIFICAIONES DE VALORACIONES -->
+
+	<div class="alert alert-success" role="alert" th:if="${valoracionesParaCompletar != null AND #lists.size(valoracionesParaCompletar) > 0}" th:each="entidad : ${valoracionesParaCompletar}">
+		<strong class="text-white">¡Info!</strong> <a th:href="@{/valoracion/formulario/__${entidad.id}__}"><span class="text-white" th:text="#{fragment.alert.valoracion.peticion} + ' ' + #{text.for.all.carga} + ': ' + ${entidad.coincidencia.pedido.id}"></span></a>
+	</div>
+	<div class="alert alert-success" role="alert" th:if="${valoracionesParaRevisar != null AND #lists.size(valoracionesParaRevisar) > 0}" th:each="entidad : ${valoracionesParaRevisar}">
+		<strong class="text-white">¡Info!</strong> <a th:href="@{/valoracion/ver/__${entidad.id}__}"><span class="text-white" th:text="#{fragment.alert.valoracion.recibida} + ' ' + #{text.for.all.carga} + ': ' +  ${entidad.coincidencia.pedido.id}"></span></a>
+	</div>
+<!-- 	FIN NOTIFICAIONES DE VALORACIONES -->	
+</div>
+</html>

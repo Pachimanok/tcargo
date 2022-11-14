@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head th:insert="fragments/componentes/plantilla :: head"></head>
+
+<body class="horizontal-layout horizontal-menu 2-columns  " data-open="hover" data-menu="horizontal-menu" data-col="2-columns">
+
+<nav th:insert="fragments/componentes/plantilla :: header"></nav>
+<nav th:insert="fragments/componentes/plantilla :: menu"></nav>
+
+<div class="app-content content">
+    <div class="content-overlay"></div>
+    <div class="content-wrapper">
+        <div class="content-header row">
+            <div class="content-header-left col-md-6 col-12 mb-2">
+                <h3 class="content-header-title" th:text="#{text.vehiculo.list.tittle}">
+                </h3>
+                <div class="row breadcrumbs-top">
+                    <div class="breadcrumb-wrapper col-12">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a th:href="@{/dashboard}" th:text="#{text.tittle.home}"></a>
+                            </li>
+                            <li class="breadcrumb-item active" th:text="#{text.vehiculo.list.subtitulo}"></li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-body">
+            <section id="pagination">
+                <div class="row">
+                    <div class="col-3">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title" th:text="#{text.tittle.filtros}"></h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="card-text">
+                                    <form th:action="@{/vehiculo/listado/__${idTransportador}__}" th:object="${buscador}">
+                                        <div class="row mb-2">
+                                            <div class="col-sm-12 col-md-12">
+                                                <label for="marca" th:text="#{text.vehiculo.list.filtro.marca}"></label>
+                                                <select id="marca" class="form-control select2" th:field="*{marca}">
+                                                    <option value="" th:text="'Seleccione marca'" selected></option>
+                                                    <option th:each="marca : ${marcas}" th:text="${marca.nombre}"
+                                                            th:value="${marca.id}"></option>
+                                                </select>
+                                            </div>
+
+                                            <div class="col-sm-12 col-md-12">
+                                                <label for="modelo" th:text="#{text.vehiculo.list.filtro.modelo}"></label>
+                                                <select id="modelo" class="form-control select2" th:field="*{modelo}">
+                                                    <option value="" th:text="'Seleccione modelo'" selected></option>
+                                                    <option th:each="modelo : ${modelos}" th:text="${modelo.nombre}"
+                                                            th:value="${modelo.id}"></option>
+                                                </select>
+                                            </div>
+
+                                            <div class="col-sm-12 col-md-12">
+                                                <label for="tipoVehiculo" th:text="#{text.vehiculo.list.filtro.tipo.vehiculo}"></label>
+                                                <select id="tipoVehiculo" class="form-control select2" th:field="*{tipoVehiculo}">
+                                                    <option value ="" th:text="'Seleccione tipo de vehículo'" selected></option>
+                                                    <option th:each="tv : ${tipoVehiculos}" th:text="${tv.nombre}"
+                                                            th:value="${tv.id}"></option>
+                                                </select>
+                                            </div>
+
+                                            <div class="col-sm-6 col-md-6 mt-2">
+                                                <label for="sensores" th:text="#{text.vehiculo.list.filtro.tipo.sensores}"></label>
+                                                <input id="sensores" type="checkbox" th:field="*{tieneSensores}"/>
+                                            </div>
+
+                                            <div class="col-sm-6 col-md-6 mt-2">
+                                                <label for="rastreo"
+                                                       th:text="#{text.vehiculo.list.filtro.rastreo}"> </label>
+                                                <input id="rastreo" type="checkbox" th:field="*{tieneRastreo}"/>
+                                            </div>
+
+                                            <div class="col-sm-12 col-md-12">
+                                                <label for="tipoCargas" th:text="#{text.vehiculo.list.filtro.tipo.carga}"></label>
+                                                <select id="tipoCargas" class="form-control select2" th:field="*{idsTipoCarga}" multiple>
+                                                    <option th:each="tc : ${tipoCargas}" th:text="${tc.caracteristicas}" th:value="${tc.id}"></option>
+                                                </select>
+                                            </div>
+
+                                            <div class="col-sm-12 col-md-12">
+                                                <label for="anio" th:text="#{text.vehiculo.list.filtro.agno}"></label>
+                                                <input id="anio" type="number" class="form-control square" th:field="*{anio}" th:max="${#dates.year(#dates.createNow())}"/>
+                                            </div>
+
+                                            <div class="col-sm-12 col-md-12">
+                                                <label for="query" th:text="#{text.vehiculo.list.filtro.otro}"></label>
+                                                <input id="query" type="text" class="form-control square" th:field="*{query}"/>
+                                            </div>
+
+                                            <div class="col-sm-12 col-md-12">
+                                                <button type="submit" id="search-btn" class="btn btn-success square" style="margin-top: 28px">
+                                                    <i class="la la-search"></i>
+                                                </button>
+                                                <a type="button" class="btn btn-info square text-white"
+                                                   th:href="@{/vehiculo/listado/__${idTransportador}__}"
+                                                   style="margin-top: 28px" th:text="#{text.btn.limpiar.filtros}">
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-9">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title float-left" th:text="#{text.vehiculo.list.table.tittle}">
+                                </h4>
+                                <div class="media width-250 float-right">
+                                    <div class="media-body media-right text-right">
+                                        <div th:if="${session.rolActual == 'admin' || session.rolActual == 'admin_local'}" class="text-left">
+                                            <label for="transportador-select" th:text="#{text.vehiculo.list.btn.buscar.transportador}"></label>
+                                            <select id="transportador-select" class="select2">
+                                                <option th:each="transportador : ${transportadores}" th:text="${transportador.nombre}"
+                                                        th:value="${transportador.id}" th:selected="${transportador.id == idTransportador}"></option>
+                                            </select>
+                                        </div>
+                                        <a th:if="${session.rolActual == 'transportador'}" class="btn btn-primary"
+                                           th:href="@{/vehiculo/formulario(transportadorid=__${idTransportador}__)}">
+                                            <i class="la la-plus"></i>
+                                            <span th:text="#{text.vehiculo.list.btn.crea.vehiculo}"></span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-body" th:unless="${page != null && !page.isEmpty()}">
+                                <h4 th:text="#{text.vehiculo.list.table.empty}"></h4>
+                            </div>
+
+                            <div class="card-body" th:if="${page != null && !page.isEmpty()}">
+                                <div class="table-responsive">
+                                    <table class="table alt-pagination customer-wrapper">
+                                        <thead class="thead-dark">
+                                        <tr>
+                                            <th:block th:if="${session.rolActual == 'admin' || session.rolActual == 'admin_local'}">
+                                                <th th:replace="fragments/componentes/paginador :: columna-no-q(campo='t.nombre',columna='__#{text.vehiculo.list.td.transportador}__')"></th>
+                                            </th:block>
+                                            <th th:replace="fragments/componentes/paginador :: columna-no-q(campo='ma.nombre,m.nombre',columna='__#{text.vehiculo.list.td.vehiculo}__')"></th>
+                                            <th th:replace="fragments/componentes/paginador :: columna-no-q(campo='v.dominio',columna='__#{text.vehiculo.list.td.dominio}__')"></th>
+                                            <th th:replace="fragments/componentes/paginador :: columna-no-q(campo='tv.nombre',columna='__#{text.vehiculo.list.td.tipo-vehiculo}__')"></th>
+                                            <th th:replace="fragments/componentes/paginador :: columna-no-q(campo='v.rastreo_satelital',columna='__#{text.vehiculo.list.td.rastreo}__')"></th>
+                                            <th th:replace="fragments/componentes/paginador :: columna-no-q(campo='v.sensores',columna='__#{text.vehiculo.list.td.sensores}__')"></th>
+                                            <th th:text="#{text.vehiculo.list.td.tipos-carga}"></th>
+                                            <th th:replace="fragments/componentes/paginador :: columna-no-q(campo='v.modificacion',columna='__#{text.vehiculo.list.td.modificacion}__')"></th>
+                                            <th th:text="#{text.vehiculo.list.td.acciones}"></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="vehiculo : ${page}">
+                                            <td th:if="${session.rolActual == 'admin' || session.rolActual == 'admin_local'}" class="align-left">
+                                                <div class="name" th:text="${vehiculo.transportador.nombre}">
+                                                </div>
+                                            </td>
+                                            <td class="align-left">
+                                                <div class="name" th:text="|${vehiculo.modelo.marca.nombre} ${vehiculo.modelo.nombre}|"></div>
+                                            </td>
+                                            <td class="align-left">
+                                                <div class="name" th:text="${vehiculo.dominio}"></div>
+                                            </td>
+                                            <td class="align-left">
+                                                <div class="name" th:text="${vehiculo.tipoVehiculo.nombre}"></div>
+                                            </td>
+                                            <td class="align-left">
+                                                <div class="name" th:text="${vehiculo.rastreoSatelital ? 'Sí' : 'No'}"></div>
+                                            </td>
+                                            <td class="align-left">
+                                                <div class="name" th:text="${vehiculo.sensores ? 'Sí' : 'No'}"></div>
+                                            </td>
+                                            <td class="align-left" th:if="${#lists.size(vehiculo.tipoCargas) > 0}">
+                                                <ul>
+                                                    <li class="name" th:each="tc: ${vehiculo.tipoCargas} " th:text="${tc.caracteristicas}"></li>
+                                                </ul>
+                                            </td>
+                                            <td class="align-left" th:unless="${#lists.size(vehiculo.tipoCargas) > 0}">
+                                                <div class="name" th:text="'No asignado'"></div>
+                                            </td>
+                                            <td class="align-left">
+                                                <div class="last-login"
+                                                     th:text="${#dates.format(vehiculo.modificacion, 'dd-MM-yyyy HH:mm')}"></div>
+                                            </td>
+                                            <td class="align-left">
+                                                <div class="option" style="text-align: right;">
+                                                    <a th:href="@{/documentacion/listado/vehiculo/__${vehiculo.id}__}"
+                                                       th:title="#{text.vehiculo.list.tittle.ver.documentacion}">
+                                                        <i class=" la la-map info"></i>
+                                                    </a>
+                                                    <a th:if="${session.rolActual == 'transportador'}"
+                                                       th:href="@{/vehiculo/formulario(accion=actualizar,id=__${vehiculo.id}__)}"
+                                                       th:title="#{text.tittle.editar}">
+                                                        <i class="la la-pencil success"></i>
+                                                    </a>
+                                                    <a th:if="${session.rolActual == 'transportador'}"
+                                                       th:href="@{/vehiculo/formulario(accion=eliminar,id=__${vehiculo.id}__)}"
+                                                       th:title="#{text.tittle.eliminar}">
+                                                        <i class="la la-trash danger"></i>
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+
+                                    <div th:replace="fragments/componentes/paginador :: paginador-no-q"></div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+
+<div class="sidenav-overlay"></div>
+<div class="drag-target"></div>
+<nav th:insert="fragments/componentes/plantilla :: footer"></nav>
+
+<script th:inline="javascript">
+    $("#input_transportadores").select2();
+    $("#marca").select2();
+    $("#modelo").select2();
+    $("#tipoVehiculo").select2();
+    $("#tipoCargas").select2();
+    const transportadorSelect = $("#transportador-select");
+    transportadorSelect.select2();
+
+    console.log(transportadorSelect.val());
+
+    transportadorSelect.change(() => {
+        console.log(transportadorSelect.val());
+        window.location.href = '/vehiculo/listado/' + transportadorSelect.val();
+    });
+</script>
+
+</body>
+
+</html>

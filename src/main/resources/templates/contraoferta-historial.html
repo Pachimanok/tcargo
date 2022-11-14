@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/componentes/plantilla :: head"></head>
+<body class="horizontal-layout horizontal-menu 2-columns" data-open="hover" data-menu="horizontal-menu" data-col="2-columns">
+<nav th:replace="fragments/componentes/plantilla :: header"></nav>
+<nav th:replace="fragments/componentes/plantilla :: menu"></nav>
+
+<div class="app-content content">
+    <div class="content-overlay"></div>
+    <div class="content-wrapper">
+        <div class="content-header row">
+            <div class="content-header-left col-md-6 col-12 mb-2">
+                <h3 class="content-header-title" th:text="#{text.contraOferta.hist.h3.historialDeOfertas}"></h3>
+                <div class="row breadcrumbs-top">
+                    <div class="breadcrumb-wrapper col-12">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a th:href="@{/dashboard}">
+                                    <span th:text="#{text.tittle.home}"></span>
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item active" th:text="#{text.contraOferta.hist.li.historialDeOfertas}"></li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="content-body">
+            <section id="pagination">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title float-left" th:text="#{text.contraOferta.hist.h4.historialDeOfertas}"></h4>
+                            </div>
+                            <div class="card-body">
+                                <!--                                CUADRO DE BÚSQUEDA-->
+                                <div class="card-text">
+                                    <form th:object="${buscador}">
+                                        <div class="row mb-1">
+                                            <div class="col-sm-4 col-md-4">
+                                                <label for="estado" th:text="#{text.contraOferta.hist.label.Estado}"></label>
+                                                <select id="estado" class="form-control" th:field="*{estado}">
+                                                    <option value="" selected th:text="#{text.contraOferta.hist.option.seleccioneUnEstado}"></option>
+                                                    <option th:each="es : ${estados}" th:value="${es}" th:text="${es}"></option>
+                                                </select>
+                                            </div>
+                                            <div class="col-sm-4 col-md-4">
+                                                <label for="valor" th:text="#{text.contraOferta.hist.label.Valor}"></label>
+                                                <input id="valor" class="form-control square" type="number" th:placeholder="#{text.contraOferta.hist.input.buscarPorValor}" min="0" th:field="*{valor}"/>
+                                            </div>
+                                            <div class="col-sm-4 col-md-4">
+                                                <label for="fecha" th:text="#{text.contraOferta.hist.label.Fecha}"></label>
+                                                <input id="fecha" class="form-control square" type="date" th:max="${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}" th:field="*{modificacion}"/>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-1">
+                                            <div class="col-sm-4 col-md-4">
+                                                <label for="comentario" th:text="#{text.contraOferta.hist.label.comentario}"></label>
+                                                <input id="comentario" class="form-control square" type="text" th:placeholder="#{text.contraOferta.hist.input.buscarPorComentario}" th:field="*{comentario}"/>
+                                            </div>
+                                            <div class="col-sm-4 col-md-4">
+                                                <label for="pedido" th:text="#{text.contraOferta.hist.label.pedido}"></label>
+                                                <input id="pedido" class="form-control square" type="number" th:placeholder="#{text.contraOferta.hist.input.buscarPorNumeroDePedido}" min="1" th:field="*{idPedido}"/>
+                                            </div>
+                                            <div class="col-sm-4 col-md-4">
+                                                <label style="visibility: hidden" th:text="#{text.contraOferta.hist.label.buscar}"></label>
+                                                <div>
+                                                    <button id="search-btn" class="btn btn-success square" type="submit" name="search">
+                                                        <i class="la la-search"></i>
+                                                    </button>
+                                                    <a type="button" class="btn btn-info square text-white" th:onclick="|location.assign(location.pathname)|">
+                                                        <span th:text="#{text.contraOferta.hist.a.limpiarFiltros}"></span>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <!--                                FIN CUADRO DE BÚSQUEDA-->
+                                <div class="table-responsive">
+                                    <table class="table alt-pagination customer-wrapper">
+                                        <thead class="thead-dark">
+                                        <tr>
+                                            <th th:replace="fragments/componentes/paginador :: columna-no-q(campo='pedido.id',columna='__#{text.contraOferta.hist.th.pedido}__')"></th>
+                                            <th th:replace="fragments/componentes/paginador :: columna-no-q(campo='valor',columna='__#{text.contraOferta.hist.th.valor}__')"></th>
+                                            <th th:text="#{text.contraOferta.hist.th.requisitos}"></th>
+                                            <th th:replace="fragments/componentes/paginador :: columna-no-q(campo='comentarios',columna='__#{text.contraOferta.hist.th.comentarios}__')"></th>
+                                            <th th:replace="fragments/componentes/paginador :: columna-no-q(campo='estado',columna='__#{text.contraOferta.hist.th.estado}__')"></th>
+                                            <th th:replace="fragments/componentes/paginador :: columna-no-q(campo='modificacion',columna='__#{text.contraOferta.hist.th.modificacion}__')"></th>
+                                            <th th:text="#{text.contraOferta.hist.th.creador}"></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="entidad : ${page}" th:if="${entidad.isFinal != true}">
+                                            <td class="align-left">
+                                                <div class="name" th:text="${entidad.idPedido}"></div>
+                                            </td>
+                                            <td class="align-left">
+                                                <div class="name" th:text="${entidad.valor}"></div>
+                                            </td>
+                                            <td class="align-left">
+                                                <ul th:each="requisito : ${entidad.requisitosNombres}">
+                                                    <li th:text="${requisito}"></li>
+                                                </ul>
+                                            </td>
+                                            <td class="align-left">
+                                                <div class="name" th:text="${entidad.comentarios}"></div>
+                                            </td>
+                                            <td class="align-middle">
+                                                <div class="last-login" th:text="${entidad.estado}"></div>
+                                            </td>
+                                            <td class="align-middle">
+                                                <div class="last-login"
+                                                     th:text="${entidad.modificacion} ? ${#dates.format(entidad.modificacion, 'dd/MM/yyyy HH:mm')}"></div>
+                                            </td>
+                                            <td class="align-middle">
+                                                <span class="badge badge-info" th:if="${entidad.idCreador == session.usuario.id}" th:text="#{text.contraOferta.hist.td.ofertaPropia}"></span>
+                                                <span class="badge badge-danger" th:if="${entidad.idCreador != session.usuario.id}" th:text="#{text.contraOferta.hist.td.ofertaRecibida}"></span>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                    <div th:replace="fragments/componentes/paginador :: paginador-no-q"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+<div class="sidenav-overlay"></div>
+<div class="drag-target"></div>
+<nav th:replace="fragments/componentes/plantilla :: footer"></nav>
+<script>
+    $("#estado").select2();
+</script>
+</body>
+</html>

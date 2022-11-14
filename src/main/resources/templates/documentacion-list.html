@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/componentes/plantilla :: head"></head>
+
+<body class="horizontal-layout horizontal-menu 2-columns  " data-open="hover" data-menu="horizontal-menu"
+      data-col="2-columns">
+
+<nav th:replace="fragments/componentes/plantilla :: header"></nav>
+
+<nav th:replace="fragments/componentes/plantilla :: menu"></nav>
+
+
+<div class="app-content content">
+    <div class="content-overlay"></div>
+    <div class="content-wrapper">
+        <div class="content-header row">
+            <div class="content-header-left col-md-6 col-12 mb-2">
+                <h3 class="content-header-title"
+                    th:text="#{text.documentacion.list.h3.gestionDocumentos}">
+                </h3>
+                <div class="row breadcrumbs-top">
+                    <div class="breadcrumb-wrapper col-12">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a th:href="@{/dashboard}">
+                                    <span th:text="#{text.tittle.home}"></span>
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item active"
+                                th:text="#{text.documentacion.list.li.documentacion}">
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="content-body">
+            <section id="pagination">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title float-left"
+                                    th:text="|Listado de documentaciones del ${nombreEntidad}|">
+                                </h4>
+                                <div class="media width-250 float-right">
+                                    <div class="media-body media-right text-right">
+                                        <a th:if="${session.rolActual == 'transportador'}"
+                                           th:href="@{/documentacion/formulario/__${entidad}__/__${idEntidad}__}"
+                                           class="btn btn-primary">
+                                            <i class="la la-plus"></i>
+                                            <span th:text="#{text.documentacion.list.a.cargarDocumentacion}"></span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body" th:unless="${page!=null and !page.isEmpty()}">
+                                <h4 th:text="#{text.documentacion.list.h4.noHayDocumentacion}"></h4>
+                            </div>
+                            <div class="card-body" th:if="${page!=null and !page.isEmpty()}">
+                                <div class="card-text">
+                                    <form th:action="@{/documentacion/listado/__${entidad}__/__${idEntidad}__}">
+                                        <div class="input-group">
+                                            <label for="q" style="display: none"
+                                                   th:text="#{text.documentacion.list.label.buscar}">
+                                            </label>
+                                            <input id="q" type="text" name="q" class="form-control square"
+                                                   th:placeholder="#{text.documentacion.list.input.buscar}"
+                                                   th:value="${q}"/>
+                                            <span class="btn-group mb-1">
+                                                                <button type="submit" name="search" id="search-btn"
+                                                                        class="btn btn-light square">
+                                                                        <i class="la la-search"></i>
+                                                                </button>
+                                            </span>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table alt-pagination customer-wrapper">
+                                        <thead class="thead-dark">
+                                        <tr>
+                                            <th th:replace="fragments/componentes/paginador :: columna(campo=tipoDocumentacion.nombre,columna='__#{text.documentacion.list.th.tipo}__')"></th>
+                                            <th th:replace="fragments/componentes/paginador :: columna(campo=vencimiento,columna='__#{text.documentacion.list.th.vencimiento}__')"></th>
+                                            <th th:replace="fragments/componentes/paginador :: columna(campo=modificacion,columna='__#{text.modificacion}__')"></th>
+                                            <th th:text="#{text.acciones}"></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="documento : ${page}">
+                                            <td class="align-left">
+                                                <div class="name" th:text="${documento.tipoDocumentacion.nombre}"></div>
+                                            </td>
+                                            <td class="align-left">
+                                                <div class="name"
+                                                    th:text="${documento.vencimiento} ? ${#dates.format(documento.vencimiento, 'dd-MM-yyyy')}">
+                                                </div>
+                                            </td>
+                                            <td class="align-middle">
+                                                <div class="last-login"
+                                                    th:text="${documento.modificacion} ? ${#dates.format(documento.modificacion, 'dd-MM-yyyy HH:mm')}">
+                                                </div>
+                                            </td>
+                                            <td class="align-middle">
+                                                <div class="option"
+                                                     style="display: flex; justify-content: space-between;">
+                                                    <a th:value="${documento.id}"
+                                                       th:if="${not #lists.isEmpty(documento.archivos)}"
+                                                       data-toggle="modal"
+                                                       data-target="#archivosModal"
+                                                       th:attr="onclick=|cargarArchivos('${documento.id}')|">
+                                                        <i class="ft-image info"></i>
+                                                    </a>
+                                                    <a th:if="${session.rolActual == 'transportador'}"
+                                                       th:href="@{/documentacion/formulario/id/__${documento.id}__(accion=actualizar)}"
+                                                       th:title="#{text.tittle.editar}">
+                                                        <i class="la la-pencil success"></i>
+                                                    </a>
+                                                    <a th:if="${session.rolActual == 'transportador'}"
+                                                       th:href="@{/documentacion/formulario/id/__${documento.id}__(accion=eliminar)}"
+                                                       th:title="#{text.tittle.eliminar}">
+                                                        <i class="la la-trash danger"></i>
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+
+                                        </tbody>
+                                    </table>
+                                    <div th:replace="fragments/componentes/paginador :: paginador">...</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+
+<div class="sidenav-overlay"></div>
+<div class="drag-target"></div>
+
+<nav th:replace="fragments/componentes/plantilla :: footer"></nav>
+
+
+<!-- MODAL  -->
+<div class="modal fade bd-example-modal-lg" id="archivosModal" tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-dark">
+                <h5 class="modal-title text-white" id="exampleModalLabel"
+                    th:text="#{text.documentacion.list.h5.archivos}">
+                </h5>
+            </div>
+            <div class="modal-body">
+                <div id="modalBody"></div>
+            </div>
+            <div class="modal-footer">
+                <button id="okCierraModal" type="button" 
+                        class="btn btn-primary" data-dismiss="modal"
+                        th:text="#{text.documentacion.list.button.ok}">
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- FIN MODAL -->
+
+<script th:inline="javascript">
+    let modalBody = document.getElementById('modalBody');
+
+    function cargarArchivos(id) {
+        const archivos = [[${archivos}]];
+        archivos[id].forEach((archivo, i) => {
+            let link = document.createElement('a');
+            let linkText = document.createTextNode([[#{text.documentacion.list.script.documento}]] + (i + 1));
+            link.appendChild(linkText);
+            link.target = "_blank";
+            link.title = [[#{text.documentacion.list.script.abrirArchivo}]];
+            link.href = "/documentacion/ver/" + archivo;
+            modalBody.appendChild(link);
+        });
+    }
+
+    document.getElementById('okCierraModal').addEventListener("click", () => {
+        modalBody.innerHTML = "";
+    });
+</script>
+</body>
+</html>

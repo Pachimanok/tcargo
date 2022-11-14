@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="fragments/componentes/plantilla :: head"></head>
+
+  <body
+    class="horizontal-layout horizontal-menu 2-columns"
+    data-open="hover"
+    data-menu="horizontal-menu"
+    data-col="2-columns"
+  >
+    <nav th:replace="fragments/componentes/plantilla :: header"></nav>
+
+    <nav th:replace="fragments/componentes/plantilla :: menu"></nav>
+
+    <div class="app-content content">
+      <div class="content-overlay"></div>
+      <div class="content-wrapper">
+        <div class="content-header row">
+          <div class="content-header-left col-md-6 col-12 mb-2">
+            <h3
+              class="content-header-title"
+              th:text="#{text.cambiarclave.form.h3.titulo}"
+            ></h3>
+            <div class="row breadcrumbs-top">
+              <div class="breadcrumb-wrapper col-12">
+                <ol class="breadcrumb">
+                  <li class="breadcrumb-item">
+                    <a th:href="@{/dashboard}">
+                      <span th:text="#{text.cambiarclave.form.a.home}"></span>
+                    </a>
+                  </li>
+                  <li
+                    class="breadcrumb-item active"
+                    th:text="#{text.cambiarclave.form.li.cambiarContrasena}"
+                  ></li>
+                </ol>
+              </div>
+            </div>
+          </div>
+          <div class="content-header-right col-md-6 col-12">
+            <div class="media width-250 float-right">
+              <div class="media-body media-right text-right">
+                <a
+                  href="#"
+                  onclick="history.back()"
+                  class="btn btn-icon btn-secondary mr-1 mb-1"
+                >
+                  <i class="la la-chevron-left"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="content-body">
+          <section id="pagination">
+            <div class="row">
+              <div class="col-12">
+                <div class="card">
+                  <div class="card-header">
+                    <h4
+                      class="card-title"
+                      th:text="#{text.cambiarclave.form.h4.cambiarContrasena}"
+                    ></h4>
+                  </div>
+                  <div class="card-body">
+                    <div class="card-text">
+                      <div
+                        th:if="${error != null}"
+                        class="alert alert-danger"
+                        role="alert"
+                      >
+                        <strong
+                          th:text="#{text.cambiarclave.form.strong.error}"
+                        >
+                        </strong>
+                        <span th:text="${error}"></span>
+                      </div>
+                    </div>
+                    <form
+                      method="POST"
+                      th:action="@{/usuario/cambiarclave/guardar}"
+                      id="formulario"
+                      novalidate="novalidate"
+                      th:object="${usuario}"
+                    >
+                      <input type="hidden" th:field="*{id}" />
+                      <div class="row">
+                        <div class="col-12 col-md-6">
+                          <div class="form-group">
+                            <label  class="font-weight-bold" for="c1">
+                              <span
+                                th:text="#{text.cambiarclave.form.label.contrasenaNueva}"
+                              ></span>
+                              <span class="danger"> * </span>
+                            </label>
+                            <input
+                              class="form-control"
+                              id="c1"
+                              th:field="*{clave1}"
+                              th:placeholder="#{text.cambiarclave.form.input.clave1}"
+                              type="password"
+                              required
+                            />
+                          </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                          <div class="form-group">
+                            <label class="font-weight-bold" for="c2">
+                              <span
+                                th:text="#{text.cambiarclave.form.label.repetirContrasena}"
+                              ></span>
+                              <span class="danger"> * </span>
+                            </label>
+                            <input
+                              class="form-control"
+                              id="c2"
+                              th:field="*{clave2}"
+                              th:placeholder="#{text.cambiarclave.form.input.clave2}"
+                              type="password"
+                              required
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="form-actions text-right">
+                        <a th:href="@{/}">
+                          <button type="button" class="btn btn-secondary">
+                            <i class="ft-x"></i>
+                            <span th:text="#{text.btn.cancelar}"></span>
+                          </button>
+                        </a>
+                        <button
+                          type="submit"
+                          class="btn btn-primary"
+                          form="formulario"
+                        >
+                          <i class="la la-check"></i>
+                          <span th:text="#{text.btn.guardar}"></span>
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidenav-overlay"></div>
+    <div class="drag-target"></div>
+
+    <nav th:replace="fragments/componentes/plantilla :: footer"></nav>
+  </body>
+</html>

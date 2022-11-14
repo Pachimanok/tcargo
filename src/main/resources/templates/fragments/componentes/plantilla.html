@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui"/>
+    <meta name="description" content="Registrate en nuestra app y subite HOY al transporte del mañana."/>
+    <meta name="author" content="T-cargo"/>
+    <!-- TEST META PARA SHARE -->
+    <meta name="og:title" content="T-Cargo | Conectate con transportistas y dadores de carga de toda la región."/>
+    <meta name="og:type" content="Registrate en nuestra app y subite HOY al transporte del mañana."/>
+    <meta name="og:url" content="https://app.tcargo.la"/>
+    <meta name="og:image:url" content="https://app.tcargo.la/public/logo"/>
+    <meta name="og:site_name" content="TEXT TRES"/>
+    <!-- FIN TEST META PARA SHARE -->
+    <title>T-Cargo | Conectate con transportistas y dadores de carga de toda la región.</title>
+    <link rel="apple-touch-icon" th:href="@{/assets/img/icono.png}"/>
+    <link rel="shortcut icon" type="image/x-icon" th:href="@{/assets/img/icono.png}"/>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i%7CQuicksand:300,400,500,700" rel="stylesheet"/>
+
+    <link rel="stylesheet" type="text/css" href="/app-assets/vendors/css/ui/jquery-ui.min.css"/>
+
+    <link rel="stylesheet" type="text/css" href="/app-assets/css/plugins/ui/jqueryui.css"/>
+
+    <!-- BEGIN: Vendor CSS-->
+    <link rel="stylesheet" type="text/css" href="/app-assets/vendors/css/vendors.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/app-assets/vendors/css/tables/datatable/datatables.min.css"/>
+    <!-- END: Vendor CSS-->
+
+    <!-- BEGIN: Theme CSS-->
+    <link rel="stylesheet" type="text/css" href="/app-assets/css/bootstrap.css"/>
+    <link rel="stylesheet" type="text/css" href="/app-assets/css/bootstrap-extended.css"/>
+    <link rel="stylesheet" type="text/css" href="/app-assets/css/colors.css"/>
+    <link rel="stylesheet" type="text/css" href="/app-assets/css/components.css"/>
+    <!-- END: Theme CSS-->
+
+    <!-- BEGIN: Page CSS-->
+    <link rel="stylesheet" type="text/css" href="/app-assets/css/core/menu/menu-types/horizontal-menu.css"/>
+    <link rel="stylesheet" type="text/css" href="/app-assets/css/core/colors/palette-gradient.css"/>
+    <link rel="stylesheet" type="text/css" href="/app-assets/css/pages/single-page.css"/>
+    <link rel="stylesheet" type="text/css" href="/app-assets/vendors/css/cryptocoins/cryptocoins.css"/>
+    <!-- END: Page CSS-->
+
+    <!-- BEGIN: Custom CSS-->
+    <link rel="stylesheet" type="text/css" href="/assets/css/style.css"/>
+    <link rel="stylesheet" type="text/css" href="/assets/css/google-maps.css"/>
+    <link rel="stylesheet" type="text/css" href="/app-assets/vendors/css/forms/selects/select2.min.css"/>
+    <!-- END: Custom CSS-->
+
+    <!-- LINE-AWESOME-->
+    <link rel="stylesheet" th:href="@{/assets/line-awesome/css/line-awesome.css}"/>
+    <link rel="stylesheet" th:href="@{/assets/line-awesome/css/line-awesome.min.css}"/>
+
+    <!-- LINE-AWESOME-->
+
+    <script src="/app-assets/vendors/js/vendors.min.js"></script>
+    <script src="/app-assets/vendors/js/ui/jquery.sticky.js"></script>
+    <script src="/app-assets/vendors/js/charts/jquery.sparkline.min.js"></script>
+    <script src="/app-assets/vendors/js/tables/datatable/datatables.min.js"></script>
+
+
+    <link rel="stylesheet" type="text/css" href="/app-assets/vendors/css/forms/icheck/icheck.css"/>
+    <link rel="stylesheet" type="text/css" href="/app-assets/vendors/css/forms/icheck/custom.css"/>
+
+
+    <link rel="stylesheet" type="text/css" href="/app-assets/css/bootstrap-datepicker.min.css"/>
+
+
+    <script src="/app-assets/vendors/js/vendors.min.js"></script>
+    <script src="/app-assets/vendors/js/material-vendors.min.js"></script>
+
+    <script src="/app-assets/vendors/js/ui/jquery.sticky.js"></script>
+    <script src="/app-assets/vendors/js/charts/jquery.sparkline.min.js"></script>
+    <script src="/app-assets/vendors/js/tables/datatable/datatables.min.js"></script>
+    <script src="/app-assets/vendors/js/extensions/cropper.min.js"></script>
+    <script src="/app-assets/js/core/libraries/jquery_ui/jquery-ui.min.js"></script>
+
+
+    <script src="/app-assets/js/core/app-menu.js"></script>
+    <script src="/app-assets/js/core/app.js"></script>
+
+    <script src="/app-assets/js/scripts/ui/breadcrumbs-with-stats.js"></script>
+    <script src="/app-assets/js/scripts/pages/support-customers.js"></script>
+
+    <script src="/assets/js/plantillascripts.js"></script>
+
+    <script src="/app-assets/vendors/js/forms/select/select2.full.min.js"></script>
+    <script src="/app-assets/js/scripts/forms/select/form-select2.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="/assets/css/uploadfile/uploadfile.css"/>
+    <link rel="stylesheet" type="text/css" href="/assets/css/uploadfile/uploadfile.custom.css"/>
+
+
+    <link rel="stylesheet" type="text/css" href="/assets/css/intlTelInput.css"/>
+    <script src="/assets/js/intlTelInput.min.js"></script>
+    <script src="/assets/js/intlTelInput-jquery.min.js"></script>
+    <script src="/assets/js/utils.js"></script>
+
+
+    <script src="/app-assets/js/scripts/pages/material-app.js"></script>
+
+    <script src="/app-assets/js/scripts/pages/material-app.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+
+    <script src="/app-assets/vendors/js/extensions/moment.min.js"></script>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.45/css/bootstrap-datetimepicker.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.45/js/bootstrap-datetimepicker.min.js"></script>
+
+    <!-- VALORACIONES -->
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet"/>
+    <script src="/assets/js/valoraciones.min.js"></script>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-120793348-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'UA-120793348-1');
+    </script>
+
+</head>
+
+
+<nav th:fragment="header"
+     class="header-navbar navbar-expand-md navbar navbar-with-menu navbar-without-dd-arrow navbar-static-top navbar-light navbar-brand-center">
+
+    <div class="navbar-wrapper">
+        <div class="navbar-header d-md-none">
+            <ul class="nav navbar-nav flex-row">
+                <li class="nav-item mobile-menu d-md-none mr-auto">
+                    <a class="nav-link nav-menu-main menu-toggle hidden-xs" href="#" id="mMobile" data-target="#menuMobile" data-toggle="collapse">
+                        <i class="ft-menu font-large-1"></i>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="navbar-brand" href="#"><img class="brand-logo d-block d-md-none" alt="modern admin logo" src="/img/logo-gde.png" style="width: 150px;"/> </a>
+                </li>
+                <li class="nav-item d-md-none"><a id="aLink" class="nav-link open-navbar-container" data-toggle="collapse" 
+                            data-target="#navbar-mobile"><i class="la la-ellipsis-v"></i></a></li>
+            </ul>
+        </div>
+        <div class="navbar-container center-layout">
+            <div class="collapse navbar-collapse" id="navbar-mobile">
+                <ul class="nav navbar-nav mr-auto float-left">
+                    <li class="nav-item d-none d-md-block">
+                        <img class="brand-logo" alt="modern admin logo" src="/img/logo-gde.png" style="width: 150px;"/>
+                    </li>
+                </ul>
+				
+				<ul class="nav navbar-nav">
+                    <li class="nav-item d-none d-md-block text-center px-3">
+	                    <a href="https://mecubro.com/transporte/?utm_source=Web%20T%20cargo&utm_medium=Banner%20TM%20fijo%20720x50&utm_campaign=Campa%C3%B1a%20T%20Cargo&utm_term=Landing%20TM" target="_blank">
+	                    	<img class="img-fluid" alt="banner" src="/img/bannerTM_fijo_720x50.jpg" />
+	                    </a>
+                    </li>
+                </ul>
+                
+                <ul class="nav navbar-nav ml-auto mr-md-2 mt-md-2 d-flex justify-content-end">
+                    <li class="dropdown dropdown-user nav-item ">
+                        <a href="#" class="dropdown-toggle nav-link dropdown-user-link" role="button"
+                           id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="las la-globe"></i>
+                            <span th:text="#{text.idiomas}"></span>
+                        </a>
+
+                        <div class="dropdown-menu dropdown-menu-right" style="min-width: 5rem!important;">
+                            <a class="dropdown-item" href="?lang=es_ES">
+                                <img src="/img/arg.png" alt="bandera-argentina" width="30px">
+                            </a>
+                            <a class="dropdown-item" href="?lang=pt_PT">
+                                <img src="/img/br.png" alt="bandera-brasil" width="30px">
+                            </a>
+                            <a class="dropdown-item" href="?lang=cl_CL">
+                                <img src="/img/ch.png" alt="bandera-chile" width="30px">
+                            </a>
+                        </div>
+                    </li>
+                </ul>
+
+                <ul class="nav navbar-nav float-right mt-2">
+                    <li class="dropdown dropdown-user nav-item">
+                        <a class="dropdown-toggle nav-link dropdown-user-link" href="#" data-toggle="dropdown">
+                            <span class="mr-1 user-name" th:if="${session.rolActual == 'admin'}"
+                                  th:text="${session.rolActual == 'admin'} ? ${session.usuario.nombre + ' (Admin)'} : ''"></span>
+                            <span class="mr-1 user-name" th:if="${session.rolActual == 'invitado'}"
+                                  th:text="${session.rolActual == 'invitado'} ? ${session.usuario.nombre + ' (Invitado)'} : ''"></span>
+                            <span class="mr-1 user-name" th:if="${session.rolActual == 'admin_local'}"
+                                  th:text="${session.rolActual == 'admin_local'} ? ${session.usuario.nombre} : ''"></span>
+                            <span class="mr-1 user-name" th:if="${session.rolActual == 'transportador'}"
+                                  th:text="${session.transportadorName != null ? session.transportadorName : 'Registra tu nombre'}"></span>
+                            <span class="mr-1 user-name" th:if="${session.rolActual == 'dador'}"
+                                  th:text="${session.dadorName != null ? session.dadorName : 'Registra tu nombre'}"></span>
+                            <span class="mr-1 user-name" th:if="${session.rolActual == 'chofer'}"
+                                  th:text="${session.choferName != null ? session.choferName : 'Registra tu nombre'}"></span>
+                            <span class="mr-1 user-name" th:if="${session.rolActual == 'ambas'}"
+                                  th:text="${session.rolActual == 'ambas'} ? ${session.usuario.nombre} : ''"></span>
+                            <span class="avatar avatar-online"> <img
+                                    src="/app-assets/images/portrait/small/avatar-s-27.png" alt="avatar"> <i></i>
+							</span>
+                        </a>
+
+                        <div class="dropdown-menu dropdown-menu-right" >
+                            <a class="dropdown-item"
+                               th:if="${session.usuario.rol.toString() == 'ADMIN_AMBAS'} OR
+                                      ${session.usuario.rol.toString() == 'ADMIN_DADOR'} OR
+                                      ${session.usuario.rol.toString() == 'ADMIN_TRANSPORTADOR'} OR
+                                      ${session.usuario.rol.toString() == 'ADMINISTRADOR'} OR
+                                      ${session.usuario.rol.toString() == 'ADMINISTRADOR_LOCAL'}"
+                               th:href="@{/usuario/formulario/(id=__${session.usuario.id}__)}"
+                               th:text="#{text.nav.drop.perfil}">
+                                <i class="ft-user"></i>
+                            </a>
+                            <a class="dropdown-item"
+                               th:unless="${session.usuario.rol.toString() == 'ADMIN_AMBAS'} OR
+                                      ${session.usuario.rol.toString() == 'ADMIN_DADOR'} OR
+                                      ${session.usuario.rol.toString() == 'ADMIN_TRANSPORTADOR'} OR
+                                      ${session.usuario.rol.toString() == 'ADMINISTRADOR'} OR 
+                                      ${session.usuario.rol.toString() == 'ADMINISTRADOR_LOCAL'}"
+                               th:href="@{/usuario/perfil/(id=__${session.usuario.id}__,accion='actualizar')}"
+                               th:text="#{text.nav.drop.perfil}">
+                                <i class="ft-user"></i>
+                            </a>
+                            <a class="dropdown-item"
+                               th:if="${session.rolActual == 'transportador' || session.rolActual == 'dador'}"
+                               th:href="@{/valoracion/listado/__${session.usuario.id}__(propio=true)}"
+                               th:text="#{text.nav.drop.misVal}">
+                                <i class="ft-star"></i>
+                            </a>
+                            <a class="dropdown-item"
+                               th:if="${session.rolActual == 'transportador' || session.rolActual == 'dador'}"
+                               th:href="@{/valoracion/listado/__${session.usuario.id}__(propio=false)}"
+                               th:text="#{text.nav.drop.valRealizadas}">
+                                <i class="ft-star"></i>
+                            </a>
+                            <a class="dropdown-item"
+                               th:href="@{/usuario/cambiarclave/formulario(id=__${session.usuario.id}__)}"
+                               th:text="#{text.nav.drop.cambiarPass}">
+                                <i
+                                        class="las la-key"></i>
+                            </a>
+                            <div class="dropdown-divider"
+                                 th:if="${session.usuario.rol.toString() == 'ADMIN_AMBAS'} OR
+                                      ${session.usuario.rol.toString() == 'ADMIN_DADOR'} OR
+                                      ${session.usuario.rol.toString() == 'ADMIN_TRANSPORTADOR'} OR
+                                      ${session.usuario.rol.toString() == 'AMBAS'}">
+                            </div>
+                            <a class="dropdown-item"
+                               th:if="${session.usuario.rol.toString() == 'ADMIN_AMBAS'} OR
+                                      ${session.usuario.rol.toString() == 'ADMIN_DADOR'} OR
+                                      ${session.usuario.rol.toString() == 'ADMIN_TRANSPORTADOR'} OR
+                                      ${session.usuario.rol.toString() == 'ADMINISTRADOR'}"
+                               th:unless="${session.rolActual == 'admin'}"
+                               th:href="@{/dashboard/admin(change=true)}">
+                                <i class="la la-star"></i>
+                                <span th:text="|Ingresar como ${session.usuario.nombre} (Admin)|"></span>
+                            </a>
+                            <a class="dropdown-item"
+                               th:if="${session.usuario.rol.toString() == 'ADMIN_AMBAS'} OR
+                                      ${session.usuario.rol.toString() == 'ADMIN_TRANSPORTADOR'} OR
+                                      ${session.usuario.rol.toString() == 'TRANSPORTADOR'} OR
+                                      ${session.usuario.rol.toString() == 'AMBAS'} AND
+                                      ${session.usuario.verificado}"
+                               th:unless="${session.rolActual == 'transportador'}"
+                               th:href="@{/dashboard/transportador(change=true)}">
+                                <i class="la la-cubes"></i>
+                                <span th:text="'Ingresar como ' + ${session.transportadorName != null ? session.transportadorName : 'transportador'}"></span>
+                            </a>
+                            <a class="dropdown-item"
+                               th:if="${session.usuario.rol.toString() == 'ADMIN_AMBAS'} OR
+                                      ${session.usuario.rol.toString() == 'ADMIN_DADOR'} OR
+                                      ${session.usuario.rol.toString() == 'DADOR_CARGA'} OR
+                                      ${session.usuario.rol.toString() == 'AMBAS'} AND
+                                      ${session.usuario.verificado}"
+                               th:unless="${session.rolActual == 'dador'}"
+                               th:href="@{/dashboard/dador(change=true)}">
+                                <i class="la la-user"></i>
+                                <span th:text="'Ingresar como ' + ${session.dadorName != null ? session.dadorName : 'dador'}"></span>
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="/logout" th:text="#{text.nav.drop.salir}"> <i
+                                    class="ft-power"></i></a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<div th:fragment="menu">
+    <script type="text/javascript" src="https://s.cliengo.com/weboptimizer/5b92cc98e4b022ea6fe37f04/5b93266fe4b0b3c966a76768.js?platform=5b92cc98e4b022ea6fe37f04-5b93266fe4b0b3c966a76768"></script>
+    <div id="menuMobile" class="header-navbar navbar-expand-sm navbar navbar-horizontal navbar-fixed navbar-dark navbar-without-dd-arrow navbar-shadow"
+         role="navigation" data-menu="menu-wrapper"
+         style="background-color: #ad0808 !important; box-shadow: 1px 1px 1px 0 darkgray;">
+
+        <div class="main-menu-content" data-menu="menu-container">
+            <!-- NAV ADMIN -->
+            <ul class="nav navbar-nav" id="main-menu-navigation" data-menu="menu-navigation">
+                <li class="#">
+                    <a class="nav-link" th:href="@{/dashboard}">
+                        <i class="la la-dashboard"></i> <span th:text="#{text.nav.inicio}"></span>
+                    </a>
+                </li>
+                <li class="#"
+                    th:if="${session.rolActual == 'admin' || session.rolActual == 'admin_local' || session.rolActual == 'invitado'}">
+                    <a class="nav-link" th:href="@{/pedido/cargas/}">
+                        <i class="las la-truck-loading"></i>
+                        <span th:text="#{text.nav.cargas}"></span>
+                    </a>
+                </li>
+                <li class="#" th:if="${session.rolActual == 'admin' || session.rolActual == 'invitado'}">
+                    <a class="nav-link" th:href="@{/viaje/listado}">
+                        <i class="la la-map-marker"></i>
+                        <span th:text="#{text.nav.viajes}"></span>
+                    </a>
+                </li>
+
+                <li class="#"
+                    th:if="${session.rolActual == 'admin' || session.rolActual == 'admin_local' || session.rolActual == 'invitado'}">
+                    <a class="nav-link" th:href="@{/contraoferta/admin/listado}">
+                        <i class="las la-search-dollar"></i>
+                        <span th:text="#{text.nav.ofertas}"></span>
+                    </a>
+                </li>
+                <li class="#"
+                    th:if="${session.rolActual == 'admin' || session.rolActual == 'admin_local' || session.rolActual == 'invitado'}">
+                    <a class="nav-link" th:href="@{/transportador/listado}">
+                        <i class="la la-cubes"></i>
+                        <span th:text="#{text.nav.transportadoras}"></span>
+                    </a>
+                </li>
+
+                <!--             LISTADO DE USUARIOS PARA ADMIN -->
+                <li class="#"
+                    th:if="${session.rolActual == 'admin' OR session.rolActual == 'admin_local' || session.rolActual == 'invitado'}">
+                    <a class="nav-link" th:href="@{/usuario/listado}">
+                        <i class="la la-user"></i>
+                        <span th:text="#{text.nav.usuarios}"></span>
+                    </a>
+                </li>
+                <!-- 			MATCHS -->
+                <li class="#"
+                    th:if="${session.rolActual == 'admin' || session.rolActual == 'admin_local' || session.rolActual == 'invitado'}">
+                    <a class="nav-link" th:href="@{/match/listado}">
+                        <i class="la la-dollar"></i>
+                        <span th:text="#{text.nav.matchs}"></span>
+                    </a>
+                </li>
+                <!--             CONFIGURACION Y PARAMETRIZACION ADMIN -->
+                <li class="dropdown " data-menu="dropdown1"
+                    th:if="${session.rolActual == 'admin' || session.rolActual == 'admin_local' || session.rolActual == 'invitado'}">
+                    <a id="dropMenuC" class="dropdown-toggle nav-link" href="#" data-target="#dropdownMenu" data-toggle="collapse" >
+                        <i class="la la-cog"></i>
+                        <span th:text="#{text.nav.configuracion}"></span>
+                    </a>
+                    <ul class="dropdown-menu" id="dropdownMenu">
+                        <li class="dropdown dropdown-submenu" data-menu="dropdown-submenu">
+                            <a class="dropdown-item"
+                               th:if="${session.rolActual == 'admin' || session.rolActual == 'invitado'}"
+                               th:href="@{/pais/listado}">
+                                <span th:text="#{text.drop.paises}"></span>
+                            </a>
+                        </li>
+                        <li class="dropdown dropdown-submenu" data-menu="dropdown-submenu">
+                            <a class="dropdown-item" th:href="@{/marca/listado}">
+                                <span th:text="#{text.drop.marcas}"></span>
+                            </a>
+                        </li>
+                        <li class="dropdown dropdown-submenu" data-menu="dropdown-submenu">
+                            <a class="dropdown-item" th:href="@{/modelo/listado}">
+                                <span th:text="#{text.drop.modelos}"></span>
+                            </a>
+                        </li>
+                        <li class="dropdown dropdown-submenu" data-menu="dropdown-submenu">
+                            <a th:href="@{/tipoVehiculo/listado}" class="dropdown-item">
+                                <span th:text="#{text.drop.vehiculos}"></span>
+                            </a>
+                        </li>
+                        <li class="dropdown dropdown-submenu" data-menu="dropdown-submenu">
+                            <a class="dropdown-item" th:href="@{/tipoRemolque/listado}">
+                                <span th:text="#{text.drop.remolques}"></span>
+                            </a>
+                        </li>
+                        <li class="dropdown dropdown-submenu" data-menu="dropdown-submenu">
+                            <a class="dropdown-item" th:href="@{/tipoContenedor/listado}">
+                                <span th:text="#{text.drop.contenedores}"></span>
+                            </a>
+                        </li>
+                        <li class="dropdown dropdown-submenu" data-menu="dropdown-submenu">
+                            <a class="dropdown-item" th:href="@{/tipoEmbalaje/listado}">
+                                <span th:text="#{text.drop.embalajes}"></span>
+                            </a>
+                        </li>
+                        <li class="dropdown dropdown-submenu" data-menu="dropdown-submenu">
+                            <a class="dropdown-item" th:href="@{/tipoCarga/listado}">
+                                <span th:text="#{text.drop.cargas}"></span>
+                            </a>
+                        </li>
+                        <li class="dropdown dropdown-submenu" data-menu="dropdown-submenu">
+                            <a class="dropdown-item" th:href="@{/tipoDocumentacion/listado}">
+                                <span th:text="#{text.drop.documentaciones}"></span>
+                            </a>
+                        </li>
+                        <li class="dropdown dropdown-submenu" data-menu="dropdown-submenu">
+                            <a class="dropdown-item" th:href="@{/tipoRequisitoOferta/listado}">
+                                <span th:text="#{text.drop.requisitos}"></span>
+                            </a>
+                        </li>
+                        <li class="dropdown dropdown-submenu" data-menu="dropdown-submenu">
+                            <a class="dropdown-item" th:href="@{/producto/listado}">
+                                <span th:text="#{text.drop.productos}"></span>
+                            </a>
+                        </li>
+                        <li class="dropdown dropdown-submenu" data-menu="dropdown-submenu">
+                            <a class="dropdown-item"
+                               th:if="${session.rolActual == 'admin' || session.rolActual == 'invitado'}"
+                               th:href="@{/tipoDocumento/listado}">
+                                <span th:text="#{text.drop.tipoDoc}"></span>
+                            </a>
+                        </li>
+                        <li class="dropdown dropdown-submenu" data-menu="dropdown-submenu">
+                            <a class="dropdown-item"
+                               th:if="${session.rolActual == 'admin' || session.rolActual == 'invitado'}"
+                               th:href="@{/moneda/listado}">
+                                <span th:text="#{text.drop.tipoMonedas}"></span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <!--  FIN NAV ADMIN -->
+
+                <!--  INICIO NAV DADOR -->
+                <li class="#" th:if="${session.rolActual == 'dador' and session.activo}  ">
+                    <a class="nav-link" th:href="@{/pedido/cargas}">
+                        <i class="las la-truck-loading"></i>
+                        <span th:text="#{text.nav.cargas}"></span>
+                    </a>
+                </li>
+                <!--             LISTADO DE OPORTUNIDADES PARA DADOR -->
+                <li class="#" th:if="${(session.rolActual == 'dador' OR session.rolActual == 'ambas') and session.activo}">
+                    <a class="nav-link" th:href="@{/viaje/listado/}">
+                        <i class="la la-star"></i>
+                        <span th:text="#{text.nav.oportunidades}"></span>
+                    </a>
+                </li>
+                <!--             HISTORIAL DE CONTRA OFERTAS -->
+                <li class="#" th:if="${(session.rolActual == 'dador' OR session.rolActual == 'ambas')  and session.activo}">
+                    <a class="nav-link" th:href="@{/contraoferta/historial}">
+                        <i class="la la-history"></i>
+                        <span th:text="#{text.nav.historial}"></span>
+                    </a>
+                </li>
+                <!--  FINAL NAV DADOR -->
+
+                <!--  INICIO NAV TRANSPORTADOR -->
+
+                <!--             LISTADO VEHICULO PARA TRANSPORTADOR -->
+                <li class="#" th:if="${session.rolActual == 'transportador' and session.activo}  ">
+                    <a class="nav-link" th:href="@{/vehiculo/listado/__${session.idTransportador}__}">
+                        <i class="la la-truck"></i>
+                        <span th:text="#{text.nav.vehiculos}"></span>
+                    </a>
+                </li>
+
+                <!--             LISTADO DE REMOLQUES PARA TRANSPORTADOR -->
+                <li class="#" th:if="${session.rolActual == 'transportador' and session.activo}">
+                    <a class="nav-link" th:href="@{/remolque/listado?userid=}+${session.usuario.id}">
+                        <i class="la la-barcode"></i>
+                        <span th:text="#{text.nav.remolques}"></span>
+                    </a>
+                </li>
+
+                <!--             LISTADO DE CHOFERES PARA TRANSPORTADOR -->
+                <li class="#" th:if="${session.rolActual == 'transportador' and session.activo}">
+                    <a class="nav-link" th:href="@{/chofer/listado}">
+                        <i class="la la-user"></i>
+                        <span th:text="#{text.nav.choferes}"></span>
+                    </a>
+                </li>
+                <!-- 			VIAJES -->
+                <li class="#"
+                    th:if="${session.rolActual == 'transportador' or session.rolActual == 'ambas' or (!session.activo)}">
+                    <a class="nav-link" th:href="@{/viaje/listado}">
+                        <i class="la la-map-marker"></i>
+                        <span th:text="#{text.nav.viajes}"></span>
+                    </a>
+                </li>
+                <!-- 			VIAJES PERSONALIZADOS -->
+                <li class="#" th:if="${session.rolActual == 'transportador' and session.activo}">
+                    <a class="nav-link" th:href="@{/viajepersonal/listado}">
+                        <i class="las la-map-marked"></i>
+                        <span th:text="#{text.nav.viajesConsolidados}"></span>
+                    </a>
+                </li>
+
+                <!--             LISTADO DE OPORTUNIDADES PARA TRANSPORTADOR -->
+                <li class="#" th:if="${session.rolActual == 'transportador' or session.rolActual == 'ambas' or (!session.activo)}">
+                    <a class="nav-link" th:href="@{/pedido/cargas}">
+                        <i class="las la-truck-loading"></i>
+                        <span th:text="#{text.nav.oportunidades}"></span>
+                    </a>
+                </li>
+                <!-- 			OFERTAS -->
+                <li class="#" th:if="${session.rolActual == 'transportador' and session.activo}">
+                    <a class="nav-link" th:href="@{/pedido/pedidosofertados}">
+                        <i class="las la-search-dollar"></i>
+                        <span th:text="#{text.nav.ofertas}"></span>
+                    </a>
+                </li>
+                <!-- 			MIS FLETES -->
+                <li class="#" th:if="${session.rolActual == 'transportador' and session.activo}">
+                    <a class="nav-link" th:href="@{/pedido/matchs}">
+                        <i class="la la-star"></i>
+                        <span th:text="#{text.nav.misFletes}"></span>
+                    </a>
+                </li>
+                <!-- 			HISTORIAL DE CONTRA OFERTAS -->
+                <li class="#" th:if="${session.rolActual == 'transportador' and session.activo}">
+                    <a class="nav-link" th:href="@{/contraoferta/historial}">
+                        <i class="la la-history"></i>
+                        <span th:text="#{text.nav.historial}"></span>
+                    </a>
+                </li>
+                <!--             FIN NAV TRANSPORTADOR -->
+                <!--                 INICIO NAV CHOFER -->
+                <li class="#" th:if="${session.rolActual == 'chofer' and session.activo}">
+                    <a class="nav-link" th:href="@{/pedido/chofer/matchs}">
+                        <i class="la la-star"></i>
+                        <span th:text="#{text.nav.misFletes}"></span>
+                    </a>
+                </li>
+                <li class="#" th:if="${session.rolActual == 'chofer' and session.activo}">
+                    <a class="nav-link" th:href="@{/viajepersonal/listado}">
+                        <i class="las la-map-marked"></i>
+                        <span th:text="#{text.nav.viajesConsolidados}"></span>
+                    </a>
+                </li>
+                <!--                 FIN NAV CHOFER -->
+            </ul>
+        </div>
+        
+        
+    </div>
+    <nav th:replace="fragments/componentes/notificaciones :: notificaciones"></nav>
+
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/7.21.1/firebase-app.js"></script>
+
+    <script src="https://www.gstatic.com/firebasejs/7.21.1/firebase-messaging.js"></script>
+
+    <script>
+    
+		    $("#aLink").click(function() {
+				if ($("#navbar-mobile").hasClass("mostrar")) {
+					$("#navbar-mobile").hide();
+					$("#navbar-mobile").removeClass("mostrar");
+				} else {
+					$("#navbar-mobile").show();
+					$("#navbar-mobile").addClass("mostrar");
+				}
+			});
+    
+		    $("#mMobile").click(function() {
+				if ($("#menuMobile").hasClass("mostrar")) {
+					$("#menuMobile").hide();
+					$("#menuMobile").removeClass("mostrar");
+				} else {
+					$("#menuMobile").slideDown();
+					$("#menuMobile").addClass("mostrar");
+				}
+			});
+		    
+		    $("#dropMenuC").click(function() {
+				if ($("#dropdownMenu").hasClass("mostrar")) {
+					$("#dropdownMenu").hide();
+					$("#dropdownMenu").removeClass("mostrar");
+				} else {
+					$("#dropdownMenu").show();
+					$("#dropdownMenu").addClass("mostrar");
+				}
+			});
+		    
+		    $(window).resize(function(){
+	    	  if ($(window).width() > 768) {
+		    	   $("#menuMobile").show();
+		    	}  
+		    });
+		  
+		    
+        let firebaseConfig = {
+            apiKey: "AIzaSyA2UZbkXox8F0IYZPQvDFGTCy6ZopqhRvQ",
+            authDomain: "dynamic-digit-206320.firebaseapp.com",
+            databaseURL: "https://dynamic-digit-206320.firebaseio.com",
+            projectId: "dynamic-digit-206320",
+            storageBucket: "dynamic-digit-206320.appspot.com",
+            messagingSenderId: "23106851544",
+            appId: "1:23106851544:web:832aaf8e359ce69b7fbdad",
+            measurementId: "G-55G8EVXKRW"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        // firebase.analytics();
+
+        //Retrieve Firebase Messaging object.
+        const messaging = firebase.messaging();
+
+        function requestNotification() {
+            messaging.requestPermission()
+                .then(function () {
+                    console.log('have permission');
+                    return messaging.getToken();
+                })
+                .then(function (token) {
+                    $.ajax({
+                        url: '/usuario/firebase/token',
+                        data: token,
+                        dataType: 'json',
+                        contentType: "application/json",
+                        type: 'POST',
+                        success: function (data) {
+                        },
+                        error: function (data) {
+                        }
+                    });
+                })
+                .catch(function (err) {
+                });
+        }
+
+        requestNotification();
+
+        messaging.onMessage(function (payload) {
+            if (payload.data.tipo === "listo-para-cargar") {
+                Toast.fire({
+                    icon: 'info',
+                    title: 'Se generó el match. Origen: ' + payload.data.origen + ' Destino: ' + payload.data.destino
+                });
+            }
+            if (payload.data.tipo === "pedido-proximo-vencimiento") {
+                Toast.fire({
+                    icon: 'info',
+                    title: 'Tiene pedidos próximos a vencer'
+                });
+            }
+            if (payload.data.tipo === "pedido-vencido") {
+                Toast.fire({
+                    icon: 'info',
+                    title: 'Tiene pedidos vencidos'
+                });
+            }
+            if (payload.data.tipo === "periodo-carga-inicio-hoy") {
+                Toast.fire({
+                    icon: 'info',
+                    title: 'Tiene periodos de carga que inician hoy.'
+                });
+            }
+            if (payload.data.tipo === "periodo-carga-inicio-dos-dias") {
+                Toast.fire({
+                    icon: 'info',
+                    title: 'Tiene periodos de carga que inician en dos días'
+                });
+            }
+            if (payload.data.tipo === "nueva-contra-oferta") {
+                Toast.fire({
+                    icon: 'info',
+                    title: payload.data.nuevaOferta
+                });
+            }
+            if (payload.data.tipo === "nuevo-estado-viaje") {
+                Toast.fire({
+                    icon: 'info',
+                    title: payload.data.nuevoEstadoViaje
+                })
+            }
+            if (payload.data.tipo === "pedido-editado") {
+                Toast.fire({
+                    icon: 'info',
+                    title: payload.data.pedidoEditado
+                })
+            }
+        });
+
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 5000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        });
+    </script>
+</div>
+
+
+<th:block th:fragments="footer">
+
+    <footer class="footer footer-static footer-light navbar-shadow">
+        <p class="clearfix blue-grey lighten-2 text-sm-center mb-0 px-2">
+			<span class="float-md-left d-block d-md-inline-block">Copyright &copy; 2020
+				<span class="text-bold-800 grey darken-2 info">T-CARGO</span>
+			</span>
+            <span class="float-md-right d-none d-lg-block">Versión 2.0.0
+				<span id="scroll-top"></span>
+			</span>
+            <span class="float-md-right d-none d-lg-block mr-2">
+				<a href="https://wa.me/+5492615438343" target="_blank"
+                   title="Contactate con nosotros las 24hs tocando aquí">
+					<i class="lab la-whatsapp"></i>
+					¿Necesitás ayuda?
+				</a>
+			</span>
+        </p>
+
+        <!-- 	UPLOADFILE -->
+        <script src="/assets/js/uploadfile/jquery.uploadfile.js"></script>
+        <script src="/assets/js/uploadfile/jquery.uploadfile.min.js"></script>
+        <!-- 	END UPLOADFILE -->
+        <script src="/app-assets/js/scripts/jquery-printme.js"></script>
+        <script src="/app-assets/js/charts/Chart.min.js"></script>
+        <script src="/app-assets/js/charts/Chart.js"></script>
+    </footer>
+</th:block>
+
+</html>

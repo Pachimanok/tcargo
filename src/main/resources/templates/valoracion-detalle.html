@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments/componentes/plantilla :: head"></head>
+
+<body class="horizontal-layout horizontal-menu 2-columns  " data-open="hover" data-menu="horizontal-menu"
+    data-col="2-columns">
+    <nav th:replace="fragments/componentes/plantilla :: header"></nav>
+    <nav th:replace="fragments/componentes/plantilla :: menu"></nav>
+
+    <div class="app-content content">
+        <div class="content-overlay"></div>
+        <div class="content-wrapper">
+            <div class="content-header row">
+                <div class="content-header-left col-md-6 col-12 mb-2">
+                    <h3 class="content-header-title" th:text="#{text.valoracion.list.tittle}">
+                    </h3>
+                    <div class="row breadcrumbs-top">
+                        <div class="breadcrumb-wrapper col-12">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item">
+                                    <a th:href="@{/dashboard}" th:text="#{text.tittle.home}">
+                                    </a>
+<!--                                 </li> -->
+<!--                                 <li class="breadcrumb-item active" th:text="#{text.valoracion.list.subtittle}"> -->
+<!--                                 </li> -->
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+                <div class="content-header-right col-md-6 col-12">
+                    <div class="media width-250 float-right">
+                        <div class="media-body media-right text-right">
+                            <a href="#" onclick="history.back()" class="btn btn-icon btn-secondary mr-1 mb-1">
+                                <i class="la la-chevron-left"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="content-body">
+                <section id="pagination">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4 class="card-title" th:if="${accion == null or accion == 'guardar'}"
+                                        th:text="#{text.valoracion.list.tittle}">
+                                    </h4>
+                                </div>
+                                <div class="card-body">
+                                    <div class="card-text">
+                                        <div th:if="${error != null}" class="alert alert-danger" role="alert">
+                                            <strong th:text="#{text.valoracion.form.string.error}"></strong>
+                                            <span th:text="${error}">error</span>
+                                        </div>
+                                    </div>
+                                    <form method="POST"
+                                        th:action="@{/valoracion/} + ${accion == null or accion == 'actualizar' ? 'guardar' : accion}"
+                                        id="formulario" novalidate="novalidate" th:object="${valoracion}">
+                                        <input type="hidden" class="form-control" th:field="*{id}" th:value="*{id}" />
+                                        <div class="row">
+                                            <div class="col-md-12 col-sm-12 text-center mb-2">
+                                                <div class="form-group">
+                                                    <table class="table">
+                                                        <thead>
+                                                            <tr>
+                                                                <th scope="col"
+                                                                    th:text="#{text.valoracion.form.table.usuario}">
+                                                                </th>
+                                                                <th scope="col"
+                                                                    th:text="#{text.valoracion.form.table.pedido}"></th>
+                                                                <th scope="col"
+                                                                    th:text="#{text.valoracion.form.table.costo}"></th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td th:if="${session.usuario.nombre == valoracion.nombreCreador}"
+                                                                    th:text="${valoracion.nombreReceptor}"></td>
+                                                                <td th:if="${session.usuario.nombre == valoracion.nombreReceptor}"
+                                                                    th:text="${valoracion.nombreCreador}"></td>
+                                                                <td th:text="${valoracion.coincidencia.idPedido}"></td>
+                                                                <td th:text="${valoracion.coincidencia.costo}"></td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 col-sm-6 text-center" style="height: 250px">
+                                                <div class="form-group">
+                                                    <label for="nombre" >
+                                                        <span th:text="#{text.valoracion.list.table.td.uno}"></span>
+                                                        <span class="danger"> * </span>
+                                                    </label>
+                                                    <div class="mt-2" id="puntos">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 col-sm-6">
+                                                <div class="form-group">
+                                                    <label for="nombre" >	
+                                                        <span th:text="#{text.valoracion.form.comentarios}"></span>
+                                                        <span class="danger"> * </span>
+                                                    </label>
+                                                    <textarea class="form-control" id="comentarios"
+                                                        th:field="*{comentarios}" th:value="*{comentarios}"
+                                                        placeholder="Ingrese comentarios" required readonly>
+                                                </textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-actions text-right">
+                                            <a th:href="@{/}">
+                                                <button type="button" class="btn btn-secondary">
+                                                    <i class="ft-x"></i>
+                                                    <label th:text="#{text.btn.volver}"></label>
+                                                </button>
+                                            </a>
+
+                                        </div>
+
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <div class="sidenav-overlay"></div>
+    <div class="drag-target"></div>
+    <nav th:replace="fragments/componentes/plantilla :: footer"></nav>
+
+    <script th:inline="javascript">
+        let valoracion = [[${ valoracion }]];
+        let valoracion_valor = valoracion.valoracion;
+        var puntuaciones = function (datos) {
+
+            $("#input-valoracion").val(datos.valor);
+        };
+
+        $(function() { $('#puntos').valoraciones({ star_tot: 10, star_max: 100, star_ini: valoracion_valor,star_enable: false, color: '#FC3', star_size: 1, callback:puntuaciones }); });
+      
+       
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/componentes/plantilla :: head"></head>
+<body class="horizontal-layout horizontal-menu 2-columns  " data-open="hover" data-menu="horizontal-menu"
+      data-col="2-columns">
+<nav th:replace="fragments/componentes/plantilla :: header"></nav>
+<nav th:replace="fragments/componentes/plantilla :: menu"></nav>
+
+<div class="app-content content">
+    <div class="content-overlay"></div>
+    <div class="content-wrapper">
+        <div class="content-header row">
+            <div class="content-header-left col-md-6 col-12 mb-2">
+                <h3 class="content-header-title"
+                    th:text="#{text.vehiculo.list.tittle}">
+                </h3>
+                <div class="row breadcrumbs-top">
+                    <div class="breadcrumb-wrapper col-12">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a th:href="@{/dashboard}"
+                                   th:text="#{text.tittle.home}">
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item active"
+                                th:text="#{text.vehiculo.list.subtitulo}">
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+            <div class="content-header-right col-md-6 col-12">
+                <div class="media width-250 float-right">
+                    <div class="media-body media-right text-right">
+                        <a href="#" onclick="history.back()" 
+                           class="btn btn-icon btn-secondary mr-1 mb-1">
+                            <i class="la la-chevron-left"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="content-body">
+            <section id="pagination">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title" 
+                                    th:if="${accion == null or accion == 'guardar'}" 
+                                    th:text="#{text.vehiculo.form.btn.crear}">
+                                </h4>
+                                <h4 class="card-title" 
+                                    th:if="${accion == 'actualizar'}" 
+                                    th:text="#{text.vehiculo.form.btn.actualizar}">
+                                </h4>
+                                <h4 class="card-title" 
+                                    th:if="${accion == 'eliminar'}" 
+                                    th:text="#{text.vehiculo.form.btn.eliminar}">
+                                </h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="card-text">
+                                    <div th:if="${error != null}" class="alert alert-danger" 
+                                         role="alert">
+                                        <strong th:text="#{text.vehiculo.form.strong.error}"></strong> 
+                                        <span th:text="${error}">error</span>
+                                    </div>
+
+                                    <div th:if="${accion == 'eliminar'}" class="alert alert-danger" 
+                                         role="alert">
+                                        <strong th:text="#{text.vehiculo.form.strong.alto}"></strong> 
+                                        <p th:text="#{text.vehiculo.form.strong.alert}"></p>
+                                    </div>
+                                </div>
+                                <form method="POST"
+                                      th:action="@{/vehiculo/} + ${accion == null or accion == 'actualizar' ? 'guardar' : accion}"
+                                      id="formulario" novalidate="novalidate" th:object="${vehiculo}">
+                                    <input type="hidden" class="form-control" 
+                                           th:field="*{id}" 
+                                           th:value="*{id}"/>
+                                    <input type="hidden" class="form-control" 
+                                           th:field="*{idTransportador}"
+                                           th:value="*{idTransportador}"/>
+
+                                    <div class="row">
+                                        <div class="col-md-12 col-sm-12">
+                                            <div class="form-group">
+                                                <label for="select1" >
+                                                    <span th:text="#{text.vehiculo.form.modelo.vehiculo}"></span>
+                                                    <span class="danger"> * </span>
+                                                </label>
+                                                <select class="form-control select2" id="select1"
+                                                        th:field="*{idModelo}">
+                                                    <option th:value="${''}" th:text="#{text.select.placeholder}">
+                                                    <option th:each="m : ${modelos}"
+                                                            th:text="${m.marca.nombre} + ' ' + ${m.nombre}"
+                                                            th:value="${m.id}" th:select="${vehiculo.idModelo == m.id}">
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12 col-sm-12">
+                                            <div class="form-group">
+                                                <label for="select2" >
+                                                    <span th:text="#{text.vehiculo.form.tipo.vehiculo}"></span>
+                                                    <span class="danger"> * </span>
+                                                </label>
+                                                <select class="form-control select2" id="select2"
+                                                        th:field="*{idTipoVehiculo}">
+                                                    <option th:value="${''}" th:text="#{text.select.placeholder}">
+                                                    <option th:each="m : ${tipoVehiculos}" th:text="${m.nombre}"
+                                                            th:value="${m.id}"
+                                                            th:select="${vehiculo.idTipoVehiculo == m.id}">
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12 col-sm-12" style="display: none" id="tipoCargas">
+                                            <div class="form-group">
+                                                <label for="selectCargas" >
+                                                    <span th:text="#{text.vehiculo.form.tipo.cargas}"></span>
+                                                     <span class="danger"> * </span>
+                                                </label>
+                                                <select class="form-control" th:field="*{idCargas}" multiple
+                                                        id="selectCargas" disabled>
+                                                    <option th:each="tr : ${tipoCargas}"
+                                                            th:text="${tr.caracteristicas}" th:value="${tr.id}"
+                                                            th:select="${vehiculo.idCargas == tr.id}">
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12 col-sm-12">
+                                            <div class="form-group" id="dominio">
+                                                <label for="dominioInput" >
+                                                    <span th:text="#{text.vehiculo.form.dominio}"></span>
+                                                     <span class="danger"> * </span>
+                                                </label>
+                                                <input class="form-control" id="dominioInput" 
+                                                       th:field="*{dominio}"
+                                                       th:value="*{dominio}"
+                                                       th:placeholder="#{text.vehiculo.form.dominio.placeholder}" 
+                                                       type="text"
+                                                       autocomplete="off"
+                                                       required/>
+                                                <span class="danger" style="display: none" id="alertFomatoDominio" 
+                                                      th:text="#{text.vechiculo.form.alert.invalido}">
+                                                    
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12 col-sm-12">
+                                            <div class="form-group">
+                                                <label for="holdername" >
+                                                    <span th:text="#{text.vehiculo.form.agno.modelo}"></span>
+                                                    <span class="danger"> * </span>
+                                                </label>
+                                                <input class="form-control" id="holdername"
+                                                       th:field="*{anioFabricacion}" th:value="*{anioFabricacion}"
+                                                       th:placeholder="#{text.vehiculo.form.agno.modelo.placeholder}" 
+                                                       type="number" autocomplete="off"
+                                                       required/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-sm-6">
+                                            <div class="form-group">
+                                                <label for="sensores" th:text="#{text.vehiculo.form.sensores}">
+                                                </label>
+                                                <input id="sensores" th:field="*{sensores}" th:value="*{sensores}"
+                                                       type="checkbox"
+                                                       required/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-sm-6">
+                                            <div class="form-group">
+                                                <label for="rastreo" th:text="#{text.vehiculo.form.rastreo}">
+                                                    
+                                                </label>
+                                                <input id="rastreo" th:field="*{rastreoSatelital}"
+                                                       th:value="*{rastreoSatelital}"
+                                                       type="checkbox" required/>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="form-actions text-right">
+                                        <button type="button" onclick="window.history.go(-1)" class="btn btn-secondary">
+                                            <i class="ft-x"></i>
+                                            <span th:text="#{text.btn.cancelar}"></span>
+                                        </button>
+
+                                        <button type="submit" class="btn btn-danger" form="formulario"
+                                                th:if="${accion == 'eliminar'}">
+                                            <i class="la la-trash"></i>
+                                            <span th:text="#{text.btn.eliminar=Eliminar}"></span>
+                                        </button>
+                                        <button type="submit" class="btn btn-primary botonesSubmit" form="formulario"
+                                                th:if="${accion == null or accion == 'guardar'}" disabled>
+                                            <i class="la la-check"></i>
+                                            <span th:text="#{text.vehiculo.form.btn.guardar.agregar}"></span>
+                                        </button>
+                                        <button type="submit" class="btn btn-primary botonesSubmit" form="formulario"
+                                                th:if="${accion == 'actualizar'}" disabled>
+                                            <i class="la la-check"></i>
+                                            <span th:text="#{text.btn.actualizar}"></span>
+                                        </button>
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+
+<div class="sidenav-overlay"></div>
+<div class="drag-target"></div>
+<th:block th:replace="fragments/componentes/plantilla :: footer"></th:block>
+<script th:inline="javascript">
+    $("#select1").select2();
+    $("#select2").select2();
+    $("#select3").select2();
+    let tipoVehiculos = [[${tipoVehiculos}]];
+    let vehiculo = [[${vehiculo}]]
+
+    if (vehiculo.idCargas != null && vehiculo.idCargas.length > 0) {
+        $("#tipoCargas").show();
+        $("#selectCargas").attr("disabled", false);
+    }
+
+    $("#select2").change(function () {
+        if (tipoVehiculos != null) {
+            for (let i of tipoVehiculos) {
+                if (i.nombre === 'Simple' && i.id === $("#select2").val()) {
+                    $("#tipoCargas").show(100);
+                    $("#selectCargas").attr("disabled", false);
+                }
+                if (i.nombre === 'Con Remolque' && i.id === $("#select2").val()) {
+                    $("#tipoCargas").hide(100);
+                    $("#selectCargas").attr("disabled", true);
+                }
+            }
+        }
+    })
+
+    const inputPatente = $('#dominioInput');
+    const alerta = $('#alertFomatoDominio');
+    const botones = $('.botonesSubmit');
+    // noinspection JSCheckFunctionSignatures
+    const regex = new RegExp([[${usuario.pais.regexPatente}]]);
+
+    inputPatente.on("keyup", () => {
+        let val = inputPatente.val();
+        if (!regex.test(val)) {
+            alerta.show();
+            botones.attr('disabled', 'disabled');
+        } else {
+            alerta.hide();
+            botones.removeAttr('disabled');
+        }
+    });
+</script>
+</body>
+</html>

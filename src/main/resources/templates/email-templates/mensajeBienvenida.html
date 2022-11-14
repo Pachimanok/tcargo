@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Title</title>
+    <style>
+        .table-100 {
+            width: 100%;
+            margin: 0 auto;
+            border-collapse: collapse;
+        }
+
+        .table-600 {
+            width: 600px;
+            margin: 0 auto;
+            border-collapse: collapse;
+        }
+
+        .b-0 {
+            border: 0;
+        }
+
+        .p-0 {
+            padding: 0;
+        }
+
+        .p-10 {
+            padding: 10px;
+        }
+
+        .td-h40 {
+            font-size: 0;
+            line-height: 0;
+            height: 40px;
+        }
+
+        .td-h10 {
+            font-size: 0;
+            line-height: 0;
+            height: 10px;
+        }
+
+        .td-h20 {
+            font-size: 0;
+            line-height: 0;
+            height: 20px;
+        }
+
+        .td-h1 {
+            font-size: 0;
+            line-height: 0;
+            height: 1px;
+        }
+
+        .td-p15 {
+            padding: 15px;
+            text-align: center;
+        }
+
+        .red {
+            background-color: #D51317 !important;
+        }
+
+        .gray {
+            background-color: #DADADA !important;
+        }
+
+        .white {
+            background-color: #FFFFFF !important;
+        }
+
+        .left {
+            margin-right: auto !important;
+        }
+
+        .td-mensaje {
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 100;
+            color: #747474;
+            line-height: 1.5;
+            text-align: justify;
+            font-family: Helvetica, Arial, sans-serif;
+        }
+
+        .span-mensaje {
+            font-size: 16px;
+            font-weight: 300;
+            line-height: 2.5em;
+            color: #D51317;
+            font-family: Helvetica, Arial, sans-serif;
+            text-align: left;
+            text-transform: uppercase;
+        }
+
+        .td-redes {
+            font-size: 10px;
+            font-style: normal;
+            font-weight: bolder;
+            color: #747474;
+            line-height: 1px;
+            font-family: Helvetica, Arial, sans-serif;
+            padding-top: 10px
+        }
+    </style>
+</head>
+<body>
+
+<table class="table-100 b-0">
+    <tbody>
+    <tr>
+        <td class="p-0 gray">
+            <table class="table-600">
+                <tbody>
+                <tr>
+                    <td class="td-h40 p-0">
+                        <table class="table-100">
+                            <tr>
+                                <td class="td-h40 gray">&nbsp;</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="red p-10">
+                        <table class="table-100 p-10">
+                            <tbody>
+                            <tr>
+                                <td class="td-p15 red">
+                                    <img src="cid:logoBlancoEncabezado" alt="Logo T-Cargo"/>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td-h10 white p-0">
+                        <table class="table-100">
+                            <tr>
+                                <td class="td-h40 white">&nbsp;</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="white p-0">
+                        <table class="table-100" style="width: 92%!important;">
+                            <tr>
+                                <td class="td-mensaje left p-0">
+                                    <h2>
+                                        <span class="span-mensaje">
+                                            Hola <span th:text="${nombre} ?: ''" style="font-weight: bold;"></span>, recibiste un mensaje de <span
+                                                style="font-weight: bold;">T-CARGO</span>.
+                                            <br/>
+                                        </span>
+                                    </h2>
+                                    <p>
+                                        <span style="font-weight: bold;">Fecha: </span><span th:text="${fecha}"></span>
+                                    </p>
+                                    <p>
+                                        <span style="font-weight: bold;">Email: </span><span th:text="${email}"></span>
+                                    </p>
+                                    <p >
+                                        <span style="font-weight: bold;">Mensaje: </span><span
+                                            th:text="${mensaje}"></span>
+                                        <ul style="list-style: none;">
+                                            <li>1º Complete su información en tcargo.la</li>
+                                            <li>2º Recibirá un segundo mail para verificar su cuenta.</li>
+                                            <li>3º Siga las instrucciones y comience a disfrutar las ventajas de la plataforma</li>
+                                        </ul>
+
+                                    </p>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td-h40 white p-0">
+                        <table class="table-100 white">
+                            <tr>
+                                <td class="td-h40 p-0">&nbsp;</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td-h1 white p-0">
+                        <table class="table-100" style="width: 92%!important; background-color: #757474!important;">
+                            <tr>
+                                <td class="td-h1 p-0">&nbsp;</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td-h20 white p-0">
+                        <table class="table-100 left">
+                            <tr>
+                                <td class="td-h20 p-0">&nbsp;</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="white">
+                        <table class="table-100" style="margin-left: 12.5%; width: 92%!important;">
+                            <tr>
+                                <td class="p-0" style="width: 20%!important; margin: 10px 0;">
+                                    <table class="table-100">
+                                        <tbody>
+                                        <tr style="text-align: center">
+                                            <td class="p-0 td-redes">
+                                                <p>Encontranos en:</p>
+                                                <img src="cid:logoLinkedin" width="20" height="20"
+                                                     alt="linkedin"/>
+                                                <img src="cid:logoFacebook" width="20" height="20"
+                                                     alt="facebook"/>
+                                                <img src="cid:logoInst" width="20" height="20"
+                                                     alt="instagram"/>
+                                                <img src="cid:logoTwiter" width="20" height="20"
+                                                     alt="twitter"/>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                                <td class="p-0" style="width: 80%!important; margin: 10px 0;">
+                                    <table class="table-100">
+                                        <tbody>
+                                        <tr>
+                                            <td class="p-0" style="text-align: center">
+                                                <img src="cid:logoFooter" alt="logo">
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td-h20 white">
+                        <table class="table-100 left" style="width: 96%!important;">
+                            <tr>
+                                <td class="td-h20">&nbsp;</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td-h40">
+                        <table class="table-100 gray">
+                            <tr>
+                                <td class="td-h40">&nbsp;</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>

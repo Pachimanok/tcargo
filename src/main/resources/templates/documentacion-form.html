@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/componentes/plantilla :: head"></head>
+
+<body class="horizontal-layout horizontal-menu 2-columns  " data-open="hover" data-menu="horizontal-menu"
+      data-col="2-columns">
+
+<nav th:replace="fragments/componentes/plantilla :: header"></nav>
+<nav th:replace="fragments/componentes/plantilla :: menu"></nav>
+
+<div class="app-content content">
+    <div class="content-overlay"></div>
+    <div class="content-wrapper">
+        <div class="content-header row">
+            <div class="content-header-left col-md-6 col-12 mb-2">
+                <h3 class="content-header-title" 
+                    th:text="#{text.documentacion.form.h3.gestionDocumentos}">
+                </h3>
+                <div class="row breadcrumbs-top">
+                    <div class="breadcrumb-wrapper col-12">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a th:href="@{/dashboard}">
+                                    <span th:text="#{text.tittle.home}"></span>
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item active"
+                                th:text="#{text.documentacion.form.li.documentaciones}">
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+            <div class="content-header-right col-md-6 col-12">
+                <div class="media width-250 float-right">
+                    <div class="media-body media-right text-right">
+                        <a href="#" onclick="history.back()" class="btn btn-icon btn-secondary mr-1 mb-1">
+                            <i class="la la-chevron-left"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="content-body">
+            <section id="pagination">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title" th:if="${accion == null or accion == 'guardar'}"
+                                    th:text="#{text.documentacion.form.h4.crearDocumentacion}">
+                                </h4>
+                                <h4 class="card-title" th:if="${accion == 'actualizar'}"
+                                    th:text="#{text.documentacion.form.h4.actualizarDocumentacion}">
+                                </h4>
+                                <h4 class="card-title" th:if="${accion == 'eliminar'}"
+                                    th:text="#{text.documentacion.form.h4.eliminarDocumentacion}">
+                                </h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="card-text">
+                                    <div th:if="${error != null}" class="alert alert-danger" role="alert">
+                                        <strong th:text="#{text.documentacion.form.strong.error}"></strong>
+                                        <span th:text="${error}">error</span>
+                                    </div>
+
+                                    <div th:if="${accion == 'eliminar'}" class="alert alert-danger" role="alert">
+                                        <strong th:text="#{text.documentacion.form.strong.alto}"></strong>
+                                        <span th:text="#{text.documentacion.form.span.seEncuentraSeguro}"></span>
+                                    </div>
+                                </div>
+
+                                <form method="POST" id="formulario"
+                                      th:action="@{/documentacion/__${accion == 'eliminar' ? 'eliminar' : 'guardar'}__}"
+                                      th:object="${documentacion}" enctype="multipart/form-data">
+                                    <input type="hidden" class="form-control" th:field="*{id}" th:value="*{id}"/>
+                                    <input id="idChofer" th:field="*{idChofer}"
+                                           type="hidden"/>
+                                    <input id="idRemolque" th:field="*{idRemolque}"
+                                           type="hidden"/>
+                                    <input id="idVehiculo" th:field="*{idVehiculo}"
+                                           type="hidden"/>
+
+                                    <input type="hidden" id="archivos" name="archivos" multiple/>
+                                    <div class="row">
+                                        <div class="col-md-12 col-sm-12">
+                                            <div class="form-group">
+                                                <label for="tipoDocumentacion">
+                                                    <span th:text="#{text.documentacion.form.label.tipoDocumento}"></span>
+                                                    <span class="danger"> * </span>
+                                                </label>
+                                                <select class="form-control select2" id="tipoDocumentacion"
+                                                        th:field="*{idTipoDocumentacion}">
+                                                    <option th:value="${''}" th:text="#{text.documentacion.form.option.seleccione}">
+                                                    <option th:each="tipoDocumentacion : ${tipoDocumentaciones}"
+                                                            th:text="${tipoDocumentacion.nombre}"
+                                                            th:value="${tipoDocumentacion.id}"
+                                                            th:select="${documentacion.idTipoDocumentacion == tipoDocumentacion.id}">
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12 col-sm-12">
+                                            <div class="form-group">
+                                                <label for="fechaVencimiento">
+                                                    <span th:text="#{text.documentacion.form.label.vencimiento}"></span>
+                                                    <span class="danger"> * </span>
+                                                    <span class="text-muted" th:text="${documentacion.vencimiento} ? #{text.documentacion.form.label.vencimiento.anterior} + ' ' + ${documentacion.vencimiento}"></span>
+                                                </label>
+                                                <input class="form-control" id="fechaVencimiento"
+                                                       th:field="*{vencimiento}" th:value="${vencimiento}" type="date"
+                                                       th:required="${accion != 'eliminar'}"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12 col-sm-12">
+                                            <div class="form-group">
+                                                <label for="fileuploader"
+                                                    th:text="#{text.documentacion.form.label.archivos}">
+                                                </label>
+                                                <div id="fileuploader"></div>
+                                            </div>
+                                        </div>
+
+                                        <!-- 											<div class="col-md-6 col-sm-6"> -->
+                                        <!-- 												<div class="form-group"> -->
+                                        <!-- 												<label for="holdername"> -->
+                                        <!-- 														Carga archivos adjuntos  -->
+                                        <!-- 												</label> -->
+                                        <!-- 												<input class="form-control" id="holdername" -->
+                                        <!-- 														accept=".png, .jpg, .pdf" -->
+                                        <!-- 														type="file" -->
+                                        <!-- 														name="archivos" multiple /> -->
+                                        <!-- 												</div> -->
+                                        <!-- 											</div> -->
+
+                                        <div class="col-md-12 col-sm-12">
+
+                                            <div th:if="${archivos != null}" id="previoFotos"></div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="form-actions text-right">
+
+
+                                        <button type="button" onclick="window.history.go(-1)" class="btn btn-secondary">
+                                            <i class="ft-x"></i>
+                                            <span th:text="#{text.btn.cancelar}"></span>
+                                        </button>
+
+                                        <button type="submit" class="btn btn-danger" form="formulario"
+                                                th:if="${accion == 'eliminar'}">
+                                            <i class="la la-trash"></i>
+                                            <span th:text="#{text.btn.eliminar}"></span>
+                                        </button>
+                                        <button type="button" class="btn btn-primary botonGuardar"
+                                                th:if="${accion == null or accion == 'guardar'}" disabled>
+                                            <i class="la la-check"></i>
+                                            <span th:text="#{text.btn.guardar}"></span>
+                                        </button>
+                                        <button type="button" class="btn btn-primary botonGuardar "
+                                                th:if="${accion == 'actualizar'}" disabled>
+                                            <i class="la la-check"></i>
+                                            <span th:text="#{text.btn.actualizar}"></span>
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+
+<div class="sidenav-overlay"></div>
+<div class="drag-target"></div>
+<nav th:replace="fragments/componentes/plantilla :: footer"></nav>
+
+
+<script th:inline="javascript">
+
+    // 	SCRIPT QUE INICIA EL PREVIO DE LA FOTOS
+
+    var nombres = [];
+    var extraObj = $("#fileuploader").uploadFile({
+        url: "/documentacion/cargarArchivos",
+        returnType: "text",
+        fileName: "archivos",
+        autoSubmit: false,
+        showFileSize: false,
+        dragDrop: true,
+        multiple: true,
+        acceptFiles: ["image/jpeg", "image/png", "application/pdf"],
+// 		 showPreview:true,
+// 		 previewHeight: "50%",
+// 		 previewWidth: "50%",
+        uploadStr: [[#{text.documentacion.form.script.subir}]],
+        cancelStr: [[#{text.documentacion.form.script.eliminar}]],
+        dragDropStr: [[#{text.documentacion.form.script.arrastraArchivos}]],
+        onSuccess: function (files, data) {
+            nombres.push(data);
+        },
+        afterUploadAll: function (obj) {
+
+            $("#archivos").val(nombres)
+            $("#formulario").submit();
+        },
+
+    });
+
+    // 	SI DENTRO DEL DIV DE SUBIR FOTOS HAY DIVS DE PREVIOS INICIA LA SUBIDA SINO HACE SUBMIT EN EL FORMULARIO
+
+    $(".botonGuardar").click(function () {
+
+        if ($('.ajax-file-upload-container').children().length > 0) {
+            extraObj.startUpload();
+
+        } else {
+
+            $("#formulario").submit();
+        }
+    });
+
+
+    // 	BOTON GUARDAR O ACUTALIZAR SIEMPRE DESACTIVADO HASTA QUE LOS 3 CAMPOS ESTEN COMPLETOS
+
+    $('#fechaVencimiento').change(function () {
+        if ($('#fechaVencimiento').val() && $('#tipoDocumentacion').val()) {
+            $('.botonGuardar').removeAttr("disabled");
+        }
+    });
+    $('#tipoDocumentacion').change(function () {
+        if ($('#fechaVencimiento').val() && $('#tipoDocumentacion').val()) {
+            $('.botonGuardar').removeAttr("disabled");
+        }
+    });
+    // 		 $('#titulo').change(function(){
+    // 		if($('#fechaVencimiento').val() && $('#tipoDocumentacion').val() && $('#titulo').val()){
+    // 			 $('.botonGuardar').removeAttr("disabled");
+    // 		 }
+    // 		 });
+
+</script>
+
+<script type="text/javascript">
+    $(".select2").select2();
+</script>
+
+<script th:inline="javascript">
+
+    /*<![CDATA[*/
+    var idMaster = id;
+    var archivos = /*[[${archivos}]]*/'archivos';
+    var idDoc = /*[[${documentacion.id}]]*/'archivos';
+
+    if (archivos != null) {
+        var i = 0;
+        archivos.forEach(function (x) {
+            i = i + 1;
+            var cortar = x.substring(x.length - 3, x.length);
+            if (cortar == "pdf") {
+                $("#previoFotos").append('<a href="../../../uploads/' + x + '" target="_blank" >[[#{text.documentacion.form.script.verDocumento}]] ' + i + '</a>' +
+                    '<button type="button" value="' + x + '" class="btn btn-outline-danger bnt-sm m-1" class="' + x + '" >[[#{text.btn.eliminar}]]</button>');
+            } else {
+                $("#previoFotos").append('<a href="../../../uploads/' + x + '" target="_blank" >[[#{text.documentacion.form.script.verDocumento}]] ' + i + '</a>' +
+                    '<button type="button" value="' + x + '" class="btn btn-outline-danger bnt-sm m-1" class="' + x + '" >[[#{text.btn.eliminar}]]</button>');
+
+// 					$("#previoFotos").append('<img src="../../../uploads/'+ x +'" style="max-width:15%" class="img-thumbnail rounded " id="' + x + '"/>'+
+// 							'<button type="button" value="' + x + '" class="btn btn-outline-danger bnt-sm m-1" class="' + x + '">eliminar</button>');
+
+            }
+
+        });
+    }
+
+    /*]]>*/
+
+    $("#previoFotos>button").click(function () {
+
+        var archivo = $(this).val();
+
+
+        var bool = confirm([[#{text.documentacion.form.script.seguroDeEliminar}]]);
+        if (bool) {
+            $.ajax({
+
+                url: '/api/documentacion/eliminararchivo',
+                dataType: 'text',
+                type: 'GET',
+                data: {
+                    archivo: archivo,
+                    idDocumentacion: idDoc,
+                },
+                success: function (data) {
+
+                    location.reload();
+                }
+            });
+        }
+
+    });
+</script>
+</body>
+
+</html>

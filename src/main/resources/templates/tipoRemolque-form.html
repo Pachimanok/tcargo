@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments/componentes/plantilla :: head"></head>
+
+<body class="horizontal-layout horizontal-menu 2-columns  " data-open="hover" data-menu="horizontal-menu"
+    data-col="2-columns">
+
+    <nav th:replace="fragments/componentes/plantilla :: header"></nav>
+
+    <nav th:replace="fragments/componentes/plantilla :: menu"></nav>
+
+
+    <div class="app-content content">
+        <div class="content-overlay"></div>
+        <div class="content-wrapper">
+            <div class="content-header row">
+                <div class="content-header-left col-md-6 col-12 mb-2">
+                    <h3 class="content-header-title" th:text="#{text.param.tipo.rem.tittle}"></h3>
+                    <div class="row breadcrumbs-top">
+                        <div class="breadcrumb-wrapper col-12">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item">
+                                    <a th:href="@{/dashboard}" th:text="#{text.tittle.home}"></a>
+                                </li>
+                                <li class="breadcrumb-item active" th:text="#{text.param.tipo.rem.subtittle}"></li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+                <div class="content-header-right col-md-6 col-12">
+                    <div class="media width-250 float-right">
+                        <div class="media-body media-right text-right">
+                            <a href="#" onclick="history.back()" class="btn btn-icon btn-secondary mr-1 mb-1">
+                                <i class="la la-chevron-left"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="content-body">
+                <section id="pagination">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4 class="card-title" th:if="${accion == null or accion == 'guardar'}"
+                                        th:text="#{text.param.tipo.rem.btn.crear}"></h4>
+                                    <h4 class="card-title" th:if="${accion == 'actualizar'}"
+                                        th:text="#{text.param.tipo.rem.btn.actualizar}"></h4>
+                                    <h4 class="card-title" th:if="${accion == 'eliminar'}"
+                                        th:text="#{text.param.tipo.rem.btn.eliminar}"></h4>
+                                </div>
+                                <div class="card-body">
+                                    <div class="card-text">
+                                        <div th:if="${error != null}" class="alert alert-danger" role="alert">
+                                            <strong th:text="#{text.remolque.form.strong.error}"></strong> <span
+                                                th:text="${error}">error</span>
+                                        </div>
+
+                                        <div th:if="${accion == 'eliminar'}" class="alert alert-danger" role="alert">
+                                            <strong th:text="#{text.remolque.form.strong.alto}"></strong> <span
+                                                th:text="#{text.param.tipo.rem.alert}"></span>
+                                        </div>
+                                    </div>
+                                    <form method="POST"
+                                        th:action="@{/tipoRemolque/} + ${accion == null or accion == 'actualizar' ? 'guardar' : accion}"
+                                        id="formulario" novalidate="novalidate" th:object="${tipoRemolque}">
+                                        <input type="hidden" class="form-control" th:field="*{id}" th:value="*{id}" />
+                                        <div class="row">
+                                            <div class="col-12 col-md-6">
+                                                <div class="form-group">
+                                                    <label class="font-weight-bold" for="holdername" >
+                                                        <span th:text="#{text.caracteristicas}"></span>
+                                                        <span class="danger"> * </span>
+                                                    </label>
+                                                    <input class="form-control" id="holdername"
+                                                        th:field="*{caracteristicas}" th:value="*{caracteristicas}"
+                                                        type="text" required="true" autofocus />
+                                                </div>
+                                            </div>
+                                            <div class="col-12 col-md-6"
+                                                th:if="${session.usuario.rol.toString() == 'ADMINISTRADOR'}">
+                                                <div class="form-group">
+                                                    <label class="font-weight-bold" for="holdername" >
+                                                        <span th:text="#{text.pais}"></span>
+                                                        <span class="danger"> * </span>
+                                                    </label>
+                                                    <select class="form-control" id="pais" th:field="*{idPais}">
+                                                        <option th:value="${''}" th:text="#{text.selecciona.opcion}">
+                                                        <option th:each="pais : ${paises}" th:text="${pais.nombre}"
+                                                            th:value="${pais.id}"
+                                                            th:select="${tipoRemolque.idPais == pais.id}">
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="col-12">
+                                                <div class="form-group">
+                                                    <label class="font-weight-bold" for="holdername" th:text="#{text.decripcion}">
+
+                                                    </label>
+                                                    <input class="form-control" id="holdername"
+                                                        th:field="*{descripcion}" th:value="*{descripcion}" type="text"
+                                                        required="true" autofocus />
+                                                </div>
+                                            </div>
+                                            
+                                        </div>
+
+                                        <div class="form-actions text-right">
+
+                                            <a th:href="@{/tipoRemolque/listado}">
+                                                <button type="button" class="btn btn-secondary">
+                                                    <i class="ft-x"></i>
+                                                    <span th:text="#{text.btn.cancelar}"></span>
+                                                </button>
+                                            </a>
+                                            <button type="submit" class="btn btn-danger" form="formulario"
+                                                th:if="${accion == 'eliminar'}">
+                                                <i class="la la-trash"></i>
+                                                <span th:text="#{text.btn.eliminar}"></span>
+                                            </button>
+                                            <button type="submit" class="btn btn-primary" form="formulario"
+                                                th:if="${accion == null or accion == 'guardar'}">
+                                                <i class="la la-check"></i>
+                                                <span th:text="#{text.btn.guardar}"></span>
+                                            </button>
+                                            <button type="submit" class="btn btn-primary" form="formulario"
+                                                th:if="${accion == 'actualizar'}">
+                                                <i class="la la-check"></i>
+                                                <span th:text="#{text.btn.actualizar}"></span>
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <div class="sidenav-overlay"></div>
+    <div class="drag-target"></div>
+
+    <nav th:replace="fragments/componentes/plantilla :: footer"></nav>
+
+
+</body>
+
+</html>

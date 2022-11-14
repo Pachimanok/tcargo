@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="fragments/componentes/plantilla :: head">
+    <link
+      rel="stylesheet"
+      href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"
+    />
+  </head>
+
+  <body
+    class="horizontal-layout horizontal-menu 2-columns"
+    data-open="hover"
+    data-menu="horizontal-menu"
+    data-col="2-columns"
+  >
+    <nav th:replace="fragments/componentes/plantilla :: header"></nav>
+
+    <nav th:replace="fragments/componentes/plantilla :: menu"></nav>
+
+    <div class="app-content content">
+      <div class="content-overlay"></div>
+      <div class="content-wrapper">
+        <div class="content-header row">
+          <div class="content-header-left col-md-6 col-12 mb-2">
+            <h3
+              class="content-header-title"
+              th:text="#{text.viaje.personal.form.gestion.viajes.personales}"
+            ></h3>
+            <div class="row breadcrumbs-top">
+              <div class="breadcrumb-wrapper col-12">
+                <ol class="breadcrumb">
+                  <li class="breadcrumb-item">
+                    <a th:href="@{/dashboard}" th:text="#{text.tittle.home}">
+                    </a>
+                  </li>
+                  <li
+                    class="breadcrumb-item active"
+                    th:text="#{text.viaje.personal.form.viajes.personales}"
+                  ></li>
+                </ol>
+              </div>
+            </div>
+          </div>
+          <div class="content-header-right col-md-6 col-12">
+            <div class="media width-250 float-right">
+              <div class="media-body media-right text-right">
+                <a
+                  href="#"
+                  onclick="history.back()"
+                  class="btn btn-icon btn-secondary mr-1 mb-1"
+                >
+                  <i class="la la-chevron-left"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="content-body">
+          <section id="pagination">
+            <div class="row">
+              <div class="col-12">
+                <div class="card">
+                  <div class="card-header">
+                    <h4
+                      class="card-title"
+                      th:if="${accion == null or accion == 'guardar'}"
+                      th:text="#{text.viaje.form.h4.crear.viaje}"
+                    ></h4>
+                    <h4
+                      class="card-title"
+                      th:if="${accion == 'actualizar'}"
+                      th:text="#{text.viaje.form.h4.actualizar.viaje}"
+                    ></h4>
+                    <h4
+                      class="card-title"
+                      th:if="${accion == 'eliminar'}"
+                      th:text="#{text.viaje.form.h4.eliminar.viaje}"
+                    ></h4>
+                  </div>
+                  <div class="card-body">
+                    <div class="card-text">
+                      <div
+                        th:if="${error != null}"
+                        class="alert alert-danger"
+                        role="alert"
+                      >
+                        <strong
+                          th:text="#{text.viaje.form.strong.error}"
+                        ></strong>
+                        <span th:text="${error}">error</span>
+                      </div>
+                      <div
+                        id="errorDiv"
+                        style="display: none"
+                        class="alert alert-danger"
+                        role="alert"
+                      >
+                        <strong
+                          th:text="#{text.viaje.form.strong.error}"
+                        ></strong>
+                        <span id="error"></span>
+                      </div>
+
+                      <div
+                        th:if="${accion == 'eliminar'}"
+                        class="alert alert-danger"
+                        role="alert"
+                      >
+                        <strong
+                          th:text="#{text.viaje.form.strong.alto}"
+                        ></strong>
+                        <span th:text="#{text.viaje.form.strong.alert}"></span>
+                      </div>
+                    </div>
+                    <form
+                      method="POST"
+                      th:action="@{/viajepersonal/} + ${accion == null or accion == 'actualizar' ? 'guardar' : accion}"
+                      id="formulario"
+                      novalidate="novalidate"
+                      th:object="${viaje}"
+                    >
+                      <input type="hidden" th:field="*{id}" id="idViaje" />
+                      <div class="row">
+                        <div class="col-md-12 col-sm-12">
+                          <!--                                         	<select class="form-control select2" id="matchSelect" th:onchange="'buscar(this.value)'" multiple> -->
+                          <!--                                         	<option th:each="match : ${matchs}" th:text="'Pedido: ' + ${match.idPedido} + ' Desde: ' + ${match.desde.direccion} + ' Hasta: ' + ${match.hasta.direccion} + ' Dador: ' + ${match.dador}" -->
+                          <!--                                         	th:value="${match.id}"> -->
+                          <!--                                         	</select> -->
+                          <div
+                            th:if="${#lists.isEmpty(matchs)}"
+                            class="alert alert-info"
+                            role="alert"
+                          >
+                            <strong
+                              th:text="#{text.viaje.personal.form.strong.atencion}"
+                            ></strong>
+                            <span
+                              th:text="#{text.viaje.personal.form.strong.alert}"
+                            ></span>
+                          </div>
+                          <div class="input-group mb-3">
+                            <div
+                              class="input-group-prepend"
+                              th:each="match : ${matchs}"
+                              th:if="${accion != 'eliminar'}"
+                            >
+                              <div class="input-group-text">
+                                <input
+                                  type="checkbox"
+                                  th:value="${match.id}"
+                                  onClick="evaluar(this.value)"
+                                  th:id="${match.id}"
+                                />
+                                <span
+                                  class="form-control ml-2"
+                                  th:text="#{text.viaje.personal.form.pedido} + ': ' + ${match.idPedido} + #{text.viaje.personal.form.desde} +': ' + ${match.desde.direccion} + #{text.viaje.personal.form.hasta} +': ' + ${match.hasta.direccion} + ' Dador: ' + ${match.dador}"
+                                >
+                                </span>
+                                <span
+                                  class="badge badge-info ml-2"
+                                  th:text="#{text.viaje.personal.form.carga} +': ' +  ${match.inicioCarga} + #{text.viaje.personal.form.descarga} + ': ' + ${match.inicioDescarga}"
+                                >
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-md-8 col-sm-8">
+                          <div class="contenedor-mapa">
+                            <input
+                              id="pac-input"
+                              value=""
+                              class="controls"
+                              type="text"
+                              th:placeholder="#{text.viaje.form.input.busca.ubicacion}"
+                            />
+                            <div id="map"></div>
+                            <br />
+                          </div>
+                        </div>
+
+                        <!-- 										LISTADO DE UBICACIONES -->
+                        <div class="col-md-4 col-sm-4 mt-2" id="right-panel">
+                          <div id="inicioDiv"></div>
+                          <ul id="sortable" class=""></ul>
+                          <div id="finalDiv"></div>
+                        </div>
+
+                        <div class="col-md-12 col-sm-12 mb-2">
+                          <button
+                            type="button"
+                            class="btn btn-primary btn-sm float-right"
+                            id="asignarFechas"
+                            th:text="#{text.viaje.form.btn.asignar.fechas}"
+                          ></button>
+                        </div>
+
+                        <div class="col-md-4 col-sm-4">
+                          <div class="form-group">
+                            <label for="vehiculo">
+                              <span
+                                th:text="#{text.viaje.form.label.vehiculo}"
+                              ></span>
+                              <span class="danger"> * </span>
+                            </label>
+                            <select
+                              class="form-control select2"
+                              id="vehiculo"
+                              name="idVehiculo"
+                            >
+                              <option
+                                th:value="${''}"
+                                th:text="#{text.select.placeholder}"
+                              ></option>
+                              <option
+                                th:each="vehiculo : ${vehiculos}"
+                                th:text="|${vehiculo.dominio} - ${vehiculo.modelo.marca.nombre} ${vehiculo.modelo.nombre}|"
+                                th:value="${vehiculo.id}"
+                              ></option>
+                            </select>
+                          </div>
+                        </div>
+
+                        <div class="col-md-4 col-sm-4">
+                          <div class="form-group">
+                            <label for="vehiculo">
+                              <span
+                                th:text="#{text.viaje.form.label.remolque}"
+                              ></span>
+                              <span class="danger"> * </span>
+                            </label>
+                            <select
+                              class="form-control select2"
+                              id="remolque"
+                              name="idRemolque"
+                            >
+                              <option
+                                th:value="${''}"
+                                th:text="#{text.select.placeholder}"
+                              ></option>
+                              <option
+                                th:each="remolque : ${remolques}"
+                                th:text="|${remolque.dominio} - ${remolque.tipoRemolque.caracteristicas}|"
+                                th:value="${remolque.id}"
+                              ></option>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="col-md-4 col-sm-4">
+                          <div class="form-group">
+                            <label for="vehiculo">
+                              <span th:text="#{text.match.list.chofer}"></span>
+                              <span class="danger"> * </span>
+                            </label>
+                            <select
+                              class="form-control select2"
+                              id="chofer"
+                              name="idChofer"
+                            >
+                              <option
+                                th:value="${''}"
+                                th:text="#{text.select.placeholder}"
+                              ></option>
+                              <option
+                                th:each="chofer : ${choferes}"
+                                th:text="|${chofer.usuario.nombre}|"
+                                th:value="${chofer.id}"
+                              ></option>
+                            </select>
+                          </div>
+                        </div>
+                        <div
+                          class="col-md-6 col-sm-6 fechaCargaNegativa"
+                          style="display: none"
+                        >
+                          <div class="form-group">
+                            <label for="vehiculo">
+                              <span
+                                th:text="#{text.viaje.form.label.partida}"
+                              ></span>
+                              <span class="danger"> * </span>
+                            </label>
+                            <input
+                              class="form-control"
+                              type="date"
+                              id="partida"
+                            />
+                          </div>
+                        </div>
+
+                        <div
+                          class="col-md-6 col-sm-6 fechaCargaNegativa"
+                          style="display: none"
+                        >
+                          <div class="form-group">
+                            <label for="vehiculo">
+                              <span
+                                th:text="#{text.viaje.form.label.llegada}"
+                              ></span>
+                              <span class="danger"> * </span>
+                            </label>
+                            <input
+                              class="form-control"
+                              type="date"
+                              id="llegada"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </form>
+                    <br />
+                    <div class="form-actions text-right">
+                      <a
+                        th:href="@{/viaje/listado/?userId=}+__${session.usuario.id}__"
+                      >
+                        <button type="button" class="btn btn-secondary">
+                          <i class="ft-x"></i>
+                          <span th:text="#{text.btn.cancelar}"></span>
+                        </button>
+                      </a>
+                      <button
+                        type="button"
+                        class="btn btn-primary"
+                        onclick="validar()"
+                        th:if="${accion == null or accion == 'guardar'}"
+                      >
+                        <i class="la la-check"></i>
+                        <span th:text="#{text.btn.guardar}"></span>
+                      </button>
+                      <button
+                        type="submit"
+                        class="btn btn-danger"
+                        form="formulario"
+                        th:if="${accion == 'eliminar'}"
+                      >
+                        <i class="la la-trash"></i>
+                        <span th:text="#{text.btn.eliminar}"></span>
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-primary"
+                        onclick="validar()"
+                        th:if="${accion == 'actualizar'}"
+                      >
+                        <i class="la la-check"></i>
+                        <span th:text="#{text.btn.actualizar}"></span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidenav-overlay"></div>
+    <div class="drag-target"></div>
+    <th:block th:replace="fragments/componentes/plantilla :: footer"></th:block>
+    <script
+      src="https://code.jquery.com/jquery-3.5.1.min.js"
+      integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+      integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+      integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+      crossorigin="anonymous"
+    ></script>
+
+    <script
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDz6kEuRri8bQ3TXQn2e5t0KVBqQpQHbwM&libraries=places&callback=initAutocomplete"
+      defer
+    ></script>
+
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <script th:inline="javascript">
+
+      $("#asignarFechas").click(function () {
+          if ($(".fechaCargaNegativa").css("display") === 'none') {
+              $(".fechaCargaNegativa").show(100);
+          } else {
+              $(".fechaCargaNegativa").hide(100);
+              $("#partida").val("")
+              $("#llegada").val("")
+          }
+      });
+
+      let directionsService;
+      let directionsRenderer;
+      var dir;
+      let wayPoint;
+      let arrayWayPoint = [];
+      let markers = [];
+      let ubicacionInicio;
+      let ubicacionFinal;
+      let matchs;
+      let ubicaciones = [];
+      let idsMatchs = [];
+      let viaje;
+
+      let datePartida = $("#partida");
+      let dateLlegada = $("#llegada");
+
+      datePartida.change(function () {
+          copiarFechaInicioAFinal(datePartida.val(), dateLlegada);
+      });
+
+      dateLlegada.change(function () {
+          validarDates();
+      })
+
+      function copiarFechaInicioAFinal(inicio, aCopiar) {
+          aCopiar.val(inicio);
+      }
+
+      function validarDates() {
+          if (dateLlegada.val() < datePartida.val()) {
+              Swal.queue([{
+                  title: [[#{ text.viaje.form.script.validar.menor }]],
+                  confirmButtonText: 'OK',
+                  icon: "info"
+              }]);
+              dateLlegada.val(datePartida.val());
+          }
+
+          if (datePartida.val() > dateLlegada.val()) {
+              Swal.queue([{
+                  title: [[#{ text.viaje.form.script.validar.mayor }]],
+                  confirmButtonText: 'OK',
+                  icon: "info"
+              }]);
+              datePartida.val(dateLlegada.val());
+          }
+      }
+
+      function buscar(id) {
+          for (let i = 0; i < matchs.length; i++) {
+              if (matchs[i].id == id) {
+                  cargar(matchs[i]);
+              }
+          }
+      }
+
+      function evaluar(id) {
+          if ($("#" + id).prop('checked')) {
+              buscar(id)
+          } else {
+              borrar(id);
+          }
+      }
+
+      function borrar(id) {
+          for (let i = 0; i < matchs.length; i++) {
+              if (matchs[i].id == id) {
+                  var item = matchs[i].desde.latitud + " " + matchs[i].desde.longitud;
+                  document.getElementById(item).remove();
+                  item = matchs[i].hasta.latitud + " " + matchs[i].hasta.longitud;
+                  document.getElementById(item).remove();
+                  ubicaciones.splice(i, 2);
+                  ordenarUbicaciones();
+              }
+          }
+      }
+
+      function destroy(array, target) {
+          for (var i = 0; i < array.length; i++) if (array[i] === target) array.splice(i, 1);
+          return array;
+      }
+
+      function cargar(match) {
+          console.table(match)
+          idsMatchs.push({
+              id: match.id
+          });
+          let u1 = {
+              location: match.desde.latitud + ' ' + match.desde.longitud,
+              direccion: match.desde.direccion,
+              id: match.desde.id
+          }
+
+          $("#sortable").append("<li class='ui-state-default list-group-item list-group-item-secondary' value='" + match.desde.id + "' id='" + match.desde.latitud + ' ' + match.desde.longitud + "'>" + match.desde.direccion + "</li>")
+
+          let u2 = {
+              location: match.hasta.latitud + ' ' + match.hasta.longitud,
+              direccion: match.hasta.direccion,
+              id: match.hasta.id
+          }
+
+          $("#sortable").append("<li class='ui-state-default list-group-item list-group-item-secondary' value='" + match.hasta.id + "' id='" + match.hasta.latitud + ' ' + match.hasta.longitud + "'>" + match.hasta.direccion + "</li>")
+
+          ubicaciones.push(u1, u2);
+          ordenarUbicaciones();
+      }
+
+      function ordenarUbicaciones() {
+          arrayWayPoint = [];
+          if (ubicaciones.length > 2) {
+              for (let i = 1; i < ubicaciones.length - 1; i++) {
+                  arrayWayPoint.push({ location: ubicaciones[i].location })
+              }
+          }
+
+          if (ubicaciones.length >= 2) {
+              displayRoute(directionsService, directionsRenderer);
+          } else {
+              initAutocomplete()
+          }
+      }
+
+      function asginaredicion() {
+          for (let i = 0; i < viaje.nuevoOrdenIds.length; i++) {
+              for (let j = 0; j < viaje.ubicaciones.length; j++) {
+                  if (viaje.nuevoOrdenIds[i] == viaje.ubicaciones[j].id) {
+                      let u = {
+                          location: viaje.ubicaciones[j].latitud + ' ' + viaje.ubicaciones[j].longitud,
+                          direccion: viaje.ubicaciones[j].direccion,
+                          id: viaje.ubicaciones[j].id
+                      }
+
+                      $("#sortable").append("<li class='ui-state-default list-group-item list-group-item-secondary' value='" + viaje.ubicaciones[j].id + "' id='"
+                          + viaje.ubicaciones[j].latitud + ' ' + viaje.ubicaciones[j].longitud + "'>" + viaje.ubicaciones[j].direccion + "</li>");
+
+                      ubicaciones.push(u);
+                  }
+              }
+          }
+          ordenarUbicaciones();
+          $("#vehiculo option[value='" + viaje.idVehiculo + "']").attr("selected", true);
+          $("#remolque option[value='" + viaje.idRemolque + "']").attr("selected", true);
+          $("#chofer option[value='" + viaje.idChofer + "']").attr("selected", true);
+          if (viaje.fechaInicio != null && viaje.fechaFinal) {
+              $(".fechaCargaNegativa").show();
+              $("#partida").val(viaje.fechaInicio)
+              $("#llegada").val(viaje.fechaFinal)
+          }
+          for (let i = 0; i < viaje.coincidencias.length; i++) {
+              $("#" + viaje.coincidencias[i].id).attr('checked', 'checked');
+              idsMatchs.push({
+                  id: viaje.coincidencias[i].id
+              });
+          }
+
+
+      }
+
+
+
+      $("#sortable").on("sortupdate", function (event, ui) {
+          // 		let list = [];
+          // 		x = $("#sortable>li");
+          // 		for (let i = 0; i < x.length; i++) {
+          // 			list.push(x[i].id);
+          // 		}
+          var modificado = $("#sortable").sortable("toArray", { attribute: 'id' });
+          var ids = $("#sortable").sortable("toArray", { attribute: 'value' });
+          var nombre = $("#sortable").sortable("toArray", { attribute: 'text()' });
+          ubicaciones = []
+          for (let i = 0; i < modificado.length; i++) {
+
+              ubicaciones.push({
+                  location: modificado[i],
+                  direccion: nombre[i],
+                  id: ids[i],
+
+              });
+          }
+
+          ordenarUbicaciones();
+
+      });
+
+
+
+      window.onload = function () {
+          if ([[${ matchs }]] != null) {
+              matchs = [[${ matchs }]];
+          }
+
+          if ([[${ viaje }]] != null && [[${ viaje.id }]] != null) {
+              viaje = [[${ viaje }]];
+              asginaredicion();
+          }
+
+          // 	 	$("#matchSelect").select2();
+          // 	 	$("#remolque").select2();
+          // 	 	$("#vehiculo").select2();
+          // 	 	$("#chofer").select2();
+
+      }
+
+      var total = 0;
+      $(".contenedor-mapa").append("<span class='float-right' id='kmsInfo'>" + total + " Kms</span>");
+
+      function kmsTotales(result) {
+          $("#kmsInfo").remove();
+          var legs = result.routes[0].legs;
+
+          for (let i = 0; i < legs.length; i++) {
+              total += legs[i].distance.value;
+          }
+          total = parseInt(total / 1000);
+          $(".contenedor-mapa").append("<span class='float-right' id='kmsInfo'>" + total + " Kms</span>");
+
+      };
+
+      function displayRoute(service, display) {
+
+          // 		EJEMPLO UBICACION INICIO O FINAL "-32.88333773455696 68.85851910000001"
+          // 		EJEMPLO WAYPOINTS
+          // 		waypoints: [
+          // 		    {
+          // 		      location: '-32.88333773455696 68.85851910000001',
+          // 		    },{
+          // 		      location: 'Oklahoma City, OK',
+          // 		      stopover: true
+          // 		    }],
+
+          service.route({
+              origin: ubicaciones[0].location,
+              destination: ubicaciones[ubicaciones.length - 1].location,
+              waypoints: arrayWayPoint,
+              travelMode: "DRIVING",
+          }, function (result, status) {
+              if (status === "OK") {
+                  dir = result;
+                  display.setDirections(result);
+                  kmsTotales(result);
+              } else {
+                  alert([[#{ text.alert.error }]] + status);
+              }
+          });
+
+      };
+
+      function validar() {
+          let nuevoOrden = [];
+          for (let i = 0; i < ubicaciones.length; i++) {
+              nuevoOrden.push(ubicaciones[i].id);
+          }
+          viajeModel = {
+              id: $('#idViaje').val(),
+              idVehiculo: $('#vehiculo').val(),
+              idRemolque: $('#remolque').val(),
+              idChofer: $('#chofer').val(),
+              kms: total,
+              nuevoOrdenIds: nuevoOrden,
+              fechaInicio: $("#partida").val(),
+              fechaFinal: $("#llegada").val(),
+              coincidencias: idsMatchs,
+              ubicaciones: ubicaciones,
+
+          };
+          console.log(viajeModel)
+          if (viajeModel.idVehiculo == null || viajeModel.idVehiculo == "" || viajeModel.idRemolque == null || viajeModel.idRemolque == "" || viajeModel.idChofer == null || viajeModel.idChofer == "") {
+              Swal.queue([{
+                  title: [[#{ text.viaje.form.script.validar.completar.campos }]],
+                  confirmButtonText: 'Ok',
+                  icon: "warning",
+              }]);
+          } else {
+              guardar(viajeModel);
+          }
+      }
+
+      function guardar(viajeModel) {
+
+          $.ajax({
+              url: '/api/viajepersonal/guardar',
+              type: 'POST',
+              contentType: 'application/json',
+              dataType: 'json',
+              data: JSON.stringify(viajeModel),
+              success: function (data) {
+                  if (data.error != null) {
+                      Swal.queue([{
+                          title: [[#{ text.strong.error }]],
+                          confirmButtonText: data.error,
+                          icon: "warning",
+                      }]);
+                  } else {
+                      window.location.assign('/dashboard');
+                  }
+              },
+              error: function (data) {
+                  console.log(data)
+              }
+          });
+
+      }
+
+
+
+      const initialPos = {
+          lat: -33.6091754,
+          lng: -63.4685812
+      };
+
+      function initAutocomplete() {
+
+          map = new google.maps.Map(document.getElementById('map'), {
+              center: initialPos,
+              zoom: 6.22,
+              mapTypeId: 'roadmap',
+              zoomControl: true,
+              mapTypeControl: false
+          });
+
+          infowindow = new google.maps.InfoWindow;
+          directionsService = new google.maps.DirectionsService();
+          directionsRenderer = new google.maps.DirectionsRenderer({
+              draggable: false,
+              map: map,
+          });
+
+          markers = [];
+
+          // Create the search box and link it to the UI element.
+          input = document.getElementById('pac-input');
+          searchBox = new google.maps.places.SearchBox(input);
+          map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+          // Bias the SearchBox results towards current map's viewport.
+          map.addListener('bounds_changed', function () {
+              searchBox.setBounds(map.getBounds());
+          });
+
+          // Listen for the event fired when the user selects a prediction and retrieve
+          // more details for that place.
+          searchBox.addListener('places_changed', function () {
+              var places = searchBox.getPlaces();
+              if (places.length === 0) {
+                  return;
+              }
+
+              // Clear out the old markers.
+              markers.forEach(function (marker) {
+                  marker.setMap(null);
+              });
+              markers = [];
+
+              // For each place, get the icon, name and location.
+              var bounds = new google.maps.LatLngBounds();
+              places.forEach(function (place) {
+                  if (!place.geometry) {
+                      console.log("Returned place contains no geometry");
+                      return;
+                  }
+
+                  // Create a marker for each place.
+                  markers.push(new google.maps.Marker({
+                      map: map,
+                      title: place.name,
+                      position: place.geometry.location
+                  }));
+
+                  if (place.geometry.viewport) {
+                      // Only geocodes have viewport.
+                      bounds.union(place.geometry.viewport);
+                  } else {
+                      bounds.extend(place);
+                  }
+              });
+
+              map.fitBounds(bounds);
+
+          });
+      }
+
+      $(function () {
+          $("#sortable").sortable();
+          $("#sortable").disableSelection();
+      });
+    </script>
+
+    <!-- <script src="https://code.jquery.com/jquery-3.5.1.min.js" -->
+    <!--         integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script> -->
+
+    <!-- <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script> -->
+
+    <!-- <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script> -->
+
+    <!-- <script -->
+    <!--         src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" -->
+    <!--         integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" -->
+    <!--         crossorigin="anonymous"></script> -->
+    <!-- <script -->
+    <!--         src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" -->
+    <!--         integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" -->
+    <!--         crossorigin="anonymous"></script> -->
+
+    <!-- <script -->
+    <!--         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDz6kEuRri8bQ3TXQn2e5t0KVBqQpQHbwM&libraries=places&callback=initAutocomplete" -->
+    <!--         defer></script> -->
+  </body>
+</html>

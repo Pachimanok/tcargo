@@ -1,0 +1,64 @@
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 23106851544-9boml5kk5g7th74qdqv21fdkjp2714as.apps.googleusercontent.com
+            client-secret: ePFvEZidM4-tA0ITD_NrDs9f
+          facebook:
+            client-id: 1000096827178543
+            client-secret: b1968df3919d09883168faec8f648c82
+            redirect-uri: https://app.t-cargo.la/login/oauth2/code/facebook
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            required: true
+            enable: true
+    username: info@tcargo.la
+    password: Jim41863355
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 5MB
+  datasource:
+    url: jdbc:mysql://66.97.45.249:3306/tcargo?allowPublicKeyRetrieval=true&useSSL=false&useTimezone=true&serverTimezone=GMT&characterEncoding=UTF-8
+    username: tcargo
+    password: Carmelita23
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+        search:
+          default:
+            directory_provider: filesystem
+            indexBase: /data/lucene
+  resources:
+    cache:
+      cachecontrol:
+        max-age: 365d
+        no-cache: false
+  thymeleaf:
+    cache: false
+  mvc:
+    contentnegotiation:
+      favor-parameter: true
+      media-types:
+        xlsx: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+        pdf: application/pdf
+server:
+  error:
+    whitelabel:
+      enabled: false
+  tomcat:
+    remote-ip-header: x-forwarded-for
+    protocol-header: x-forwarded-proto

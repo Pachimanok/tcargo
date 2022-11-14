@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/componentes/plantilla :: head"></head>
+
+<body class="horizontal-layout horizontal-menu 2-columns  "
+      data-open="hover" data-menu="horizontal-menu" data-col="2-columns">
+
+<nav th:replace="fragments/componentes/plantilla :: header"></nav>
+
+<nav th:replace="fragments/componentes/plantilla :: menu"></nav>
+
+
+<div class="app-content content">
+    <div class="content-overlay"></div>
+    <div class="content-wrapper">
+        <div class="content-header row">
+            <div class="content-header-left col-md-6 col-12 mb-2">
+                <h3 class="content-header-title" th:text="#{text.cargas.titulo}"></h3>
+                <div class="row breadcrumbs-top">
+                    <div class="breadcrumb-wrapper col-12">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a th:href="@{/dashboard}" th:text="#{text.cargas.home}"></a>
+                            </li>
+                            <li class="breadcrumb-item active" th:text="#{text.cargas.subTitulo}"></li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-body">
+            <section id="pagination">
+                <div class="row">
+                    <div class="col-3">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title float-left" th:text="#{text.cargas.filtros}"></h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="card-text">
+                                    <form
+                                            th:if="${#httpServletRequest.requestURI == '/pedido/pedidosofertados'}"
+                                            th:action="@{/pedido/pedidosofertados}"
+                                            th:object="${busqueda}">
+                                        <div class="row">
+                                            <div class="col-sm-12 col-md-12">
+                                                <div class="form-group">
+                                                    <label for="tipoViajeSelect"
+                                                           th:text="#{text.filtro.tipoViaje}"></label> <select
+                                                        id="tipoViajeSelect" class="form-control select2"
+                                                        th:field="*{tipoDeViaje}">
+                                                    <option value="" selected th:text="#{text.filtro.place.tipoViaje}">
+                                                        <!-- viaje -->
+                                                    </option>
+                                                    <option th:each="tv : ${tiposDeViaje}" th:text="${tv}"
+                                                            th:value="${tv}"></option>
+                                                </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12 col-md-12">
+                                                <div class="form-group">
+                                                    <label for="tipoCargaSelect" th:text="#{text.filtro.carga}"></label>
+                                                    <select
+                                                            id="tipoCargaSelect" class="form-control select2"
+                                                            th:field="*{idTipoCarga}">
+                                                        <option value="" selected disabled
+                                                                th:text="#{text.filtro.place.carga}">
+                                                        </option>
+                                                        <option th:each="tc : ${tipoCargas}"
+                                                                th:text="${tc.caracteristicas}"
+                                                                th:value="${tc.id}"></option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12 col-md-12">
+                                                <div class="form-group">
+                                                    <label for="productoSelect"
+                                                           th:text="#{text.filtro.producto}"></label> <select
+                                                        id="productoSelect" class="form-control select2"
+                                                        th:field="*{idProducto}">
+                                                    <option value="" selected disabled
+                                                            th:text="#{text.filtro.place.producto}">
+                                                    </option>
+                                                    <option th:each="p : ${productos}" th:text="${p.nombre}"
+                                                            th:value="${p.id}"></option>
+                                                </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12 col-md-12">
+                                                <label for="recibirOfertas" th:text="#{text.filtro.tipoOferta}"></label>
+                                                <select
+                                                        id="recibirOfertas" class="form-control select2"
+                                                        th:field="*{recibirOfertas}">
+                                                    <option value="" selected th:text="#{text.filtro.place.tipoOferta}">
+                                                    </option>
+                                                    <option th:text="'Recibe Cotizacion'" value="true">
+                                                    <option th:text="'No recibe Cotizacion'" value="false">
+                                                </select>
+                                            </div>
+
+                                            <div class="col-sm-12 col-md-12">
+                                                <label for="otro" th:text="#{text.filtro.otro}"></label> <input
+                                                    id="otro" type="text"
+                                                    class="form-control square"
+                                                    th:field="*{otro}"
+                                                    th:placeholder="#{text.filtro.place.otro}"/>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-1">
+                                            <div class="col-sm-12 col-md-12">
+                                                <label for="fechaCarga" th:text="#{text.filtro.fechaCarga}"></label>
+                                                <input
+                                                        id="fechaCarga" type="date" class="form-control square"
+                                                        th:field="*{fechaCarga}"/>
+                                            </div>
+
+                                            <div class="col-sm-12 col-md-12">
+                                                <label for="fechaDescarga"
+                                                       th:text="#{text.filtro.fechaDescarga}"></label> <input
+                                                    id="fechaDescarga" type="date" class="form-control square"
+                                                    th:field="*{fechaDescarga}"/>
+                                            </div>
+
+                                            <div class="col-sm-12 col-md-12">
+                                                <div class="form-group">
+                                                    <label for="estadoPedidoSelect"
+                                                           th:text="#{text.filtro.estado}"></label> <select
+                                                        id="estadoPedidoSelect" class="form-control select2"
+                                                        th:field="*{estadoPedido}">
+                                                    <option value="" selected
+                                                            th:text="#{text.filtro.place.estado}"></option>
+                                                    <option th:each="e : ${estadoPedidos}"
+                                                            th:text="${e.toString()}" th:value="${e}">
+                                                </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12 col-md-12">
+                                                <label for="myRange" style="display: block;">
+                                                    <span th:text="#{text.filtro.valor}"></span>
+                                                    <span id="valorSpan"></span>
+                                                </label> <input type="range" min="1" max="100000" value="10000"
+                                                                class="slider" id="myRange" th:field="*{valor}"
+                                                                disabled>
+
+                                                <input type="checkbox" id="habilitarRange"/>
+                                                <p th:text="#{text.filtro.valor.habilitar}"></p>
+                                            </div>
+                                            <div class="col-sm-12 col-md-12">
+                                                <button type="submit" name="search" id="search-btn"
+                                                        class="btn btn-success square" style="margin-top: 28px">
+                                                    <i class="la la-search"></i>
+                                                </button>
+                                                <a
+                                                        th:if="${#httpServletRequest.requestURI == '/pedido/pedidosofertados'}"
+                                                        type="button" class="btn btn-info square text-white"
+                                                        th:href="@{/pedido/pedidosofertados}"
+                                                        style="margin-top: 28px"
+                                                        th:text="#{text.filtro.btn.limpiar}"> </a>
+                                            </div>
+                                        </div>
+                                    </form>
+                                    <form
+                                            th:if="${#httpServletRequest.requestURI == '/pedido/matchs'}"
+                                            th:action="@{/pedido/matchs}" th:object="${busqueda}">
+                                        <div class="row">
+                                            <div class="col-sm-12 col-md-12">
+                                                <div class="form-group">
+                                                    <label for="tipoViajeSelectMatch"
+                                                           th:text="#{text.filtro.tipoViaje}"></label> <select
+                                                        id="tipoViajeSelectMatch" class="form-control select2"
+                                                        th:field="*{tipoDeViaje}">
+                                                    <option value="" selected th:text="#{text.filtro.place.tipoViaje}">
+                                                    </option>
+                                                    <option th:each="tv : ${tiposDeViaje}" th:text="${tv}"
+                                                            th:value="${tv}"></option>
+                                                </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12 col-md-12">
+                                                <div class="form-group">
+                                                    <label for="tipoCargaSelectMatch"
+                                                           th:text="#{text.filtro.carga}"></label> <select
+                                                        id="tipoCargaSelectMatch" class="form-control select2"
+                                                        th:field="*{idTipoCarga}">
+                                                    <option value="" selected th:text="#{text.filtro.place.carga}">
+                                                    </option>
+                                                    <option th:each="tc : ${tipoCargas}"
+                                                            th:text="${tc.caracteristicas}"
+                                                            th:value="${tc.id}"></option>
+                                                </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12 col-md-12">
+                                                <div class="form-group">
+                                                    <label for="productoSelectMatch"
+                                                           th:text="#{text.filtro.producto}"></label> <select
+                                                        id="productoSelectMatch" class="form-control select2"
+                                                        th:field="*{idProducto}">
+                                                    <option value="" selected
+                                                            th:text="#{text.filtro.place.producto}"></option>
+                                                    <option th:each="p : ${productos}" th:text="${p.nombre}"
+                                                            th:value="${p.id}"></option>
+                                                </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12 col-md-12">
+                                                <label for="recibirOfertasMatch"
+                                                       th:text="#{text.filtro.tipoOferta}"></label> <select
+                                                    id="recibirOfertasMatch" class="form-control select2"
+                                                    th:field="*{recibirOfertas}">
+                                                <option value="" selected th:text="#{text.filtro.place.tipoOferta}">
+                                                </option>
+                                                <option th:text="'Recibe Cotizacion'" value="true">
+                                                <option th:text="'No recibe Cotizacion'" value="false">
+                                            </select>
+                                            </div>
+
+                                            <div class="col-sm-12 col-md-12">
+                                                <label for="otroMatch" th:text="#{text.filtro.otro}"></label> <input
+                                                    id="otroMatch"
+                                                    type="text"
+                                                    class="form-control square"
+                                                    th:field="*{otro}"
+                                                    th:placeholder="#{text.filtro.place.otro}"/>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-1">
+                                            <div class="col-sm-12 col-md-12">
+                                                <label for="fechaCargaMatch"
+                                                       th:text="#{text.filtro.fechaCarga}"></label> <input
+                                                    id="fechaCargaMatch" type="date"
+                                                    class="form-control square" th:field="*{fechaCarga}"/>
+                                            </div>
+
+                                            <div class="col-sm-12 col-md-12">
+                                                <label for="fechaDescargaMatch"
+                                                       th:text="#{text.filtro.fechaDescarga}"></label> <input
+                                                    id="fechaDescargaMatch" type="date"
+                                                    class="form-control square" th:field="*{fechaDescarga}"/>
+                                            </div>
+
+                                            <div class="col-sm-12 col-md-12">
+                                                <div class="form-group">
+                                                    <label for="estadoPedidoSelectMatch"
+                                                           th:text="#{text.filtro.estado}"></label> <select
+                                                        id="estadoPedidoSelectMatch" class="form-control select2"
+                                                        th:field="*{estadoPedido}">
+                                                    <option value="" selected
+                                                            th:text="#{text.filtro.place.estado}"></option>
+                                                    <option th:each="e : ${estadoPedidos}"
+                                                            th:text="${e.toString()}" th:value="${e}">
+                                                </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12 col-md-12">
+                                                <label for="myRangeMatch" style="display: block;">
+                                                    <span th:text="#{text.filtro.valor}"></span>
+                                                    <span id="valorSpanMatch"></span>
+                                                </label> <input type="range" min="1" max="100000" value="10000"
+                                                                class="slider" id="myRangeMatch" th:field="*{valor}"
+                                                                disabled> <input type="checkbox"
+                                                                                 id="habilitarRangeMatch"/>Match
+                                                <p th:text="#{text.filtro.valor.habilitar}"></p>
+                                            </div>
+                                            <div class="col-sm-12 col-md-12">
+
+                                                <button type="submit" name="search" id="search-btn-match"
+                                                        class="btn btn-success square" style="margin-top: 28px">
+                                                    <i class="la la-search"></i>
+                                                </button>
+                                                <a
+                                                        th:if="${#httpServletRequest.requestURI == '/pedido/matchs'}"
+                                                        type="button" class="btn btn-info square text-white"
+                                                        th:href="@{/pedido/matchs}" style="margin-top: 28px">
+                                                    <span th:text="#{text.filtro.btn.limpiar}"></span>
+                                                </a>
+
+
+                                            </div>
+                                        </div>
+
+
+                                    </form>
+                                    <form
+                                            th:if="${#httpServletRequest.requestURI == '/pedido/chofer/matchs'}"
+                                            th:action="@{/pedido/chofer/matchs}" th:object="${busqueda}">
+                                        <div class="row">
+                                            <div class="col-sm-12 col-md-12">
+                                                <div class="form-group">
+                                                    <label for="tipoViajeSelectMatch"
+                                                           th:text="#{text.filtro.tipoViaje}"></label> <select
+                                                        id="tipoViajeSelectMatch" class="form-control select2"
+                                                        th:field="*{tipoDeViaje}">
+                                                    <option value="" selected th:text="#{text.filtro.place.tipoViaje}">
+                                                    </option>
+                                                    <option th:each="tv : ${tiposDeViaje}" th:text="${tv}"
+                                                            th:value="${tv}"></option>
+                                                </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12 col-md-12">
+                                                <div class="form-group">
+                                                    <label for="tipoCargaSelectMatch"
+                                                           th:text="#{text.filtro.carga}"></label> <select
+                                                        id="tipoCargaSelectMatch" class="form-control select2"
+                                                        th:field="*{idTipoCarga}">
+                                                    <option value="" selected th:text="#{text.filtro.place.carga}">
+                                                    </option>
+                                                    <option th:each="tc : ${tipoCargas}"
+                                                            th:text="${tc.caracteristicas}"
+                                                            th:value="${tc.id}"></option>
+                                                </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12 col-md-12">
+                                                <div class="form-group">
+                                                    <label for="productoSelectMatch"
+                                                           th:text="#{text.filtro.producto}"></label> <select
+                                                        id="productoSelectMatch" class="form-control select2"
+                                                        th:field="*{idProducto}">
+                                                    <option value="" selected
+                                                            th:text="#{text.filtro.place.producto}"></option>
+                                                    <option th:each="p : ${productos}" th:text="${p.nombre}"
+                                                            th:value="${p.id}"></option>
+                                                </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12 col-md-12">
+                                                <label for="recibirOfertasMatch"
+                                                       th:text="#{text.filtro.tipoOferta}"></label> <select
+                                                    id="recibirOfertasMatch" class="form-control select2"
+                                                    th:field="*{recibirOfertas}">
+                                                <option value="" selected th:text="#{text.filtro.place.tipoOferta}">
+                                                </option>
+                                                <option th:text="'Recibe Cotizacion'" value="true">
+                                                <option th:text="'No recibe Cotizacion'" value="false">
+                                            </select>
+                                            </div>
+
+                                            <div class="col-sm-12 col-md-12">
+                                                <label for="otroMatch" th:text="#{text.filtro.otro}"></label> <input
+                                                    id="otroMatch"
+                                                    type="text"
+                                                    class="form-control square"
+                                                    th:field="*{otro}"
+                                                    th:placeholder="#{text.filtro.place.otro}"/>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-1">
+                                            <div class="col-sm-12 col-md-12">
+                                                <label for="fechaCargaMatch"
+                                                       th:text="#{text.filtro.fechaCarga}"></label> <input
+                                                    id="fechaCargaMatch" type="date"
+                                                    class="form-control square" th:field="*{fechaCarga}"/>
+                                            </div>
+
+                                            <div class="col-sm-12 col-md-12">
+                                                <label for="fechaDescargaMatch"
+                                                       th:text="#{text.filtro.fechaDescarga}"></label> <input
+                                                    id="fechaDescargaMatch" type="date"
+                                                    class="form-control square" th:field="*{fechaDescarga}"/>
+                                            </div>
+
+                                            <div class="col-sm-12 col-md-12">
+                                                <div class="form-group">
+                                                    <label for="estadoPedidoSelectMatch"
+                                                           th:text="#{text.filtro.estado}"></label> <select
+                                                        id="estadoPedidoSelectMatch" class="form-control select2"
+                                                        th:field="*{estadoPedido}">
+                                                    <option value="" selected
+                                                            th:text="#{text.filtro.place.estado}"></option>
+                                                    <option th:each="e : ${estadoPedidos}"
+                                                            th:text="${e.toString()}" th:value="${e}">
+                                                </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12 col-md-12">
+                                                <label for="myRangeMatch" style="display: block;">
+                                                    Valor: <span id="valorSpanMatch"></span>
+                                                </label> <input type="range" min="1" max="100000" value="10000"
+                                                                class="slider" id="myRangeMatch" th:field="*{valor}"
+                                                                disabled> <input type="checkbox"
+                                                                                 id="habilitarRangeMatch"/>Match
+                                                <p th:text="#{text.filtro.valor.habilitar}">></p>
+                                            </div>
+                                            <div class="col-sm-12 col-md-12">
+
+                                                <button type="submit" name="search" id="search-btn-match"
+                                                        class="btn btn-success square" style="margin-top: 28px">
+                                                    <i class="la la-search"></i>
+                                                </button>
+                                                <a
+                                                        th:if="${#httpServletRequest.requestURI == '/pedido/chofer/matchs'}"
+                                                        type="button" class="btn btn-info square text-white"
+                                                        th:href="@{/pedido/chofer/matchs}" style="margin-top: 28px">
+                                                    <span th:text="#{text.filtro.btn.limpiar}"></span>
+                                                </a>
+
+
+                                            </div>
+                                        </div>
+
+
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-9">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title float-left" th:text="#{text.cargas.tabla.titulo.titulos}"></h4>
+                                <div class="media width-250 float-right">
+                                    <!--                                  ACCIONES -->
+                                </div>
+                            </div>
+                            <div class="card-body">
+
+                                <div th:if="${error != null}" class="alert alert-danger"
+                                     role="alert">
+                                    <strong>¡Error!</strong> <span th:text="${error}">error</span>
+                                </div>
+
+                                <div class="table table-responsive">
+                                    <table class="table alt-pagination customer-wrapper">
+                                        <thead class="thead-dark">
+                                        <tr>
+                                            <th th:replace="fragments/componentes/paginador :: columna-no-q(campo=p.id,columna='N° Pedido')"></th>
+                                            <th th:text="#{text.cargas.tabla.td.uno}"></th>
+                                            <th th:replace="fragments/componentes/paginador :: columna-no-q(campo=p.estado_pedido,columna='__#{text.cargas.tabla.td.dos}__')"></th>
+                                            <th th:replace="fragments/componentes/paginador :: columna-no-q(campo=pc.inicio,columna='__#{text.cargas.tabla.td.tres}__')"></th>
+                                            <th th:replace="fragments/componentes/paginador :: columna-no-q(campo=p.valor,columna='__#{text.cargas.tabla.td.cuatro}__')"></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+
+                                        <th:block th:each="entidad : ${page}">
+                                            <tr>
+                                                <td class="align-left">
+                                                    <small th:text="|#${entidad.id}|"></small>
+                                                </td>
+                                                <td class="align-left">
+                                                    <div th:each="tc : ${entidad.carga.tipoCargas}">
+                                                        <small th:text="${tc.caracteristicas}"></small>
+                                                        <br/>
+                                                    </div>
+                                                </td>
+                                                <td class="align-left">
+                                                    <span th:if="${entidad.estadoPedido.toString() == 'DISPONIBLE'}"
+                                                          style="font-weight: 700!important;" class="badge badge-info"
+                                                          th:text="${entidad.estadoPedido}"></span>
+                                                    <span th:if="${entidad.estadoPedido.toString() == 'PRIORIDAD'}"
+                                                          style="font-weight: 700!important;" class="badge badge-success"
+                                                          th:text="${entidad.estadoPedido}"></span>
+                                                    <span th:if="${entidad.estadoPedido.toString() == 'ASIGNADO'}"
+                                                          style="font-weight: 700!important; background-color: #4a6e02" class="badge"
+                                                          th:text="${entidad.estadoPedido}"></span>
+                                                    <span th:if="${entidad.estadoPedido.toString() == 'ENTREGADO'}"
+                                                          style="font-weight: 700!important;" class="badge badge-dark"
+                                                          th:text="${entidad.estadoPedido}"></span>
+                                                    <span th:if="${entidad.estadoPedido.toString() == 'VENCIDO'}"
+                                                          style="font-weight: 700!important;" class="badge badge-warning"
+                                                          th:text="${entidad.estadoPedido}"></span>
+                                                    <span th:if="${entidad.estadoPedido.toString() == 'CANCELADO'}"
+                                                          style="font-weight: 700!important;" class="badge badge-danger"
+                                                          th:text="${entidad.estadoPedido}"></span>
+                                                    <br/>
+                                                    <small class="name"
+                                                           th:text="${entidad.carga.producto.nombre}"></small> - <small
+                                                        class="name" th:text="${entidad.carga.peso}"></small> <small
+                                                        class="name" th:text="${entidad.carga.tipoPeso}"></small>
+                                                    <br/>
+                                                    <small class="name" th:text="${entidad.carga.descripcion}"></small>
+                                                    <br/>
+                                                    <br/>
+                                                    <small th:text="${entidad.carga.tipoVehiculo?.nombre}"></small> |
+                                                    <small th:text="${entidad.carga.tipoRemolque?.caracteristicas}"></small>
+                                                    <br/>
+                                                    <small th:text="${entidad.carga.cargaCompleta ? 'Carga Completa' : 'Carga Consolidada'}"></small>
+                                                </td>
+                                                <td class="align-left">
+                                                    <a href="#">
+                                                        <i class="la la-map-marker"></i>
+                                                    </a>
+                                                    <small class="name"
+                                                           th:text="${entidad.ubicacionDesde.direccion}"></small>
+                                                    <br/>
+                                                    <i class="la la-clock-o"></i>
+                                                    <small th:text="${entidad.periodoDeCarga.inicio}"></small> - <small
+                                                        th:text="${entidad.periodoDeCarga.finalizacion}"></small>
+                                                    <br/>
+                                                    <br/>
+                                                    <a href="#">
+                                                        <i class="la la-map-marker"></i>
+                                                    </a>
+                                                    <small class="name"
+                                                           th:text="${entidad.ubicacionHasta.direccion}"></small>
+                                                    <br/>
+                                                    <i class="la la-clock-o"></i>
+                                                    <small th:text="${entidad.periodoDeDescarga.inicio}"></small> -
+                                                    <small th:text="${entidad.periodoDeDescarga.finalizacion}"></small>
+                                                </td>
+
+                                                <td class="align-left">
+                                                    <div class="name" th:if="${entidad.valor != null}"
+                                                         th:text=" ${entidad.moneda != null ? entidad.moneda.simbolo : ''} + ${#numbers.formatDecimal(entidad.valor,1,'POINT',2,'COMMA')}"></div>
+                                                    <div class="name" th:unless="${entidad.valor != null}"
+                                                         th:text="#{text.cargas.tabla.recibe.corizacion}">
+                                                    </div>
+                                                    <div class="name"
+                                                         th:if="${entidad.asignadoATransportador == true and session.rolActual != 'sinRol'}">
+                                                        <span class="badge badge-info" th:text="${'Matcheado'}"></span>
+                                                    </div>
+                                                    <!--                                                     <div class="name" th:id="'divEstado'+${entidad.id}" th:if="${entidad.asignadoATransportador == true AND session.rolActual != 'sinRol' AND session.rolActual != 'admin' AND session.rolActual != 'admin_local'}"> -->
+
+                                                    <!--                                                     </div> -->
+                                                    <div class="dropdown"
+                                                         th:if="${entidad.asignadoATransportador == true and session.rolActual != 'sinRol'}">
+                                                        <a class="btn btn-warning btn-sm dropdown-toggle mt-1"
+                                                           th:id="'divEstado'+${entidad.id}" href="#"
+                                                           role="button" id="dropdownMenuLink"
+                                                           data-toggle="dropdown" aria-haspopup="true"
+                                                           aria-expanded="false"></a>
+
+                                                        <div class="dropdown-menu">
+                                                            <a class="dropdown-item" href="#"
+                                                               th:each="e: ${viajeEstados}" th:text="${e}"
+                                                               th:onclick="actualizarEstado([[${entidad.id}]], [[${e}]])"></a>
+                                                        </div>
+                                                    </div>
+                                                </td>
+
+                                            </tr>
+                                            <tr>
+                                                <td colspan="5" class="align-top pr-0">
+                                                    <div class="pull-right" th:id="${entidad.id}">
+                                                        <a th:if="${entidad.asignadoATransportador == true and session.rolActual != 'sinRol'}" target="_blank"
+                                                           th:href="@{/pedido/ver(id=__${entidad.id}__,format='pdf')}" class="btn btn-sm btn-info white" title="Ver contrato">
+                                                            <span th:text="#{text.cargas.btn.ver-contrato}"></span>
+                                                        </a>
+                                                        <a class="folder btn btn-sm btn-info white mr-1"
+                                                           th:if="${entidad.recibirOfertas == true  && (#httpServletRequest.requestURI == '/pedido/pedidosofertados' OR #httpServletRequest.requestURI == '/pedido/matchs')}"
+                                                           th:href="@{/contraoferta/listado/(idPedido=__${entidad.id}__,rol=__${session.usuario.rol}__)}"
+                                                           th:title="#{text.cargas.btn.title.ofertas}">
+                                                            <i th:id="${entidad.id} + 'dolar'"
+                                                               class="las la-dollar-sign"></i>
+                                                            <span th:text="#{text.cargas.btn.verOfertas}"></span>
+                                                        </a>
+                                                        <a data-toggle="modal" class="btn btn-sm btn-success white"
+                                                           th:data-target="'#' + 'abc' + ${entidad.id.toString()}"
+                                                           title="Ver Detalle">
+                                                            <!--                                                            <i class="las la-eye"></i> -->
+                                                            <span th:text="#{text.cargas.btn.informacion}"></span>
+                                                        </a>
+
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </th:block>
+                                        </tbody>
+                                    </table>
+                                    <div th:replace="fragments/componentes/paginador :: paginador-no-q">...</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </div>
+</div>
+
+
+<div class="sidenav-overlay"></div>
+<div class="drag-target"></div>
+<nav th:replace="fragments/componentes/plantilla :: footer"></nav>
+
+<!-- Modal -->
+<div th:each="entidad : ${page}">
+    <div class="modal fade bd-example-modal-lg"
+         th:id="'abc' + ${entidad.id.toString()} " tabindex="-1" role="dialog"
+         aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-dark">
+                    <!-- <button type="button" class="mr-1"
+                            th:onclick="imprimir([['abc' + ${entidad.id.toString()}]])">
+                        <i class="la la-print"></i>
+                    </button> -->
+
+                    <h5 class="modal-title text-white"
+                        th:text="#{text.cargas.modal.titulo} + ' ' + ${entidad.id}"></h5>
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h4 class="form-section">
+                                <i class="ft-truck"></i>
+                                <span th:text="#{text.cargas.modal.infoGeneral}"></span>
+                            </h4>
+                        </div>
+
+                        <div class="col-md-4 col-sm-4">
+                            <div class="form-group">
+                                <label th:text="#{text.cargas.modal.numeroPedido}"></label>
+                                <p th:text="${entidad.id}"></p>
+
+                            </div>
+                        </div>
+                        <div class="col-md-8 col-sm-8">
+                            <div class="form-group">
+                                <label th:text="#{text.cargas.modal.tipoViaje}"> </label>
+                                <p th:text="${entidad.tipoDeViaje}"></p>
+                            </div>
+                        </div>
+
+                        <div th:if="${entidad.tipoDeViaje.toString() == 'INTERNACIONAL'}"
+                             class="col-md-12 col-sm-12">
+                            <div class="col-md-12 col-sm-12">
+                                <div class="form-group">
+                                    <label th:text="#{text.cargas.modal.contenedor}"> </label>
+                                    <p th:text="${entidad.contenedor.tipoContenedor.caracteristicas}"></p>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-sm-12">
+                                <div class="form-group text-center" style="background: #CB1414; padding: 8px">
+                                    <a class="text-white"
+                                       th:href="@{'http://www.google.com/maps/?q=' + ${entidad.contenedor.ubicacionRetiro.latitud} + ',' +  ${entidad.contenedor.ubicacionRetiro.longitud} }"
+                                       target="_blank" th:text="#{text.cargas.modal.verMapa}"></a>
+                                </div>
+                                <div class="form-group">
+                                    <label for="holdername" th:text="#{text.cargas.modal.retiro}"> </label>
+                                    <p th:text="${entidad.contenedor.ubicacionRetiro.direccion}"></p>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-sm-12"
+                                 th:if="${entidad.contenedor.ubicacionEntrega.latitud != null}">
+                                <div class="form-group text-center" style="background: #CB1414; padding: 8px">
+                                    <a class="text-white"
+                                       th:href="@{'http://www.google.com/maps/?q=' + ${entidad.contenedor.ubicacionEntrega.latitud} + ',' +  ${entidad.contenedor.ubicacionEntrega.longitud} }"
+                                       target="_blank" th:text="#{text.cargas.modal.entrega}"></a>
+                                </div>
+                                <div class="form-group" th:if="${entidad.contenedor.ubicacionEntrega != null}">
+                                    <label for="holdername" th:text="#{text.cargas.modal.entrega}"> </label>
+                                    <p th:text="${entidad.contenedor.ubicacionEntrega.direccion}"></p>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="col-md-3 col-sm-3">
+                            <div class="form-group">
+                                <label th:text="#{text.cargas.modal.nombre}"> </label>
+                                <p th:if="${session.usuario.rol.toString() != 'DADOR_CARGA' && session.usuario.rol.toString() != 'ADMINISTRADOR' && session.usuario.rol.toString() != 'ADMINISTRADOR_LOCAL' && entidad.asignadoATransportador != true}">
+                                    ******</p>
+                                <p th:if="${session.usuario.rol.toString() == 'DADOR_CARGA'  || session.usuario.rol.toString() == 'ADMINISTRADOR' || session.usuario.rol.toString() == 'ADMINISTRADOR_LOCAL' || entidad.asignadoATransportador == true}"
+                                   class="#" th:text="${entidad.dador.nombre}"></p>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-3">
+                            <div class="form-group">
+                                <label th:text="#{text.cargas.modal.email}"> </label>
+                                <p th:if="${session.usuario.rol.toString() != 'DADOR_CARGA' && session.usuario.rol.toString() != 'ADMINISTRADOR' && session.usuario.rol.toString() != 'ADMINISTRADOR_LOCAL' && entidad.asignadoATransportador != true}">
+                                    ******</p>
+                                <p th:if="${session.usuario.rol.toString() == 'DADOR_CARGA'  || session.usuario.rol.toString() == 'ADMINISTRADOR' || session.usuario.rol.toString() == 'ADMINISTRADOR_LOCAL' || entidad.asignadoATransportador == true }"
+                                   class="#" th:text="${entidad.dador.mail}"></p>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-3">
+                            <div class="form-group">
+                                <label th:text="#{text.cargas.modal.telefono}"> </label>
+                                <p th:if="${session.usuario.rol.toString() != 'DADOR_CARGA' && session.usuario.rol.toString() != 'ADMINISTRADOR' && session.usuario.rol.toString() != 'ADMINISTRADOR_LOCAL' && entidad.asignadoATransportador != true}">
+                                    ******</p>
+                                <p th:if="${session.usuario.rol.toString() == 'DADOR_CARGA' || session.usuario.rol.toString() == 'ADMINISTRADOR' || session.usuario.rol.toString() == 'ADMINISTRADOR_LOCAL' || entidad.asignadoATransportador == true}"
+                                   class="#" th:text="${entidad.dador.telefono}"></p>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-3">
+                            <div class="form-group">
+                                <label th:text="#{text.cargas.modal.fechaCreacion}"> </label>
+                                <p th:text="${entidad.modificacion} ? ${#dates.format(entidad.modificacion, 'dd-MM-yyyy')}"></p>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <h4 class="form-section">
+                                <i class="ft-package"></i>
+                                <span th:text="#{text.cargas.modal.informacionCarga}"></span>
+                            </h4>
+                        </div>
+
+                        <div class="col-md-6 col-sm-6">
+                            <div class="form-group">
+                                <label th:text="#{text.cargas.modal.tipoCarga}"> </label>
+                                <p th:if="${#lists.size(entidad.carga.tipoCargas) > 0}"
+                                   th:each="tc : ${entidad.carga.tipoCargas}" th:text="${tc.caracteristicas}"></p>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-sm-6">
+                            <div class="form-group">
+                                <label th:text="#{text.cargas.modal.descripcion}"> </label>
+                                <p th:text="${entidad.carga.descripcion}"></p>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-3">
+                            <div class="form-group">
+                                <label th:text="#{text.cargas.modal.peso}"> </label>
+                                <p th:text="${entidad.carga.peso} +' '+ ${entidad.carga.tipoPeso.toString()} "></p>
+                            </div>
+                        </div>
+                        <div class="col-md-2 col-sm-2">
+                            <div class="form-group">
+                                <label th:text="#{text.cargas.modal.camion}"> </label>
+                                <p th:text="${entidad.carga.cantidadCamiones}"></p>
+                            </div>
+                        </div>
+                        <div class="col-md-2 col-sm-2">
+                            <div class="form-group">
+                                <label th:text="#{text.cargas.modal.remolque}"> </label>
+                                <p th:text="${entidad.carga.tipoRemolque?.caracteristicas}"></p>
+                            </div>
+                        </div>
+                        <div class="col-md-2 col-sm-2">
+                            <div class="form-group">
+                                <label th:text="#{text.cargas.modal.embalaje}"> </label>
+                                <p th:text="${entidad.carga.tipoEmbalaje.caracteristicas}"></p>
+                            </div>
+                        </div>
+                        <div class="col-md-2 col-sm-2">
+                            <div class="form-group">
+                                <label th:text="#{text.cargas.modal.producto}"> </label>
+                                <p th:text="${entidad.carga.producto.nombre}"></p>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4 col-sm-4">
+                            <div class="form-group">
+                                <label for="holdername" th:text="#{text.cargas.modal.custodia}"></label>
+                                <input type="checkbox" disabled="disabled"
+                                       th:if="${entidad.carga.conCustodia != null}"
+                                       th:checked="${entidad.carga.conCustodia ?  true : false}"/>
+                                <input type="checkbox" disabled="disabled"
+                                       th:unless="${entidad.carga.conCustodia != null}"/>
+
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-4">
+                            <div class="form-group">
+                                <label for="holdername" th:text="#{text.cargas.modal.seguro}"> </label>
+                                <input type="checkbox" disabled="disabled"
+                                       th:if="${entidad.carga.seguroCarga != null}"
+                                       th:checked="${entidad.carga.seguroCarga ?  true : false}"/>
+                                <input type="checkbox" disabled="disabled"
+                                       th:unless="${entidad.carga.seguroCarga != null}"/>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-4">
+                            <div class="form-group">
+                                <label for="holdername" th:text="#{text.cargas.modal.indivisible}"> </label>
+                                <input type="checkbox" disabled="disabled"
+                                       th:if="${entidad.carga.indivisible != null}"
+                                       th:checked="${entidad.carga.indivisible ?  true : false}"/>
+                                <input type="checkbox" disabled="disabled"
+                                       th:unless="${entidad.carga.indivisible != null}"/>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-sm-12">
+                            <div class="form-group">
+                                <!--                                    TODO traducir esto-->
+                                <label>Requisitos</label>
+                                <p th:each="requisito : ${entidad.tipoRequisitos}" th:text="${requisito.nombre}"></p>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <h4 class="form-section">
+                                <i class="ft-globe"></i>
+                                <span th:text="#{text.cargas.modal.ubicacion}"></span>
+                            </h4>
+                        </div>
+                        <div class="col-md-6 col-sm-6">
+
+                            <div class="form-group">
+                                <p th:text="${entidad.ubicacionDesde.direccion}"></p>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-sm-6">
+                            <div class="form-group">
+                                <p th:text="${entidad.ubicacionHasta.direccion}"></p>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-sm-6">
+                            <div class="form-group">
+                                <label th:text="#{text.cargas.modal.inicioCarga}"> </label>
+                                <p th:text="${entidad.periodoDeCarga.inicio}"></p>
+                                <label th:text="#{text.cargas.modal.finalCarga}"> </label>
+                                <p th:text="${entidad.periodoDeCarga.finalizacion}"></p>
+                                <label th:text="#{text.cargas.moda.estadia.duracion}"> </label>
+                                <p th:text="${duracionEstadias[__${entidad.id}__+'carga']} + ' hs'"></p>
+                            </div>
+
+                            <div class="form-group text-center">
+                                <a class="btn btn-light form-control"
+                                   th:href="@{'http://www.google.com/maps/?q=' + ${entidad.ubicacionDesde.latitud} + ',' +  ${entidad.ubicacionDesde.longitud} }"
+                                   target="_blank">
+                                    <i class="la la-map-marker"></i>
+                                    <span th:text="#{text.cargas.modal.verMapa}"></span>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-sm-6">
+                            <div class="form-group">
+                                <label th:text="#{text.cagas.modal.inicioDescarga}"> </label>
+                                <p th:text="${entidad.periodoDeDescarga.inicio}"></p>
+                                <label th:text="#{text.cagas.modal.finalDescarga}"> </label>
+                                <p th:text="${entidad.periodoDeDescarga.finalizacion}"></p>
+                                <label th:text="#{text.cargas.moda.estadia.duracion}"> </label>
+                                <p th:text="${duracionEstadias[__${entidad.id}__+'descarga']} + ' hs'"></p>
+                            </div>
+                            <div class="form-group text-center">
+                                <a class="btn btn-light form-control"
+                                   th:href="@{'http://www.google.com/maps/?q=' + ${entidad.ubicacionHasta.latitud} + ',' +  ${entidad.ubicacionHasta.longitud} }"
+                                   target="_blank">
+                                    <i class="la la-map-marker"></i>
+                                    <span th:text="#{text.cargas.modal.verMapa}"></span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-sm-12" th:if="${entidad.kmTotales != null}">
+                            <div class="form-group">
+                                <label class="text-right" style="width: 100%;"
+                                       th:text="#{text.cargas.modal.kmsTotal} + ' ' +${entidad.kmTotales}"></label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <h4 class="form-section">
+                                <i class="ft-credit-card"></i>
+                                <span th:text="#{text.cargas.modal.cotizacion}"></span>
+                            </h4>
+                        </div>
+
+                        <div class="col-md-12 col-sm-12" th:if="${entidad.recibirOfertas == true}">
+                            <div class="form-group">
+                                <p class="text-center" th:text="#{text.cargas.modal.aptoOfertar}">></p>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-sm-6" th:if="${entidad.valor != null}">
+                            <div class="form-group">
+                                <label th:text="#{text.cargas.modal.moneda}"></label>
+                                <p>
+                                    <span th:if="${entidad.valor != null}"
+                                          th:text="${#numbers.formatDecimal(entidad.valor,1,'POINT',2,'COMMA')}"></span>
+                                    <span th:if="${entidad.moneda != null}"
+                                          th:text="${entidad.moneda.simbolo}"></span>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-sm-6" th:if="${!#strings.isEmpty(entidad.descripcion)}">
+                            <div class="form-group">
+                                <label th:text="#{text.cargas.modal.condicionesPago}"></label>
+                                <p th:text="${entidad.descripcion}"></p>
+
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-sm-12"
+                             th:if="${entidad.pagaAlTransportista != null AND entidad.pagaAlTransportista == true}">
+                            <div class="form-group" style="background: #21DAEC; padding: 8px">
+                                <p class="text-center" th:text="#{text.cargas.modal.pagoDirecto}"></p>
+                            </div>
+                        </div>
+                        <!--						FIN BOTON ACEPTAR PEDIDO -->
+
+                        <!-- 						SECCION CONTRAOFERTA -->
+
+                        <!--                         <form class="col-md-12 col-sm-12" -->
+                        <!--                               th:if="${session.usuario.rol.toString() == 'TRANSPORTADOR' || session.usuario.rol.toString() == 'AMBAS'}" -->
+                        <!--                               th:action="@{/contraoferta/guardar/}" -->
+                        <!--                               method="POST" th:object="${contraOferta}"> -->
+
+                        <!--                             <div class="row" -->
+                        <!--                                  th:if="${entidad.recibirOfertas == true && entidad.asignadoATransportador != true}"> -->
+                        <!--                                 <input type="hidden" th:value="${session.usuario.id}" name="idUser"/> -->
+                        <!--                                 <input type="hidden" th:value="${entidad.dador.id}" th:name="idDador"/> -->
+                        <!--                                 <input type="hidden" th:value="${entidad.id}" th:name="idPedido"/> -->
+
+                        <!--                                 <div class="col-md-12 col-sm-12"> -->
+                        <!--                                     <div class="form-group alert"> -->
+                        <!--                                         <label class="form-control text-center alert alert-info"> Apto para ofertar </label> -->
+                        <!--                                     </div> -->
+                        <!--                                 </div> -->
+
+                        <!--                                 <div class="col-md-12 col-sm-12"> -->
+                        <!--                                     <div class="form-group"> -->
+                        <!--                                         <label for="holdername">Valor <span class="danger"> * </span></label> -->
+                        <!--                                         <input class="form-control" th:field="*{valor}" -->
+                        <!--                                                placeholder="Ingrese el valor de la oferta" type="text" required/> -->
+                        <!--                                     </div> -->
+                        <!--                                 </div> -->
+                        <!--                                 <div class="col-md-4 col-sm-4"> -->
+                        <!--                                     <div class="form-group"> -->
+                        <!--                                         <label for="holdername">Incluye seguro de carga?</label> -->
+                        <!--                                         <input type="checkbox" th:field="*{seguroCarga}"/> -->
+                        <!--                                     </div> -->
+                        <!--                                 </div> -->
+                        <!--                                 <div class="col-md-4 col-sm-4"> -->
+                        <!--                                     <div class="form-group"> -->
+                        <!--                                         <label for="holdername">Dias Libres</label> -->
+                        <!--                                         <input type="number" th:field="*{diasLibres}"/> -->
+                        <!--                                     </div> -->
+                        <!--                                 </div> -->
+                        <!--                                 <div class="col-md-4 col-sm-4"> -->
+                        <!--                                     <div class="form-group"> -->
+                        <!--                                         <label for="holdername">Incluye IVA</label> -->
+                        <!--                                         <input type="checkbox" th:field="*{incluyeIva}"/> -->
+                        <!--                                     </div> -->
+                        <!--                                 </div> -->
+                        <!--                                 <div class="col-md-12 col-sm-12"> -->
+                        <!--                                     <div class="form-group"> -->
+                        <!--                                         <label for="holdername">Comentarios</label> -->
+                        <!--                                         <textarea class="form-control" th:field="*{comentarios}"></textarea> -->
+                        <!--                                     </div> -->
+                        <!--                                 </div> -->
+                        <!--                                 <div class="col-md-6 col-sm-6"> -->
+                        <!--                                     <div class="form-group"> -->
+                        <!--                                         <label for="holdername">Vehiculo<span class="danger"> * </span></label> -->
+                        <!--                                         <select class="form-control select2" id="holdername" th:field="*{idVehiculo}"> -->
+                        <!--                                             <option th:each="v : ${vehiculos}" -->
+                        <!--                                                     th:text="${v.modelo.nombre} +' - ' + ${v.dominio} " -->
+                        <!--                                                     th:value="${v.id}" th:select="${contraOferta.idVehiculo == v.id}"> -->
+                        <!--                                         </select> -->
+                        <!--                                     </div> -->
+                        <!--                                 </div> -->
+                        <!--                                 <div class="col-md-6 col-sm-62"> -->
+                        <!--                                     <div class="form-group"> -->
+                        <!--                                         <label for="holdername">Remolque<span class="danger"> * </span></label> -->
+                        <!--                                         <select class="form-control select2" id="holdername" th:field="*{idRemolque}"> -->
+                        <!--                                             <option th:each="v : ${remolques}" -->
+                        <!--                                                     th:text="${v.tipoRemolque.caracteristicas} +' - ' + ${v.dominio} " -->
+                        <!--                                                     th:value="${v.id}" th:select="${contraOferta.idRemolque == v.id}"> -->
+                        <!--                                         </select> -->
+                        <!--                                     </div> -->
+                        <!--                                 </div> -->
+                        <!--                                 <div class="col-md-4 col-sm-4" th:if="${#strings.contains(#strings.toLowerCase(entidad.carga.tipoCarga.caracteristicas), 'peligros') }" > -->
+                        <!--                                     <div class="form-group"> -->
+                        <!--                                         <label for="holdername">Tengo cartelería para carga peligrosa?</label> -->
+                        <!--                                         <input type="checkbox" th:field="*{carteleriaCargaPeligrosa}"/> -->
+                        <!--                                     </div> -->
+                        <!--                                 </div> -->
+                        <!--                                 <div class="col-md-4 col-sm-4" th:if="${#strings.toLowerCase(entidad.tipoDeViaje) == 'internacional'}"> -->
+                        <!--                                     <div class="form-group"> -->
+                        <!--                                         <label for="holdername">Incluye costo de bajada a piso?</label> -->
+                        <!--                                         <br> -->
+                        <!--                                         <input type="checkbox" th:field="*{incluyeBajadaAPiso}"/> -->
+                        <!--                                     </div> -->
+                        <!--                                 </div> -->
+                        <!--                                 <div class="col-md-4 col-sm-4" th:if="${#strings.toLowerCase(entidad.tipoDeViaje) == 'internacional'}"> -->
+                        <!--                                     <div class="form-group"> -->
+                        <!--                                         <label for="holdername">Aduana</label> -->
+                        <!--                                         <br> -->
+                        <!--                                         <input type="checkbox" th:field="*{aduana}"/> -->
+                        <!--                                     </div> -->
+                        <!--                                 </div> -->
+                        <!--                                 <div class="col-md-12 col-sm-12"> -->
+                        <!--                                     <button type="submit" class="btn btn-primary float-right" -->
+                        <!--                                             th:if="${accion == null or accion == 'guardar'}"> -->
+                        <!--                                         <i class="la la-check"></i>Guardar -->
+                        <!--                                     </button> -->
+                        <!--                                 </div> -->
+                        <!--                             </div> -->
+                        <!--                         </form> -->
+
+                        <!-- 						</div>	 -->
+                        <!-- 							FIN SECCION CONTRAOFERTA -->
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary"
+                            data-dismiss="modal">
+                        <span th:text="#{text.cargas.modal.cerrar}"></span>
+                    </button>
+                    <button type="button" class="btn btn-info r-1"
+                            th:onclick="imprimir([['abc' + ${entidad.id.toString()}]])">
+                        <i class="la la-print"></i>
+                        <span th:text="#{text.cargas.modal.imprimir}"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script th:inline="javascript">
+    let matchModel = [[${matchsModels}]];
+
+    if (matchModel != null) {
+        for (let i = 0; i < matchModel.length; i++) {
+            $("#divEstado" + matchModel[i].idPedido).text(matchModel[i].viaje.estadoString)
+        }
+    }
+
+    function actualizarEstado(id, estado) {
+        Swal.fire({
+            title: [[#{text.viaje.form.script.actualizar.estado}]],
+            showCancelButton: true,
+            confirmButtonText: [[#{text.btn.actualizar}]],
+            cancelButtonText: [[#{text.btn.cancelar}]],
+        }).then((result) => {
+            if (result.isConfirmed) {
+                llamadaAjax(id, estado)
+            } else {
+                Swal.fire([[#{text.viaje.form.script.cambios.desestimados}]])
+            }
+        });
+    }
+
+    let rolActual = [[${session.rolActual}]];
+
+    function llamadaAjax(id, estado) {
+
+        let entidad = {
+            idPedido: id,
+            viaje: viaje = {
+                estadoViaje: estado,
+            },
+        }
+        let urlDestino;
+        if (rolActual === 'transportador') {
+            urlDestino = '/pedido/matchs';
+        } else if (rolActual === 'chofer') {
+            urlDestino = '/pedido/chofer/matchs';
+        }
+        $.ajax({
+            url: '/api/viaje/actualizarestado',
+            data: JSON.stringify(entidad),
+            type: 'POST',
+            contentType: 'application/json',
+            dataType: 'json',
+            success: function (data) {
+                console.log(data)
+                if (data.error) {
+                    Swal.fire(data.error);
+                } else {
+                    Swal.fire({
+                        title: [[#{text.viaje.form.script.actualizado.exito}]],
+                        confirmButtonText: `OK`,
+                    }).then((result) => {
+                        /* Read more about isConfirmed, isDenied below */
+                        if (result.isConfirmed) {
+                            window.location.href = urlDestino;
+                        }
+                    });
+                }
+            },
+            error: function (data) {
+                Swal.fire(data.responseJSON.Error)
+            }
+        });
+    }
+
+    if (window.location.href.indexOf("pedidosofertados") !== -1) {
+        const slider = document.getElementById("myRange");
+        const output = document.getElementById("valorSpan");
+        output.innerHTML = slider.value;
+        slider.oninput = function () {
+            output.innerHTML = this.value;
+        };
+        document.getElementById("habilitarRange").addEventListener("click", () => {
+            slider.disabled = !slider.disabled;
+        });
+    }
+
+    if (window.location.href.indexOf("matchs") !== -1) {
+        const slider2 = document.getElementById("myRangeMatch");
+        const output2 = document.getElementById("valorSpanMatch");
+        output2.innerHTML = slider2.value;
+        slider2.oninput = function () {
+            output2.innerHTML = this.value;
+        };
+        document.getElementById("habilitarRangeMatch").addEventListener("click", () => {
+            slider2.disabled = !slider2.disabled;
+        });
+    }
+
+    let idsParaNotificar = [[${idsParaNotificar}]];
+    var target;
+    if (idsParaNotificar != null) {
+        if (idsParaNotificar.length > 0) {
+
+            for (let i of idsParaNotificar) {
+                target = $("#" + i + 'dolar');
+                $(target).removeClass("success");
+                $(target).addClass('warning');
+                $(target).addClass('loop');
+            }
+
+            function runIt() {
+
+                $('.loop').animate({opacity: '1'}, 700);
+                $('.loop').animate({opacity: '0'}, 700, runIt);
+            }
+
+            runIt();
+        }
+    }
+
+
+    function validar() {
+        let ids = [];
+        let cont = 0;
+        let checks = $(".check");
+        for (let i = 0; i < checks.length; i++) {
+            if (checks[i].checked == false) {
+                cont = cont + 1;
+            } else {
+                ids.push(checks[i].value);
+            }
+        }
+        if (cont == checks.length) {
+            Swal.queue([{
+                title: [[#{text.cargas.script.selecciona.pedido}]],
+                confirmButtonText: 'Ok',
+            }]);
+        } else {
+            window.location.assign('/contraoferta/formulario?idPedidos=' + ids);
+        }
+    }
+
+    function alerta() {
+        Swal.queue([{
+            title: [[#{text.cargas.script.seguro.eliminar}]],
+            text: [[#{text.cargas.script.recuerda.eliminaras}]],
+            confirmButtonText: [[#{text.option.si}]],
+            showCancelButton: true,
+            cancelButtonText: [[#{text.option.no}]],
+            cancelButtonColor: '#d33',
+            icon: "question",
+            showLoaderOnConfirm: true,
+            preConfirm: () => {
+                eliminar();
+            }
+        }]);
+    };
+
+
+    function alerta(cargaId, dadorId) {
+        Swal.queue([{
+            title: [[#{text.cargas.script.seguro.eliminar}]],
+            text: [[#{text.cargas.script.recuerda.eliminaras}]],
+            confirmButtonText: [[#{text.option.si}]],
+            showCancelButton: true,
+            cancelButtonText: [[#{text.option.no}]],
+            cancelButtonColor: '#d33',
+            icon: "question",
+            showLoaderOnConfirm: true,
+            preConfirm: () => {
+                eliminar(cargaId, dadorId);
+            }
+        }]);
+    };
+
+    function eliminar(cargaId, dadorId) {
+        $.ajax({
+            url: '/api/pedido/eliminar-grupo',
+            dataType: 'text',
+            data: {
+                cargaId: cargaId,
+                dadorId: dadorId,
+            },
+            type: 'GET',
+
+            success: function (data) {
+
+                window.location.assign('/pedido/cargas');
+
+            },
+            error: function (data) {
+                console.log('ERROR');
+            }
+        });
+    };
+
+    function imprimir(id) {
+        $("#" + id).printMe(
+            {"path": ["/app-assets/css/bootstrap.css", "/app-assets/css/colors.css"]}
+        );
+    };
+</script>
+
+
+</body>
+
+</html>

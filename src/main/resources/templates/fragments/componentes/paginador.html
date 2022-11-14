@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+<!-- PARA VISTAS QUE USEN q COMO UNICO PARAMETRO DE BUSQUEDA -->
+<div th:fragment="paginador">
+    <div style="text-align: center">
+        <div class="btn-group mr-1 mb-1">
+         	<a class="btn btn-secondary" th:if="${page.number + 1 ge 2}" 
+         	th:href="@{${url}(page=${page.number-1},size=${page.size},q=${q},sort=${sort_field == null ? '' : sort_field + ',' + sort_dir})}">
+                <i class="la la-arrow-left floatl lblue"></i>
+            </a>
+              <a class="#" th:if="${page.number le 2}" th:class="${page.number eq pageNo}? 'btn btn-primary' : 'btn btn-secondary'"
+               th:each="pageNo, iStat : ${#numbers.sequence(0, page.totalPages <= page.number + 2 ? page.totalPages - 1 : page.number + 2)}"
+               th:href="@{${url}(page=${pageNo},size=${page.size},q=${q},sort=${sort_field == null ? '' : sort_field + ',' + sort_dir})}">
+                <span th:if="${pageNo ge 0}" th:text="${pageNo + 1}"></span>
+            </a>
+            <a class="#" th:if="${page.number gt 2}" th:class="${page.number eq pageNo}? 'btn btn-primary' : 'btn btn-secondary'"
+               th:each="pageNo, iStat : ${#numbers.sequence(page.number - 2, page.totalPages <= page.number + 2 ? page.totalPages - 1 : page.number + 2)}"
+               th:href="@{${url}(page=${pageNo},size=${page.size},q=${q},sort=${sort_field == null ? '' : sort_field + ',' + sort_dir})}">
+                <span th:if="${pageNo ge 0}" th:text="${pageNo + 1}"></span>
+            </a>
+            <a class="btn btn-secondary" th:if="${page.number + 1 lt page.totalPages}"  
+            	th:href="@{${url}(page=${page.number+1},size=${page.size},q=${q},sort=${sort_field == null ? '' : sort_field + ',' + sort_dir})}">
+                <i class="la la-arrow-right floatl lblue"></i>
+            </a>
+        </div>
+        <div class="col-sm-12" style="font-size: 11px;">
+            Mostrando <span th:text="${page.numberOfElements}"></span> de <span th:text="${page.totalElements}"></span>
+            objetos.
+        </div>
+    </div>
+</div>
+<th:block th:fragment="columna">
+    <th>
+        <div class="float-left" style="color:white;">
+            <a style="color:white;" th:text="${columna}"
+               th:href="@{${url}(page=0,size=${page.size},q=${q},sort=${sort_dir == null or sort_dir == 'DESC' ? campo + ',asc' : campo + ',desc'})}"> </a>
+            <i th:if="${sort_field == campo and sort_dir == 'DESC'}" class="la la-angle-down"></i>
+            <i th:if="${sort_field == campo and sort_dir == 'ASC'}" class="la la-angle-up"></i>
+        </div>
+    </th>
+</th:block>
+
+<!-- PARA VISTAS QUE NO USEN q COMO PARAMETRO DE BUSQUEDA -->
+<div th:fragment="paginador-no-q">
+    <div style="text-align: center">
+        <div class="btn-group mr-1 mb-1">
+         	<a class="btn btn-secondary" th:if="${page.number + 1 ge 2}" th:href="@{${url}(page=${page.number-1},size=${page.size},sort=${sort_field == null ? '' : sort_field + ',' + sort_dir})}">
+                <i class="la la-arrow-left floatl lblue"></i>
+            </a>
+            <a class="#" th:if="${page.number le 2}" th:class="${page.number eq pageNo}? 'btn btn-primary' : 'btn btn-secondary'"
+               th:each="pageNo, iStat : ${#numbers.sequence(0, page.totalPages <= page.number + 2 ? page.totalPages - 1 : page.number + 2)}"
+               th:href="@{${url}(page=${pageNo},size=${page.size},sort=${sort_field == null ? '' : sort_field + ',' + sort_dir})}">
+                <span th:if="${pageNo ge 0}" th:text="${pageNo + 1}"></span>
+            </a>
+           
+            <a class="#" th:if="${page.number gt 2}" th:class="${page.number eq pageNo}? 'btn btn-primary' : 'btn btn-secondary'"
+               th:each="pageNo, iStat : ${#numbers.sequence(page.number - 2, page.totalPages <= page.number + 2 ? page.totalPages - 1 : page.number + 2)}"
+               th:href="@{${url}(page=${pageNo},size=${page.size},sort=${sort_field == null ? '' : sort_field + ',' + sort_dir})}">
+                <span th:if="${pageNo ge 0}" th:text="${pageNo + 1}"></span>
+            </a>
+            <a class="btn btn-secondary" th:if="${page.number + 1 lt page.totalPages}"
+               th:href="@{${url}(page=${page.number+1},size=${page.size},sort=${sort_field == null ? '' : sort_field + ',' + sort_dir})}">
+                <i class="la la-arrow-right floatl lblue"></i>
+            </a>
+        </div>
+        <div class="col-sm-12" style="font-size: 11px;">
+            Mostrando <span th:text="${page.numberOfElements}"></span> de <span th:text="${page.totalElements}"></span>
+            objetos.
+        </div>
+    </div>
+</div>
+<th:block th:fragment="columna-no-q">
+    <th>
+
+        <div class="float-left" style="color:white;">
+            <a style="color:white;" th:text="${columna}"
+               th:href="@{${url}(page=0,size=${page.size},sort=${sort_dir == null or sort_dir == 'DESC' ? campo + ',asc' : campo + ',desc'})}"> </a>
+            <i th:if="${sort_field == campo and sort_dir == 'DESC'}" class="la la-angle-down"></i>
+            <i th:if="${sort_field == campo and sort_dir == 'ASC'}" class="la la-angle-up"></i>
+        </div>
+    </th>
+</th:block>
+
+
+<!-- PARA VISTA VALORACIONES  -->
+<div th:fragment="paginador-no-q-valoraciones">
+    <div style="text-align: center">
+        <div class="btn-group mr-1 mb-1">
+            <a class="btn btn-secondary" th:if="${page.number + 1 ge 2}" th:href="@{${url}(propio=${propio},page=${page.number-1},size=${page.size},sort=${sort_field == null ? '' : sort_field + ',' + sort_dir})}">
+                <i class="la la-arrow-left floatl lblue"></i>
+            </a>
+            <a class="#" th:if="${page.number le 2}" th:class="${page.number eq pageNo}? 'btn btn-primary' : 'btn btn-secondary'"
+               th:each="pageNo, iStat : ${#numbers.sequence(0, page.totalPages <= page.number + 2 ? page.totalPages - 1 : page.number + 2)}"
+               th:href="@{${url}(propio=${propio},page=${pageNo},size=${page.size},sort=${sort_field == null ? '' : sort_field + ',' + sort_dir})}">
+                <span th:if="${pageNo ge 0}" th:text="${pageNo + 1}"></span>
+            </a>
+
+            <a class="#" th:if="${page.number gt 2}" th:class="${page.number eq pageNo}? 'btn btn-primary' : 'btn btn-secondary'"
+               th:each="pageNo, iStat : ${#numbers.sequence(page.number - 2, page.totalPages <= page.number + 2 ? page.totalPages - 1 : page.number + 2)}"
+               th:href="@{${url}(propio=${propio},page=${pageNo},size=${page.size},sort=${sort_field == null ? '' : sort_field + ',' + sort_dir})}">
+                <span th:if="${pageNo ge 0}" th:text="${pageNo + 1}"></span>
+            </a>
+            <a class="btn btn-secondary" th:if="${page.number + 1 lt page.totalPages}"
+               th:href="@{${url}(propio=${propio},page=${page.number+1},size=${page.size},sort=${sort_field == null ? '' : sort_field + ',' + sort_dir})}">
+                <i class="la la-arrow-right floatl lblue"></i>
+            </a>
+        </div>
+        <div class="col-sm-12" style="font-size: 11px;">
+            Mostrando <span th:text="${page.numberOfElements}"></span> de <span th:text="${page.totalElements}"></span>
+            objetos.
+        </div>
+    </div>
+</div>
+<th:block th:fragment="columna-no-q-valoraciones">
+    <th>
+
+        <div class="float-left" style="color:white;">
+            <a style="color:white;" th:text="${columna}"
+               th:href="@{${url}(propio=${propio},page=0,size=${page.size},sort=${sort_dir == null or sort_dir == 'DESC' ? campo + ',asc' : campo + ',desc'})}"> </a>
+            <i th:if="${sort_field == campo and sort_dir == 'DESC'}" class="la la-angle-down"></i>
+            <i th:if="${sort_field == campo and sort_dir == 'ASC'}" class="la la-angle-up"></i>
+        </div>
+    </th>
+</th:block>
+</body>
+</html>

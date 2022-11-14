@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/componentes/plantilla :: head"></head>
+
+<body class="horizontal-layout horizontal-menu 2-columns  "
+      data-open="hover" data-menu="horizontal-menu" data-col="2-columns">
+
+<nav th:replace="fragments/componentes/plantilla :: header"></nav>
+
+<nav th:replace="fragments/componentes/plantilla :: menu"></nav>
+
+
+<div class="app-content content">
+    <div class="content-overlay"></div>
+    <div class="content-wrapper">
+        <div class="content-header row">
+            <div class="content-header-left col-md-6 col-12 mb-2">
+                <h3 class="content-header-title"
+                    th:text="#{text.cargas.form.titulo}">
+                </h3>
+                <div class="row breadcrumbs-top">
+                    <div class="breadcrumb-wrapper col-12">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a th:href="@{/dashboard}"
+                                   th:text="#{text.cargas.form.home}">
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item active"
+                                th:text="#{text.cargas.form.subtitle}">
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+            <div class="content-header-right col-md-6 col-12">
+                <div class="media width-250 float-right">
+                    <div class="media-body media-right text-right">
+                        <a href="#"
+                           onclick="history.back()"
+                           class="btn btn-icon btn-secondary mr-1 mb-1">
+                            <i class="la la-chevron-left"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="content-body">
+            <section id="pagination">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header bg-light black">
+                                <h4 class="card-title black"
+                                    th:if="${accion == null or accion == 'guardar'}"
+                                    th:text="#{text.cargas.form.btn.crear}">
+                                </h4>
+                                <h4 class="card-title black"
+                                    th:if="${accion == 'actualizar'}"
+                                    th:text="#{text.cargas.form.btn.editar}">
+                                </h4>
+                                <h4 class="card-title black"
+                                    th:if="${accion == 'eliminar'}"
+                                    th:text="#{text.cargas.form.btn.eliminar}">
+                                </h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="card-text">
+                                    <div th:if="${viaje != null}"
+                                         class="alert alert-info"
+                                         role="alert">
+                                        <strong th:text="#{text.cargas.form.alert.atencion}"></strong>
+                                        <span th:text="#{text.cargas.form.alert.viaje.notificiacion}"></span>
+                                    </div>
+                                    <div th:if="${error != null}"
+                                         class="alert alert-danger"
+                                         role="alert">
+                                        <strong th:text="#{text.cargas.form.alert.error}"></strong>
+                                        <span th:text="${error}">error</span>
+                                    </div>
+                                    <div id="errorDiv"
+                                         style="display: none"
+                                         class="alert alert-danger"
+                                         role="alert">
+                                        <strong th:text="#{text.cargas.form.alert.error}"></strong>
+                                        <span id="error"></span>
+                                    </div>
+
+                                    <div th:if="${accion == 'eliminar'}"
+                                         class="alert alert-danger"
+                                         role="alert">
+                                        <strong th:text="#{text.cargas.form.alert.alto}"></strong>
+                                        <span th:text="#{text.cargas.form.alert.confimacion.eliminacion}"></span>
+                                    </div>
+                                </div>
+                                <form method="POST"
+                                      th:action="@{/pedido/__${accion == null or accion == 'actualizar' ? 'guardar' : accion}__}"
+                                      id="formulario" novalidate="novalidate" th:object="${pedido}">
+                                    <input type="hidden" th:field="*{id}" th:value="*{id}"/>
+                                    <input type="hidden" th:if="${session.rolActual == 'dador'}" th:value="${session.usuario.id}" name="dadorId"/>
+                                    <input th:if="${pedido.carga.id != null}" type="hidden" th:field="*{carga.id}" th:value="${pedido.carga.id}"/>
+                                    <input th:if="${pedido.contenedor != null and pedido.contenedor.id != null}" type="hidden"
+                                           th:field="*{contenedor.id}" th:value="${pedido.contenedor.id}"/>
+                                    <input th:if="${pedido.ubicacionDesde.id != null}" type="hidden" th:field="*{ubicacionDesde.id}"
+                                           th:value="${pedido.ubicacionDesde.id}"/>
+                                    <input th:if="${pedido.ubicacionHasta.id != null}" type="hidden" th:field="*{ubicacionHasta.id}"
+                                           th:value="${pedido.ubicacionHasta.id}"/>
+                                    <input th:if="${pedido.periodoDeCarga.id != null}" type="hidden" th:field="*{periodoDeCarga.id}"
+                                           th:value="${pedido.periodoDeCarga.id}"/>
+                                    <input th:if="${pedido.periodoDeDescarga.id != null}" type="hidden" th:field="*{periodoDeDescarga.id}"
+                                           th:value="${pedido.periodoDeDescarga.id}"/>
+                                    <input id="kilometrosTotalesObjeto" type="hidden" th:field="*{kmTotales}" th:value="${pedido.kmTotales}"/>
+                                    <input id="#" type="hidden" th:value="${viaje}" name="viaje"/>
+
+
+                                    <div class="row">
+                                        <div class="col-md-10 col-sm-10">
+                                            <div class="form-group">
+                                                <label for="tipoViajeSelect">
+                                                    <span th:text="#{text.cargas.form.tipo.viaje}"></span>
+                                                    <span class="danger"> * </span>
+                                                </label>
+                                                <select class="form-control select2" onchange="chan()" th:field="*{tipoDeViaje}"
+                                                        id="tipoViajeSelect">
+                                                    <option th:each="tv : ${tiposDeViaje}" th:text="${tv}"
+                                                            th:value="${tv}" th:select="${pedido.tipoDeViaje == tv}"
+                                                            th:id="${tv}">
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-sm-2 mt-2" style="display: block">
+                                            <label for="contenedor-checkbox">¿Transporta en contenedor?</label>
+                                            <input id="contenedor-checkbox" type="checkbox" name="#"
+                                                   th:checked="${pedido.contenedor != null && pedido.contenedor.tipoContenedor != null}"/>
+                                        </div>
+
+                                        <div class="col-md-12 col-sm-12">
+                                            <div class="form-group" id="tipoInternacional" style="display: none">
+                                                <label for="tipoViaje2">
+                                                    <span th:text="#{text.cargas.form.tipo.viaje}"></span>
+                                                    <span class="danger"> * </span>
+                                                </label>
+                                                <select id="tipoViaje2" class="form-control "
+                                                        th:field="*{tipoInternacional}">
+                                                    <option th:each="ti : ${tipoInteranacional}" th:text="${ti}"
+                                                            th:value="${ti}" th:select="${pedido.tipoDeViaje == ti}">
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="card-header col-md-12 col-sm-12 contenedorRetiro"
+                                             style="display: none">
+                                            <h4 class="card-title"
+                                                th:text="#{text.cargas.form.contenedor}"></h4>
+                                        </div>
+                                        <div class="col-md-8 col-sm-8 contenedorRetiro" style="display: none">
+                                            <label for="holdername">
+                                                <span th:text="#{text.cargas.form.tipo.contenedor}"></span>
+                                                <span class="danger"> * </span>
+                                            </label>
+                                            <select id="tipoContenedor" class="form-control"
+                                                    th:field="*{contenedor.tipoContenedor}">
+                                                <option th:each="te : ${tipoContenedores}"
+                                                        th:text="${te.caracteristicas}" th:value="${{te}}">
+                                            </select>
+
+                                        </div>
+                                        <div class="col-md-4 col-sm-4 contenedorRetiro mb-2 mt-2" style="display: none">
+                                            <label th:text="#{text.cargas.form.check.requiereEntrega}"></label>
+                                            <input id="checkboxRequiereEntrega" type="checkbox" name="requiereEntrega"/>
+                                        </div>
+                                        <div class="col-md-12 col-sm-12 mt-3 contenedorRetiro" style="display: none">
+
+
+                                            <div class="form-group">
+                                                <label for="holdername"
+                                                       th:text="#{text.cargas.form.comentarios}"></label>
+                                                <textarea class="form-control"
+                                                          th:field="*{contenedor.descripcion}" type="text"></textarea>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6 col-sm-6 contenedorRetiro"
+                                             style="display: none">
+                                            <div class="form-group">
+                                                <label for="holdername">
+                                                    <span th:text="#{text.cargas.form.direccion.retiro}"></span>
+                                                    <span class="danger"> * </span>
+                                                </label>
+                                                <input class="form-control" id="inputDireccionRetiro"
+                                                       th:field="*{contenedor.ubicacionRetiro.direccion}" type="text"
+                                                       readonly/>
+                                            </div>
+                                        </div>
+
+
+                                        <input style="display: none" id="inputlatitudRetiro"
+                                               th:field="*{contenedor.ubicacionRetiro.latitud}"
+                                               th:value="*{contenedor.ubicacionRetiro.latitud}" type="text"/>
+                                        <input style="display: none" id="inputlongitudRetiro"
+                                               th:field="*{contenedor.ubicacionRetiro.longitud}"
+                                               th:value="*{contenedor.ubicacionRetiro.longitud}"
+                                               type="text"/>
+
+                                        <div class="col-md-2 col-sm-2 contenedorRetiro"
+                                             style="display: none">
+                                            <div class="form-group text-center">
+                                                <button id="botonRetiro" type="button"
+                                                        class="btn btn-primary m-2" data-toggle="modal"
+                                                        data-target="#direccionInicial"
+                                                        th:text="#{text.cargas.form.btn.buscar.direcciones}"></button>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6 col-sm-6 contenedorEntrega"
+                                             style="display: none">
+                                            <div class="form-group">
+                                                <label for="holdername">
+                                                    <span th:text="#{text.cargas.form.direccion.entrega}"></span>
+                                                    <span class="danger"> * </span>
+                                                </label>
+                                                <input class="form-control" id="inputDireccionEntrega"
+                                                       th:field="*{contenedor.ubicacionEntrega.direccion}" type="text"
+                                                       readonly/>
+                                            </div>
+                                        </div>
+
+
+                                        <input style="display: none" id="inputlatitudEntrega"
+                                               th:field="*{contenedor.ubicacionEntrega.latitud}"
+                                               th:value="*{contenedor.ubicacionEntrega.latitud}"
+                                               type="text"/> <input style="display: none"
+                                                                    id="inputlongitudEntrega"
+                                                                    th:field="*{contenedor.ubicacionEntrega.longitud}"
+                                                                    th:value="*{contenedor.ubicacionEntrega.longitud}"
+                                                                    type="text"/>
+
+                                        <div class="col-md-2 col-sm-2 contenedorEntrega"
+                                             style="display: none">
+                                            <div class="form-group text-center">
+                                                <button id="botonEntrega" type="button"
+                                                        class="btn btn-primary m-2" data-toggle="modal"
+                                                        data-target="#direccionInicial"
+                                                        th:text="#{text.cargas.form.btn.buscar.direcciones}"></button>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12">
+                                            <h4 class="form-section">
+                                                <i class="ft-package"></i> <label
+                                                    th:text="#{text.cargas.form.informacion.carga}"></label>
+                                            </h4>
+                                        </div>
+
+                                        <div class="col-md-9 col-sm-9 ">
+
+                                            <div class="form-group">
+                                                <label for="holdername">
+                                                    <span th:text="#{text.cargas.form.tipo.carga}"></span>
+                                                    <span class="danger"> * </span>
+                                                </label>
+                                                <select id="tipoCarga" class="form-control select2"
+                                                        th:field="*{carga.tipoCargas}" multiple>
+                                                    <option th:each="tp : ${tipoCargas}" th:text="${tp.caracteristicas}"
+                                                            th:value="${{tp}}">
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3 col-sm-3 ">
+                                            <div class="form-group">
+                                                <label for="holdername">
+                                                    <span th:text="#{text.cargas.form.modalidad}"></span>
+                                                    <span class="danger"> * </span>
+                                                </label>
+                                                <select id="modalidad" th:field="*{carga.cargaCompleta}"
+                                                        class="form-control select2">
+                                                    <option th:selected="*{carga.cargaCompleta == true}"
+                                                            value="true"
+                                                            th:text="#{text.cargas.form.select.carga.completa}">
+                                                    </option>
+                                                    <option th:selected="*{carga.cargaCompleta == false}"
+                                                            value="false"
+                                                            th:text="#{text.cargas.form.select.carga.consolidad}">
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6 col-sm-6 ">
+                                            <div class="form-group">
+                                                <label for="holdername">
+                                                    <span th:text="#{text.cargas.form.producto}"></span>
+                                                    <span class="danger"> * </span>
+                                                </label>
+                                                <select id="producto" class="form-control select2"
+                                                        th:field="*{carga.producto}">
+                                                    <option th:each="p : ${productos}" th:text="${p.nombre}"
+                                                            th:value="${{p}}">
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6 col-sm-6 ">
+                                            <div class="form-group">
+                                                <label for="holdername">
+                                                    <span th:text="#{text.cargas.form.tipo.embalaje}"></span>
+                                                    <span class="danger"> * </span>
+                                                </label>
+                                                <select id="tipoEmbalaje" class="form-control select2"
+                                                        th:field="*{carga.tipoEmbalaje}">
+                                                    <option th:each="te : ${tipoEmbalajes}"
+                                                            th:text="${te.caracteristicas}" th:value="${{te}}">
+                                                </select>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="col-md-2 col-sm-2 ">
+                                            <div class="form-group">
+                                                <label for="peso-carga">
+                                                    <span th:text="#{text.cargas.form.peso.cargas}"></span>
+                                                    <span class="danger"> * </span>
+                                                </label>
+                                                <input id="peso-carga" class="form-control" type="number" th:field="*{carga.peso}"
+                                                       th:value="*{carga.peso}"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-sm-2 ">
+                                            <div class="form-group">
+                                                <label for="tipoPeso">
+                                                    <span th:text="#{text.cargas.form.unidad}"></span>
+                                                    <span class="danger"> * </span>
+                                                </label>
+                                                <select id="tipoPeso" class="form-control select2"
+                                                        th:field="*{carga.tipoPeso}">
+                                                    <option th:each="tp : ${tipoPesos}" th:text="${tp}"
+                                                            th:value="${tp}">
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-2 col-sm-2 ocultar">
+                                            <div class="form-group">
+                                                <label for="holdername">
+                                                    <span th:text="#{text.cargas.form.cantidad.camiones}"></span>
+                                                    <span class="danger"> * </span>
+                                                </label>
+                                                <input class="form-control" type="number" min="1"
+                                                       th:field="*{carga.cantidadCamiones}"
+                                                       th:value="*{carga.cantidadCamiones}"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-sm-2 ocultar" id="tipo-de-vehiculo">
+                                            <div class="form-group">
+                                                <label for="holdername"
+                                                       th:text="#{text.cargas.form.tipo.vehiculos}"></label> <select
+                                                    id="tipoVehiculoSelect" class="form-control select2"
+                                                    th:field="*{carga.tipoVehiculo}">
+                                                <option th:each="tv : ${tipoVehiculos}"
+                                                        th:text="${tv.nombre}" th:value="${{tv}}">
+                                            </select>
+                                            </div>
+                                        </div>
+                                        <div id="divTipoRemolque" class="col-md-2 col-sm-2">
+                                            <div class="form-group">
+                                                <label for="holdername"
+                                                       th:text="#{text.cargas.form.tipo.remolque}"> </label> <select
+                                                    id="tipoRemolques" class="form-control select2"
+                                                    style="width: 100%;" th:field="*{carga.tipoRemolque}">
+                                                <option th:each="r : ${tipoRemolques}"
+                                                        th:text="${r.caracteristicas}" th:value="${{r}}">
+                                            </select>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="col-md-2 col-sm-2 ocultar2" style="display: none">
+                                            <div class="form-group">
+                                                <label for="holdername">
+                                                    <span th:text="#{text.cargas.form.altura}"></span>
+                                                    <span class="danger"> * </span>
+                                                </label>
+                                                <input id="alto" class="form-control" type="number"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-sm-2 ocultar2" style="display: none">
+                                            <div class="form-group">
+                                                <label for="holdername">
+                                                    <span th:text="#{text.cargas.form.longitud}"></span>
+                                                    <span class="danger"> * </span>
+                                                </label>
+                                                <input id="longitud" class="form-control" type="number"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-sm-2 ocultar2" style="display: none">
+                                            <div class="form-group">
+                                                <label for="holdername">
+                                                    <span th:text="#{text.cargas.form.ancho}"></span>
+                                                    <span class="danger"> * </span>
+                                                </label>
+                                                <input id="ancho" class="form-control" type="number">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-sm-2 ocultar2" style="display: none">
+                                            <div class="form-group">
+                                                <label for="holdername"
+                                                       th:text="#{text.cargas.form.metros.cubicos}"></label> <input
+                                                    id="total" class="form-control" type="number"
+                                                    th:field="*{carga.metrosCubicos}"
+                                                    th:value="*{carga.metrosCubicos}" readOnly>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="col-md-12 col-sm-12">
+                                            <div class="form-group">
+                                                <label for="holdername"
+                                                       th:text="#{text.cargas.form.descripcion.carga}"></label>
+                                                <textarea class="form-control" id="holdername"
+                                                          th:field="*{carga.descripcion}"
+                                                          th:value="*{carga.descripcion}"
+                                                          placeholder="Ingresa una descripcion detallada de la carga"></textarea>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="col-md-4 col-sm-4">
+                                            <div class="form-group">
+                                                <input id="custodia" type="checkbox"
+                                                       th:field="*{carga.conCustodia}"
+                                                       th:value="*{carga.conCustodia}"/> <label for="custodia"
+                                                                                                th:text="#{text.cargas.form.custodia}"> </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 col-sm-4">
+                                            <div class="form-group">
+                                                <input id="seguro" type="checkbox"
+                                                       th:field="*{carga.seguroCarga}"
+                                                       th:value="*{carga.seguroCarga}"/> <label for="seguro"
+                                                                                                th:text="#{text.cargas.form.tengo.seguro}"> </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 col-sm-4">
+                                            <div class="form-group">
+                                                <input id="indivisible" type="checkbox"
+                                                       th:field="*{carga.indivisible}"
+                                                       th:value="*{carga.indivisible}"/> <label
+                                                    for="indivisible"
+                                                    th:text="#{text.cargas.form.indivisible}"> </label>
+                                            </div>
+                                        </div>
+
+										<div class="col-12 my-1 text-center">
+											<a href="https://mecubro.com/transporte/?utm_source=Web%20T%20cargo&utm_medium=Banner%20TM%20dinamico%20720x50&utm_campaign=Campa%C3%B1a%20T%20Cargo&utm_term=Landing%20TM" target="_blank">
+						                    	<img class="img-fluid" alt="banner" src="/img/bannerTM_dinamico_720x50.gif" />
+						                    </a>
+                                        </div>
+                                        
+                                        <div class="col-md-12">
+                                            <h4 class="form-section">
+                                                <i class="ft-globe"></i> <span
+                                                    th:text="#{text.cargas.form.ubicaciones}"></span>
+                                            </h4>
+                                        </div>
+
+
+                                        <div class="col-md-10 col-sm-10">
+                                            <div class="form-group">
+                                                <label for="holdername">
+                                                    <span th:text="#{text.cargas.form.origen}"></span>
+                                                    <span class="danger"> * </span>
+                                                </label>
+                                                <input class="form-control" id="inputDireccionDesde"
+                                                       th:field="*{ubicacionDesde.direccion}"
+                                                       th:value="*{ubicacionDesde.direccion}" type="text" readonly/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-sm-2">
+                                            <div class="pull-right col-sm-12">
+                                                <button id="botonOrigen" type="button"
+                                                        class="btn btn-success col-sm-12"
+                                                        style="margin-top: 26px;" data-toggle="modal"
+                                                        data-target="#direccionInicial">
+                                                    <i class="la la-map-marker"></i> <span
+                                                        th:text="#{text.cargas.form.asignar.origen}"></span>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <input style="display: none" id="inputlatitudDesde"
+                                               th:field="*{ubicacionDesde.latitud}"
+                                               th:value="*{ubicacionDesde.latitud}" type="text"/> <input
+                                            style="display: none" id="inputlongitudDesde"
+                                            th:field="*{ubicacionDesde.longitud}"
+                                            th:value="*{ubicacionDesde.longitud}" type="text"/>
+
+                                        <div class="col-md-10 col-sm-10">
+
+                                            <div class="form-group">
+                                                <label for="holdername">
+                                                    <span th:text="#{text.cargas.form.destino}"></span>
+                                                    <span class="danger"> * </span>
+                                                </label>
+                                                <input class="form-control" id="inputDireccionHasta"
+                                                       th:field="*{ubicacionHasta.direccion}"
+                                                       th:value="*{ubicacionHasta.direccion}" type="text" readonly/>
+                                            </div>
+                                        </div>
+
+
+                                        <input style="display: none" id="inputlatitudHasta"
+                                               th:field="*{ubicacionHasta.latitud}"
+                                               th:value="*{ubicacionHasta.latitud}" type="text"/> <input
+                                            style="display: none" id="inputlongitudHasta"
+                                            th:field="*{ubicacionHasta.longitud}"
+                                            th:value="*{ubicacionHasta.longitud}" type="text"/>
+
+                                        <div class="col-md-2 col-sm-2">
+                                            <div class="pull-right col-sm-12">
+                                                <button id="botonDestino" type="button"
+                                                        class="btn btn-success col-sm-12"
+                                                        style="margin-top: 26px;" data-toggle="modal"
+                                                        data-target="#direccionInicial">
+                                                    <i class="la la-map-marker"></i> <span
+                                                        th:text="#{text.cargas.form.asignar.destino}"></span>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12">
+                                            <h4 class="form-section">
+                                                <i class="ft-package mr-0"></i> <i
+                                                    class="ft-arrow-right mr-0"></i> <i class="ft-truck"></i>
+                                                <span th:text="#{text.cargas.form.periodo.carga}"></span>
+                                            </h4>
+                                        </div>
+                                        <div class="col-md-6 col-sm-6 ">
+                                            <div class="form-group">
+                                                <label for="dateInicioCarga" style="width: 50%;">
+                                                    <span th:text="#{text.cargas.form.inicio.carga}"></span>
+                                                    <span class="danger"> * </span>
+                                                </label>
+                                                <label id="lipc" for="holdername" style="display: none; margin-left: 1%;">
+                                                    <span th:text="#{text.cargas.form.inicio.carga.hora}"></span>
+                                                    <span class="danger"> * </span>
+                                                </label>
+                                                <input class="form-control inputDate" id="dateInicioCarga"
+                                                       type="datetime-local" th:field="*{periodoDeCarga.inicio}"
+                                                       th:value="*{periodoDeCarga.inicio}"/>
+                                                <div id="fipc-inputs" style="display: none; justify-content: space-between;">
+                                                    <input id="fipc" type="date" class="form-control" style="width: 49%;"
+                                                           th:value="${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}"/>
+                                                    <input id="hipc" type="time" class="form-control" style="width: 49%;"
+                                                           th:value="${#dates.format(#dates.createNow(), 'HH:mm')}"/>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6 col-sm-6 ">
+                                            <div class="form-group">
+                                                <label for="dateFinalCarga" style="width: 50%;">
+                                                    <span th:text="#{text.cargas.form.final.carga}"></span>
+                                                    <span class="danger"> * </span>
+                                                </label>
+                                                <label id="lfpc" for="holdername" style="display: none; margin-left: 1%;">
+                                                    <span th:text="#{text.cargas.form.final.carga.hora}"></span>
+                                                    <span class="danger"> * </span>
+                                                </label>
+                                                <input class="form-control inputDate" type="datetime-local"
+                                                       id="dateFinalCarga" th:field="*{periodoDeCarga.finalizacion}"
+                                                       th:value="*{periodoDeCarga.finalizacion}"/>
+                                                <div id="ffpc-inputs" style="display: none; justify-content: space-between;">
+                                                    <input id="ffpc" type="date" class="form-control" style="width: 49%;"
+                                                           th:value="${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}"/>
+                                                    <input id="hfpc" type="time" class="form-control" style="width: 49%;"
+                                                           th:value="${#dates.format(#dates.createNow(), 'HH:mm')}"/>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-8 col-sm-8 ">
+                                            <div class="form-group">
+                                                <label for="holdername"
+                                                       th:text="#{text.cargas.form.notas.carga}"> </label> <input
+                                                    type="text" class="form-control"
+                                                    th:field="*{periodoDeCarga.descripcion}"
+                                                    th:value="*{periodoDeCarga.descripcion}"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 col-sm-4">
+                                            <div class="form-group">
+                                                <label for="holdername"
+                                                       th:text="#{text.cargas.form.carga.nocturna}"> </label> <select
+                                                    id="cargaNocturna" class="form-control select2"
+                                                    th:field="*{periodoDeCarga.cargaNocturna}">
+                                                <option th:value="false"
+                                                        th:text="#{text.cargas.form.carga.nocturna.no}"></option>
+                                                <option th:value="true"
+                                                        th:text="#{text.cargas.form.carga.nocturna.si}"></option>
+                                            </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12">
+                                            <h4 class="form-section">
+                                                <i class="ft-package mr-0"></i> <i
+                                                    class="ft-arrow-left mr-0"></i> <i class="ft-truck"></i> <span
+                                                    th:text="#{text.cargas.form.periodo.descarga}"></span>
+                                            </h4>
+                                        </div>
+
+                                        <div class="col-md-6 col-sm-6 ">
+                                            <div class="form-group">
+                                                <label for="dateInicioDescarga" style="width: 50%;">
+                                                    <span th:text="#{text.cargas.form.inicio.descarga}"></span>
+                                                    <span class="danger"> * </span>
+                                                </label>
+                                                <label id="lipd" for="holdername" style="display: none; margin-left: 1%;">
+                                                    <span th:text="#{text.cargas.form.inicio.descarga.hora}"></span>
+                                                    <span class="danger"> * </span>
+                                                </label>
+                                                <input class="form-control inputDate" id="dateInicioDescarga"
+                                                       type="datetime-local" th:field="*{periodoDeDescarga.inicio}"
+                                                       th:value="*{periodoDeDescarga.inicio}"/>
+                                                <div id="fipd-inputs" style="display: none; justify-content: space-between;">
+                                                    <input id="fipd" type="date" class="form-control" style="width: 49%;"
+                                                           th:value="${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}"/>
+                                                    <input id="hipd" type="time" class="form-control" style="width: 49%;"
+                                                           th:value="${#dates.format(#dates.createNow(), 'HH:mm')}"/>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6 col-sm-6 ">
+                                            <div class="form-group">
+                                                <label for="dateFinalDescarga" style="width: 50%;">
+                                                    <span th:text="#{text.cargas.form.final.descarga}"></span>
+                                                    <span class="danger"> * </span>
+                                                </label>
+                                                <label id="lfpd" for="holdername" style="display: none; margin-left: 1%;">
+                                                    <span th:text="#{text.cargas.form.final.descarga.hora}"></span>
+                                                    <span class="danger"> * </span>
+                                                </label>
+                                                <input class="form-control inputDate" type="datetime-local"
+                                                       id="dateFinalDescarga"
+                                                       th:field="*{periodoDeDescarga.finalizacion}"
+                                                       th:value="*{periodoDeDescarga.finalizacion}"/>
+                                                <div id="ffpd-inputs" style="display: none; justify-content: space-between;">
+                                                    <input id="ffpd" type="date" class="form-control" style="width: 49%;"
+                                                           th:value="${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}"/>
+                                                    <input id="hfpd" type="time" class="form-control" style="width: 49%;"
+                                                           th:value="${#dates.format(#dates.createNow(), 'HH:mm')}"/>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-8 col-sm-8 ">
+                                            <div class="form-group">
+                                                <label for="holdername"
+                                                       th:text="#{text.cargas.form.notas.carga}"></label> <input
+                                                    type="text" class="form-control"
+                                                    th:field="*{periodoDeDescarga.descripcion}"
+                                                    th:value="*{periodoDeDescarga.descripcion}"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 col-sm-4">
+                                            <div class="form-group">
+                                                <label for="holdername"
+                                                       th:text="#{text.cargas.form.carga.nocturna}"> </label> <select
+                                                    id="periodoDescarga" class="form-control select2"
+                                                    th:field="*{periodoDeDescarga.cargaNocturna}">
+                                                <option th:value="false"
+                                                        th:text="#{text.cargas.form.carga.nocturna.no}"></option>
+                                                <option th:value="true"
+                                                        th:text="#{text.cargas.form.carga.nocturna.si}"></option>
+                                            </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12 col-sm-12">
+                                            <div class="form-group">
+                                                <div class="alert alert-warning" role="alert">
+                                                    <strong th:text="#{text.cargas.form.alert.atencion}"></strong>
+                                                    <span th:text="#{text.cargas.form.alert.cumplimiento.fechas}"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12 col-sm-12 " style="display: none"
+                                             id="requisitosNac">
+                                            <div class="form-group">
+                                                <label for="holdername">
+                                                    <span th:text="#{text.cargas.form.requisitos.nacionales}"></span>
+                                                    <span class="danger"> * </span>
+                                                </label>
+                                                <select class="form-control " style="width:100%"
+                                                        th:field="*{tipoRequisitos}" multiple>
+                                                    <option th:each="r : ${tipoRequisitosOfertasNacional}"
+                                                            th:text="${r.nombre}" th:value="${{r}}">
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12 col-sm-12 "
+                                             style="display: none; width: 100%" id="requisitosInter">
+                                            <div class="form-group">
+                                                <label for="holdername">
+                                                    <span th:text="#{text.cargas.form.requisitos.internacionales}"></span>
+                                                    <span class="danger"> * </span></label>
+                                                <select class="form-control" th:field="*{tipoRequisitos}" multiple>
+                                                    <option th:each="r : ${tipoRequisitosOfertasInternacional}"
+                                                            th:text="${r.nombre}" th:value="${{r}}">
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12 col-sm-12">
+                                            <h4 class="form-section">
+                                                <i class="ft-credit-card"></i> <span
+                                                    th:text="#{text.cargas.form.valor.pedido}"></span>
+                                            </h4>
+                                        </div>
+
+                                        <div class="col-md-6 col-sm-6">
+                                            <div class="form-group">
+                                                <label for="valor"
+                                                       th:text="#{text.cargas.form.definir.valor}"></label> <input
+                                                    id="valor" type="checkbox" th:checked="${pedido.recibirOfertas == null || !pedido.recibirOfertas}"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-sm-6">
+                                            <div class="form-group">
+                                                <label for="holdername"
+                                                       th:text="#{text.cargas.form.recibir.ofertas}"></label> <input
+                                                    id="recibirOfertas" type="checkbox"
+                                                    th:field="*{recibirOfertas}" th:value="*{recibirOfertas}"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 col-sm-3 ">
+                                            <div class="form-group">
+                                                <label for="tipoMonedas"
+                                                       th:text="#{text.cargas.form.select.tipo.moneda}"></label>
+                                                <select id="tipoMonedas" class="form-control"
+                                                        th:field="*{moneda}">
+                                                    <option th:value="${''}"
+                                                            th:text="#{text.cargas.form.selecciona.tipo.moneda}">
+                                                    <option th:each="moneda : ${tipoMonedas}"
+                                                            th:text="${moneda.simbolo}+' '+${moneda.nombre}+' '+${moneda.pais.id}"
+                                                            th:value="${{moneda}}"></option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3 col-sm-3 ">
+                                            <div class="form-group">
+                                                <label for="inputValor" th:text="#{text.cargas.form.monto}"></label>
+                                                <input id="inputValor" type="number" class="form-control"
+                                                       min="1" th:field="*{valor}" th:value="*{valor}"
+                                                       th:placeholder="#{text.cargas.form.monto.placeholder}"/>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6 col-sm-6 ">
+                                            <div class="form-group">
+                                                <label for="holdername"
+                                                       th:text="#{text.cargas.form.condiciones.pago}"></label> <input
+                                                    type="text" class="form-control" th:field="*{descripcion}"
+                                                    th:value="*{descripcion}"/>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12 col-sm-12">
+                                            <span th:text="#{text.cargas.form.leyenda.t.cargo}"></span>
+                                            <br> <input class="m-2" type="checkbox"
+                                                        th:field="*{pagaAlTransportista}"
+                                                        th:value="*{pagaAlTransportista}"/> <label
+                                                for="holdername"
+                                                th:text="#{text.cargas.form.pagar.transportista}"></label>
+
+                                        </div>
+
+
+                                    </div>
+                                    <div class="form-actions text-right">
+
+                                        <a th:href="@{/pedido/cargas}">
+                                            <button type="button" class="btn btn-secondary">
+                                                <i class="ft-x"></i> <span th:text="#{text.btn.cancelar}"></span>
+                                            </button>
+                                        </a>
+                                        <button type="button" class="btn btn-primary"
+                                                onclick="calcularGuardar()"
+                                                th:if="${accion == null or accion == 'guardar'}">
+                                            <i class="la la-check"></i> <span
+                                                th:text="#{text.btn.guardar}"></span>
+                                        </button>
+                                        <button type="submit" class="btn btn-danger"
+                                                form="formulario" th:if="${accion == 'eliminar'}">
+                                            <i class="la la-trash"></i> <span
+                                                th:text="#{text.btn.eliminar}"></span>
+                                        </button>
+                                        <button type="button" class="btn btn-primary"
+                                                onclick="calcularGuardar()"
+                                                th:if="${accion == 'actualizar'}">
+                                            <i class="la la-check"></i> <span
+                                                th:text="#{text.btn.actualizar}"></span>
+                                        </button>
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+<!-- MODAL GOOGLE MAPS-->
+<div class="modal fade bd-example-modal-lg" id="direccionInicial"
+     tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-dark">
+
+                <h5 class="modal-title text-white" id="exampleModalLabel"
+                    th:text="#{text.cargas.modal.buscar.direcciones}"></h5>
+                <button type="button" class="close text-white" data-dismiss="modal"
+                        aria-label="Close">
+                    <i class="la la-close"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="contenedor-mapa">
+                    <input id="pac-input" class="controls form-control" type="text"
+                           placeholder="Busca la ubicacion"/>
+                    <div id="map"></div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4 text-left">
+                        <button type="button" class="btn btn-dark ml-1"
+                                data-dismiss="modal">
+                            <i class="la la-arrow-left"></i> <span
+                                th:text="#{text.btn.volver}"></span>
+                        </button>
+                    </div>
+
+                    <div class="col-sm-8 text-right">
+                        <button id="asignarEntrega" type="button" class="btn btn-info"
+                                style="display: none" data-dismiss="modal">
+                            <i class="la la-map-marker"></i> <span
+                                th:text="#{text.cargas.modal.btn.entrega.contenedor}"></span>
+                        </button>
+                        <button id="asignarRetiro" type="button" class="btn btn-info"
+                                style="display: none" data-dismiss="modal">
+                            <i class="la la-map-marker"></i> <span
+                                th:text="#{text.cargas.modal.btn.retiro.contenedor}"></span>
+                        </button>
+
+                        <button id="asignarInicio" type="button"
+                                class="btn btn-info mr-1" style="display: none"
+                                data-dismiss="modal">
+                            <i class="la la-map-marker"></i> <span
+                                th:text="#{text.cargas.modal.btn.origen}"></span>
+                        </button>
+
+                        <button id="asignarFinal" type="button"
+                                class="btn btn-success mr-1" style="display: none"
+                                data-dismiss="modal">
+                            <i class="la la-map-marker"></i> <span
+                                th:text="#{text.cargas.modal.btn.destino}"></span>
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- FIN MODAL AUTOCOMPLETE GOOGLE MAPS -->
+
+
+<div class="sidenav-overlay"></div>
+<div class="drag-target"></div>
+<th:block th:replace="fragments/componentes/plantilla :: footer"></th:block>
+<script src="/app-assets/vendors/js/forms/icheck/icheck.min.js"></script>
+<script th:replace="fragments/componentes/script-pedido-form :: script"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDz6kEuRri8bQ3TXQn2e5t0KVBqQpQHbwM&libraries=places&callback=initAutocomplete" async defer>
+</script>
+</body>
+</html>

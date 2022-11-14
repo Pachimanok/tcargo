@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/componentes/plantilla :: head"></head>
+
+<body class="horizontal-layout horizontal-menu 2-columns  " data-open="hover" data-menu="horizontal-menu"
+      data-col="2-columns">
+
+<nav th:replace="fragments/componentes/plantilla :: header"></nav>
+
+<nav th:replace="fragments/componentes/plantilla :: menu"></nav>
+
+
+<div class="app-content content">
+    <div class="content-overlay"></div>
+    <div class="content-wrapper">
+        <div class="content-header row">
+            <div class="content-header-left col-md-6 col-12 mb-2">
+                <h3 class="content-header-title" th:text="#{text.match.lista.tittle}"></h3>
+                <div class="row breadcrumbs-top">
+                    <div class="breadcrumb-wrapper col-12">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a th:href="@{/dashboard}" th:text="#{text.tittle.home}"></a>
+                            </li>
+                            <li class="breadcrumb-item active" th:text="#{text.match.lista.subtittle}"></li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="content-body">
+            <section id="pagination">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title float-left" th:text="#{text.match.lista.card.tittle}"></h4>
+                                <div class="media width-250 float-right">
+									<div class="media-body media-right text-right">
+                                	<a th:if="${session.usuario.rol.toString() == 'ADMINISTRADOR' || session.usuario.rol.toString() == 'ADMINISTRADOR_LOCAL' || session.usuario.rol.toString() == 'INVITADO'}"
+                                       th:href="@{/match/listado(q= ${q} ? ${q} : '',excel='true',format='xlsx')}"  class="m-2">
+												<i class="la la-download"></i>xlsx</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="card-text">
+                                    <form th:action="@{/match/listado}">
+
+                                        <div class="input-group">
+                                            <input type="text" name="q" class="form-control"
+                                                   placeholder="Buscar..." th:value="${q}"/>
+                                            <span class="btn-group mb-1">
+												<button type="submit" name="search" id="search-btn"
+                                                        class="btn btn-success pull-right">
+													<i class="la la-search"></i>
+												</button>
+											</span>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table alt-pagination customer-wrapper ">
+                                        <thead class="thead-dark">
+                                        <tr>
+                                            <th th:replace="fragments/componentes/paginador :: columna(campo='costo',columna='__#{text.match.list.td.uno}__')"></th>
+                                            <th th:replace="fragments/componentes/paginador :: columna(campo='detalle',columna='__#{text.match.list.td.dos}__')"></th>
+                                            <th th:replace="fragments/componentes/paginador :: columna(campo='viaje.vehiculo.modelo.nombre',columna='__#{text.match.list.td.tres}__')"></th>
+                                            <th th:replace="fragments/componentes/paginador :: columna(campo='viaje.remolque.tipoRemolque.caracteristicas',columna='__#{text.match.list.td.cuatro}__')"></th>
+                                            <th th:replace="fragments/componentes/paginador :: columna(campo='viaje.chofer.usuario.nombre',columna='__#{text.match.list.td.cinco}__')"></th>
+                                            <th th:replace="fragments/componentes/paginador :: columna(campo='modificacion',columna='__#{text.match.list.td.seis}__')"></th>
+                                            <th th:if="${session.usuario.rol.toString() == 'ADMINISTRADOR' || session.usuario.rol.toString() == 'ADMINISTRADOR_LOCAL' || session.usuario.rol.toString() == 'INVITADO'}" th:text="#{text.match.list.td.siete}"></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="entidad : ${page}">
+                                            <td class="align-left">
+                                                <div class="name" th:text="${#numbers.formatDecimal(entidad.costo,1,'POINT',2,'COMMA')}"></div>
+                                            </td>
+                                            <td class="align-left">
+                                                <div class="name" th:text="${entidad.detalle}"></div>
+                                            </td>
+                                            <td class="align-left" th:if="${entidad.viaje.vehiculo != null}">
+                                                <div class="name" 
+                                                     th:text="${entidad.viaje.vehiculo.modelo.nombre}"></div>
+                                            </td>
+                                            <td class="align-left" th:if="${entidad.viaje.vehiculo == null}">
+                                                <div class="name" th:text="#{text.match.list.noasignado}"></div>
+                                            </td>
+                                            <td class="align-left">
+                                                <div th:if="${entidad.viaje.remolque != null}" class="name"
+                                                     th:text="${entidad.viaje.remolque.tipoRemolque?.caracteristicas}"></div>
+                                                <div th:if="${entidad.viaje.remolque == null}" class="name" th:text="#{text.match.list.noasignado}">
+                                                </div>
+                                            </td>
+                                            <td class="align-left">
+                                                <div th:if="${entidad.viaje.chofer != null}" class="name"
+                                                     th:text="${entidad.viaje.chofer.usuario.nombre}"></div>
+                                                <div th:if="${entidad.viaje.chofer == null}" class="name" th:text="#{text.match.list.noasignado}">
+                                                </div>
+                                            </td>
+                                            <td class="align-middle">
+                                                <div class="last-login"
+                                                     th:text="${entidad.modificacion} ? ${#dates.format(entidad.modificacion, 'dd-MM-yyyy HH:mm')}"></div>
+                                            </td>
+                                            <td class="align-middle" th:if="${session.usuario.rol.toString() == 'ADMINISTRADOR' || session.usuario.rol.toString() == 'ADMINISTRADOR_LOCAL' || session.usuario.rol.toString() == 'INVITADO'}">
+                                                <div class="option" style="display: flex; justify-content: space-between;">
+                                                    <a th:href="@{/pedido/ver(id=__${entidad.pedido.id}__)}"
+                                                       th:title="#{text.tittle.ver.detalle}">
+                                                        <i class="la la-eye"></i>
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+
+                                        </tbody>
+                                    </table>
+
+                                    <div th:replace="fragments/componentes/paginador :: paginador">...</div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+
+<div class="sidenav-overlay"></div>
+<div class="drag-target"></div>
+
+<nav th:replace="fragments/componentes/plantilla :: footer"></nav>
+
+
+</body>
+
+</html>

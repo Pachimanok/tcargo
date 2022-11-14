@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/componentes/plantilla :: head"></head>
+
+<body class="horizontal-layout horizontal-menu 2-columns  " data-open="hover" data-menu="horizontal-menu"
+      data-col="2-columns">
+
+<nav th:replace="fragments/componentes/plantilla :: header"></nav>
+
+<nav th:replace="fragments/componentes/plantilla :: menu"></nav>
+
+
+<div class="app-content content">
+    <div class="content-overlay"></div>
+    <div class="content-wrapper">
+        <div class="content-header row">
+            <div class="content-header-left col-md-6 col-12 mb-2">
+                <h3 class="content-header-title" th:text="#{text.para.dni.tittle}"></h3>
+                <div class="row breadcrumbs-top">
+                    <div class="breadcrumb-wrapper col-12">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a th:href="@{/dashboard}" th:text="#{text.tittle.home}"></a>
+                            </li>
+                            <li class="breadcrumb-item active" th:text="#{text.para.dni.subtittle}"></li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="content-body">
+            <section id="pagination">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title float-left" th:text="#{text.para.dni.card.tittle}"></h4>
+                                <div class="media width-350 float-right">
+                                    <div class="media-body media-right text-right">
+                                        <a th:if="${session.usuario.rol.toString() != 'INVITADO'}" href="/tipoDocumento/formulario" class="btn btn-primary">
+                                            <i class="la la-plus"></i>
+                                            <span th:text="#{text.para.dni.btn.crear}"></span>
+                                        </a>
+                                        <a th:href="@{/tipoDocumento/listado(q= ${q} ? ${q} : '',excel='true',format='xlsx')}"  class="m-2">
+												<i class="la la-download"></i>xlsx
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="card-text">
+                                    <form th:action="@{/tipoDocumento/listado}">
+
+                                        <div class="input-group">
+                                            <input type="text" name="q" class="form-control" th:value="${q}"/>
+                                            <span class="btn-group mb-1">
+												<button type="submit" name="search" id="search-btn"
+                                                        class="btn btn-success pull-right">
+													<i class="la la-search"></i>
+												</button>
+											</span>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table alt-pagination customer-wrapper">
+                                        <thead class="thead-dark">
+                                        <tr>
+                                            <th th:replace="fragments/componentes/paginador :: columna(campo=pais.nombre,columna='__#{text.pais}__')"></th>
+                                            <th th:replace="fragments/componentes/paginador :: columna(campo=nombre,columna='__#{text.para.dni.subtittle}__')"></th>
+                                            <th th:replace="fragments/componentes/paginador :: columna(campo=descripcion,columna='__#{text.decripcion}__')"></th>
+                                            <th th:replace="fragments/componentes/paginador :: columna(campo=modificacion,columna='__#{text.modificacion}__')"></th>
+                                            <th th:text="#{text.acciones}"></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="entidad : ${page}">
+                                            <td class="align-left">
+                                                <div class="name" th:text="${entidad.pais.nombre}"></div>
+                                            </td>
+                                            <td class="align-left">
+                                                <div class="name" th:text="${entidad.nombre}"></div>
+                                            </td>
+                                            <td class="align-left">
+                                                <div class="name" th:text="${entidad.descripcion}"></div>
+                                            </td>
+                                            <td class="align-middle">
+                                                <div class="last-login"
+                                                     th:text="${entidad.modificacion} ? ${#dates.format(entidad.modificacion, 'dd-MM-yyyy HH:mm')}"></div>
+                                            </td>
+                                            <td class="align-middle">
+                                                <div class="option" style="display: flex; justify-content: space-between;">
+                                                    <a th:if="${session.usuario.rol.toString() != 'INVITADO'}" th:href="@{/tipoDocumento/formulario(accion=actualizar,id=__${entidad.id}__)}"
+                                                       th:title="#{text.tittle.editar}">
+                                                        <i class="la la-pencil success"></i>
+                                                    </a>
+                                                    <a th:if="${session.usuario.rol.toString() != 'INVITADO'}" th:href="@{/tipoDocumento/formulario(accion=eliminar,id=__${entidad.id}__)}"
+                                                       th:title="#{text.tittle.eliminar}">
+                                                        <i class="la la-trash danger"></i>
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+
+                                        </tbody>
+                                    </table>
+
+                                    <div th:replace="fragments/componentes/paginador :: paginador">...</div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+
+<div class="sidenav-overlay"></div>
+<div class="drag-target"></div>
+
+<nav th:replace="fragments/componentes/plantilla :: footer"></nav>
+
+
+</body>
+
+</html>

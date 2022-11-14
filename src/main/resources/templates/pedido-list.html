@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/componentes/plantilla :: head"></head>
+
+<body class="horizontal-layout horizontal-menu 2-columns  " data-open="hover" data-menu="horizontal-menu"
+      data-col="2-columns">
+
+<nav th:replace="fragments/componentes/plantilla :: header"></nav>
+
+<nav th:replace="fragments/componentes/plantilla :: menu"></nav>
+
+
+<div class="app-content content">
+    <div class="content-overlay"></div>
+    <div class="content-wrapper">
+        <div class="content-header row">
+            <div class="content-header-left col-md-4 col-12 mb-2">
+                <h3 class="content-header-title" th:text="#{text.cargas.titulo}"></h3>
+                <div class="row breadcrumbs-top">
+                    <div class="breadcrumb-wrapper col-12">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a th:href="@{/dashboard}" th:text="#{text.cargas.home}"></a>
+                            </li>
+                            <li class="breadcrumb-item active" th:text="#{text.cargas.subTitulo}"></li>
+                             
+                        </ol>
+                    </div>
+                </div>
+            </div>
+			
+<!-- 			//MOSTRAR SOLO SI EL ROL EL DADOR DE CARGAS!!//  -->
+			
+			<div class="text-center col-md-8 col-12 mb-2" th:if="${session.rolActual == 'dador' and session.activo}">
+                <a href="https://mecubro.com/transporte/?utm_source=Web%20T%20cargo&utm_medium=Banner%20TM%20dinamico%20720x50&utm_campaign=Campa%C3%B1a%20T%20Cargo&utm_term=Landing%20TM" target="_blank">
+                  	<img class="img-fluid" alt="banner" src="/img/bannerTM_dinamico_720x50.gif" />
+	            </a>
+            </div>
+            
+            
+<!-- 			//MOSTRAR SOLO SI EL ROL EL TRANSPORTADORA!!//  -->
+			
+			<div class="text-center col-md-8 col-12 mb-2" th:if="${session.rolActual == 'transportador' and session.activo}">
+                <a href="https://mecubro.com/transporte/?utm_source=Web%20T%20cargo&utm_medium=Banner%20TM%20fijo%20720x50&utm_campaign=Campa%C3%B1a%20T%20Cargo&utm_term=Landing%20TM" target="_blank">
+                  	<img class="img-fluid" alt="banner" src="/img/bannerTM_fijo_720x50.jpg" />
+	            </a>
+            </div>
+            
+        </div>
+        <div class="content-body">
+            <div th:if="${session.rolActual == 'sinRol' or (session.rolActual == 'transportador' and !session.activo) or (session.rolActual == 'dador' and !session.activo)}" class="alert alert-info"
+                 role="alert">
+                <strong th:text="#{text.cargas.alert.strong.sinRol}"></strong>
+                <p th:text="#{text.cargas.alert.p.sinRol}"></p>
+            </div>
+            <section id="pagination">
+                <div class="row">
+                    <div class="col-12 col-lg-3">
+                        <div id="divFiltros" class="card">
+                            <div class="card-header">
+                                <h4 class="card-title float-left" th:text="#{text.cargas.filtros}"></h4>
+                            </div>
+                            <div class="card-body">
+                                <div th:if="${error != null}" class="alert alert-danger" role="alert">
+                                    <strong>¡Error!</strong>
+                                    <p th:text="${error} + ' ' + #{text.cargas.error}"></p>
+                                </div>
+
+                                <div th:if="${succes != null}" class="alert alert-success" role="alert">
+                                    <strong th:text="#{'¡Ok! ' + text.cargas.succes}"></strong>
+                                </div>
+                                
+                                <form id="filtros" th:action="@{/pedido/cargas}" th:object="${busqueda}">
+                                    <div class="row">
+                                        <div class="col-12 col-sm-6 col-lg-12">
+                                            <div class="form-group">
+                                                <label class="font-weight-bold" for="tipoViajeSelect" th:text="#{text.filtro.tipoViaje}"></label>
+                                                <select id="tipoViajeSelect" class="form-control select2"
+                                                        th:field="*{tipoDeViaje}">
+                                                    <option value="" selected
+                                                            th:text="#{text.filtro.place.tipoViaje}"></option>
+                                                    <option th:each="tv : ${tiposDeViaje}" th:text="${tv}"
+                                                            th:value="${tv}"></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-sm-6 col-lg-12">
+                                            <div class="form-group">
+                                                <label class="font-weight-bold" for="tipoCargaSelect" th:text="#{text.filtro.carga}"></label>
+                                                <select id="tipoCargaSelect" class="form-control select2"
+                                                        th:field="*{idTipoCarga}">
+                                                    <option value="" selected
+                                                            th:text="#{text.filtro.place.carga}">
+                                                    </option>
+                                                    <option th:each="tc : ${tipoCargas}" th:text="${tc.caracteristicas}"
+                                                            th:value="${tc.id}"></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-sm-6 col-lg-12">
+                                            <div class="form-group">
+                                                <label class="font-weight-bold" for="productoSelect" th:text="#{text.filtro.producto}"></label>
+                                                <select id="productoSelect" class="form-control select2"
+                                                        th:field="*{idProducto}">
+                                                    <option value="" selected
+                                                            th:text="#{text.filtro.place.producto}">
+                                                    </option>
+                                                    <option th:each="p : ${productos}" th:text="${p.nombre}"
+                                                            th:value="${p.id}"></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-sm-6 col-lg-12 mb-2">
+                                            <label class="font-weight-bold" for="recibirOfertas" th:text="#{text.filtro.tipoOferta}"></label>
+                                            <select id="recibirOfertas" class="form-control select2"
+                                                    th:field="*{recibirOfertas}">
+                                                <option value="" selected
+                                                        th:text="#{text.filtro.place.tipoOferta}"></option>
+                                                <option th:text="'Recibe Cotizacion'" value="true">
+                                                <option th:text="'No recibe Cotizacion'" value="false">
+                                            </select>
+                                        </div>
+
+                                        <div class="col-12 col-sm-6 col-lg-12 mb-2">
+                                            <label class="font-weight-bold" for="otro" th:text="#{text.filtro.otro}"></label>
+                                            <input id="otro" type="text" class="form-control square" th:field="*{otro}"
+                                                   th:placeholder="#{text.filtro.place.otro}"/>
+                                        </div>
+                                        <div class="col-12 col-sm-6 col-lg-12">
+                                            <div class="form-group">
+                                                <label class="font-weight-bold" for="estadoPedidoSelect" th:text="#{text.filtro.estado}"></label>
+                                                <select id="estadoPedidoSelect" class="form-control select2"
+                                                        th:field="*{estadoPedido}">
+                                                    <option value="" selected
+                                                            th:text="#{text.filtro.place.estado}"></option>
+                                                    <option th:each="e : ${estadoPedidos}" th:text="${e.toString()}"
+                                                            th:value="${e}">
+                                                </select>
+                                            </div>
+                                        </div>
+                                        
+                                         <div class="col-12 col-sm-6 col-lg-12 mb-2">
+                                            <label class="font-weight-bold" for="fechaCarga" th:text="#{text.filtro.fechaCarga}"></label>
+                                            <input id="fechaCarga" type="date" class="form-control square"
+                                                   th:field="*{fechaCarga}"/>
+                                        </div>
+
+                                        <div class="col-12 col-sm-6 col-lg-12 mb-2">
+                                            <label class="font-weight-bold" for="fechaDescarga" th:text="#{text.filtro.fechaDescarga}"></label>
+                                            <input id="fechaDescarga" type="date" class="form-control square"
+                                                   th:field="*{fechaDescarga}"/>
+                                        </div>
+
+
+                                        <div class="col-12 mb-2">
+                                            <label class="font-weight-bold" for="myRange" style="display: block;">
+                                                <span th:text="#{text.filtro.valor}"></span>
+                                                <span id="valorSpan"></span>
+                                            </label>
+                                            <input type="range" min="1" max="100000" value="10000" class="slider w-50"
+                                                   id="myRange" th:field="*{valor}" disabled>
+
+                                            <input type="checkbox" id="habilitarRange"/>
+                                            <p th:text="#{text.filtro.valor.habilitar}" class="d-inline"></p>
+                                        </div>
+                                        
+                                        
+                                    </div>
+                                    
+                                        <div class="col-12 p-0">
+                                            <a type="button" class="btn btn-danger pull-left text-white"
+                                               th:href="@{/pedido/cargas}" >
+                                                <span th:text="#{text.filtro.btn.limpiar}"></span>
+                                            </a>
+                                            <button type="submit" name="search" id="search-btn"
+                                                    class="btn btn-success pull-right" >
+                                                <i class="ft-search"></i>
+
+                                            </button>
+                                        </div>
+										</form>
+                                    </div>
+                                
+                            
+                        </div>
+
+                    </div>
+                    <div class="col-12 col-lg-9">
+                        <div class="card">
+                            <div id="asd123" class="card-header">
+                                <div id="alertaPorCamion" style="display: none;" class="alert alert-info" role="alert">
+                                    <strong th:text="#{text.cargas.alert.viajeNegativo} + ' ' + #{text.cargas.alert.viajeNegativo.body}"></strong>
+                                </div>
+                                <h4 class="card-title float-left" th:text="#{text.cargas.tabla.titulo.titulos}"></h4>
+                                <div class="media width-250 float-right">
+                                    <div class="media-body media-right text-right">
+                                        <a href="/pedido/formulario" class="btn btn-primary"
+                                           th:if="${session.rolActual == 'dador'}">
+                                            <i class="la la-plus"></i>
+                                            <span th:text="#{text.cargas.btn.crear}"></span>
+
+                                        </a>
+                                        <a id="xls" th:href="@{${url}(excel='true',format='xlsx')}" class="m-2" onclick="deshabilitar(this)"
+                                           th:if="${session.usuario.rol.toString() == 'ADMINISTRADOR' || session.usuario.rol.toString() == 'ADMINISTRADOR_LOCAL'}">
+                                            <i class="la la-download"></i><span th:text="#{text.xlsx}"></span></a>
+                                        <div id="cargarXls" style="display: none;" class="spinner-border text-danger" role="status">
+                                            <span class="sr-only">Loading...</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table alt-pagination customer-wrapper">
+                                        <thead class="thead-dark">
+                                        <tr>
+                                            <th th:replace="fragments/componentes/paginador :: columna-no-q(campo=p.id,columna='N° Pedido')"></th>
+                                            <th th:text="#{text.cargas.tabla.td.uno}"></th>
+                                            <th th:replace="fragments/componentes/paginador :: columna-no-q(campo=p.estado_pedido,columna='__#{text.cargas.tabla.td.dos}__')"></th>
+                                            <th th:replace="fragments/componentes/paginador :: columna-no-q(campo=pc.inicio,columna='__#{text.cargas.tabla.td.tres}__')"></th>
+                                            <th th:replace="fragments/componentes/paginador :: columna-no-q(campo=p.valor,columna='__#{text.cargas.tabla.td.cuatro}__')"></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <th:block th:each="entidad : ${page}">
+                                            <tr>
+                                                <td class="align-left">
+                                                    <small th:text="|#${entidad.id}|"></small>
+                                                </td>
+                                                <td class="align-left">
+                                                    <div th:each="tc : ${entidad.carga.tipoCargas}">
+                                                        <small th:text="${tc.caracteristicas}"></small>
+                                                        <br/>
+                                                    </div>
+                                                </td>
+                                                <td class="align-left">
+                                                    <span th:if="${entidad.estadoPedido.toString() == 'DISPONIBLE'}"
+                                                          style="font-weight: 700!important;" class="badge badge-info"
+                                                          th:text="${entidad.estadoPedido}"></span>
+                                                    <span th:if="${entidad.estadoPedido.toString() == 'PRIORIDAD'}"
+                                                          style="font-weight: 700!important;" class="badge badge-success"
+                                                          th:text="${entidad.estadoPedido}"></span>
+                                                    <span th:if="${entidad.estadoPedido.toString() == 'ASIGNADO'}"
+                                                          style="font-weight: 700!important; background-color: #4a6e02" class="badge"
+                                                          th:text="${entidad.estadoPedido}"></span>
+                                                    <span th:if="${entidad.estadoPedido.toString() == 'ENTREGADO'}"
+                                                          style="font-weight: 700!important;" class="badge badge-dark"
+                                                          th:text="${entidad.estadoPedido}"></span>
+                                                    <span th:if="${entidad.estadoPedido.toString() == 'VENCIDO'}"
+                                                          style="font-weight: 700!important;" class="badge badge-warning"
+                                                          th:text="${entidad.estadoPedido}"></span>
+                                                    <span th:if="${entidad.estadoPedido.toString() == 'CANCELADO'}"
+                                                          style="font-weight: 700!important;" class="badge badge-danger"
+                                                          th:text="${entidad.estadoPedido}"></span>
+                                                    <br/>
+                                                    <small class="name"
+                                                           th:text="${entidad.carga.producto.nombre}"></small> - <small
+                                                        class="name" th:text="${entidad.carga.peso}"></small> <small
+                                                        class="name" th:text="${entidad.carga.tipoPeso}"></small>
+                                                    <br/>
+                                                    <small class="name" th:text="${entidad.carga.descripcion}"></small>
+                                                    <br/>
+                                                    <br/>
+                                                    <small th:text="${entidad.carga.tipoVehiculo?.nombre}"></small> |
+                                                    <small th:text="${entidad.carga.tipoRemolque?.caracteristicas}"></small>
+                                                    <small th:text="${entidad.contenedor?.tipoContenedor?.caracteristicas}"></small>
+                                                    <br/>
+                                                    <small th:text="${entidad.carga.cargaCompleta ? 'Carga Completa' : 'Carga Consolidada'}"></small>
+                                                </td>
+                                                <td class="align-left">
+                                                        <i class="la la-map-marker"></i>
+                                                    <small class="name"
+                                                           th:text="${entidad.ubicacionDesde.direccion}"></small>
+                                                    <br/>
+                                                    <i class="la la-clock-o"></i>
+                                                    <small th:text="${entidad.periodoDeCarga.inicio}"></small> - <small
+                                                        th:text="${entidad.periodoDeCarga.finalizacion}"></small>
+                                                    <br/>
+                                                    <br/>
+                                                        <i class="la la-map-marker"></i>
+                                                    <small class="name"
+                                                           th:text="${entidad.ubicacionHasta.direccion}"></small>
+                                                    <br/>
+                                                    <i class="la la-clock-o"></i>
+                                                    <small th:text="${entidad.periodoDeDescarga.inicio}"></small> -
+                                                    <small th:text="${entidad.periodoDeDescarga.finalizacion}"></small>
+                                                </td>
+
+                                                <td class="align-left">
+                                                    <div class="name" th:if="${entidad.valor != null}"
+                                                         th:text=" ${entidad.moneda != null ? entidad.moneda.simbolo : ''} + ${#numbers.formatDecimal(entidad.valor,1,'POINT',2,'COMMA')}"></div>
+                                                    <div class="name" th:unless="${entidad.valor != null}"
+                                                         th:text="#{text.cargas.tabla.recibe.corizacion}"></div>
+                                                    <div class="name"
+                                                         th:if="${entidad.asignadoATransportador and session.rolActual != 'sinRol' and session != null}">
+                                                        <span class="badge badge-info" th:text="${'Matcheado'}"></span>
+                                                    </div>
+                                                    <div class="name" th:id="'divEstado'+${entidad.id}"
+                                                         th:if="${entidad.asignadoATransportador == true AND session.rolActual != 'sinRol'}">
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="5" class="align-top pr-0">
+                                                    <div class="pull-right" th:id="${entidad.id}">
+                                                        <input th:if="${entidad.recibirOfertas == true && entidad.grupo == true && session.rolActual == 'transportador' && #httpServletRequest.requestURI != '/pedido/cargas'}"
+                                                               class="check" type="checkbox" th:value="${entidad.id}"/>
+                                                        <a th:if="${entidad.asignadoATransportador == true and session.rolActual != 'sinRol' and session != null}" target="_blank"
+                                                           th:href="@{/pedido/ver(id=__${entidad.id}__,format='pdf')}" class="btn btn-sm btn-info white">
+                                                            <span th:text="#{text.cargas.btn.ver-contrato}"></span>
+                                                        </a>
+                                                        <a class="btn btn-sm btn-info white"
+                                                           th:if="${entidad.grupo != true AND entidad.recibirOfertas == true AND #httpServletRequest.requestURI != '/pedido/pedidosofertados/' AND entidad.dador.id != session.usuario.id AND (session.usuario.rol.toString() == 'AMBAS' OR session.usuario.rol.toString() == 'TRANSPORTADOR')}"
+                                                           th:href="@{/contraoferta/formulario/(idPedidos=__${entidad.id}__)}"
+                                                           th:title="#{text.cargas.btn.ofertar}">
+                                                            <span th:text="#{text.cargas.btn.ofertar}"></span>
+                                                        </a>
+                                                        <a class="btn btn-sm btn-info white"
+                                                           th:if="${entidad.valor != null AND entidad.recibirOfertas != true AND #httpServletRequest.requestURI != '/pedido/cargas' AND session.rolActual == 'transportador'}"
+                                                           th:title="#{text.cargas.btn.title.match}"
+                                                           th:href="@{/match/form(idPedido=__${entidad.id}__)}">
+                                                            <span th:text="#{text.cargas.btn.match}"></span>
+                                                        </a>
+                                                        <a class="btn btn-sm btn-info white"
+                                                           th:if="${entidad.grupo != true AND entidad.recibirOfertas != true AND session.rolActual == 'transportador'}"
+                                                           th:title="#{text.cargas.btn.title.match}"
+                                                           th:href="@{/match/form(idPedido=__${entidad.id}__)}">
+                                                            <span th:text="#{text.cargas.btn.match}"></span>
+                                                        </a>
+                                                        <a class="folder btn btn-sm btn-info white"
+                                                           th:if="${entidad.grupo != true AND entidad.recibirOfertas == true AND session.usuario.rol.toString() != 'DADOR_CARGA' && #httpServletRequest.requestURI == '/pedido/pedidosofertados/' AND entidad.tieneContraOfertas}"
+                                                           th:href="@{/contraoferta/listado/(idPedido=__${entidad.id}__,rol=__${session.usuario.rol}__)}"
+                                                           th:title="#{text.cargas.btn.title.verOfertas}">
+                                                            <span th:text="#{text.cargas.btn.verOfertas}"></span>
+                                                        </a>
+                                                        <a class="folder btn btn-sm btn-info white "
+                                                           th:if="${ (#request.getParameter('cargaId') != null OR entidad.grupo == false) AND session.rolActual != 'dador' AND session.rolActual != 'transportador' AND session.rolActual != 'sinRol' AND entidad.tieneContraOfertas}"
+                                                           th:href="@{/contraoferta/admin/listado/(idPedido=__${entidad.id}__)}"
+                                                           th:title="#{text.cargas.btn.title.verOfertas}">
+                                                            <span th:text="#{text.cargas.btn.verOfertas}"></span>
+                                                        </a>
+                                                        <a class="folder btn btn-sm btn-info white"
+                                                           th:if="${entidad.grupo == true && !#strings.startsWith(#httpServletRequest.requestURI, '/pedido/cargas/')}"
+                                                           th:href="@{/pedido/cargas/__${entidad.carga.id}__}"
+                                                           th:title="#{text.cargas.btn.title.grupo}"
+                                                           th:text="#{text.cargas.btn.grupo}">
+                                                        </a>
+                                                        <a data-toggle="modal"
+                                                           th:data-target="'#' + 'abc' + ${entidad.id.toString()}"
+                                                           th:title="#{text.cargas.btn.title.informacion}"
+                                                           class="btn btn-sm btn-success white d-inline-block">
+                                                            <span th:text="#{text.cargas.btn.informacion}"></span>
+                                                        </a>
+                                                        <a class="btn btn-sm btn-info white edit"
+                                                           th:if="${!entidad.grupo AND session.usuario.id == entidad.dador.id AND entidad.asignadoATransportador != true AND(session.usuario.rol.toString() == 'DADOR_CARGA' OR session.usuario.rol.toString() == 'AMBAS')}"
+                                                           th:href="@{/pedido/formulario(accion=actualizar,id=__${entidad.id}__)}"
+                                                           th:title="#{text.cargas.btn.editar}">
+                                                            <span th:text="#{text.cargas.btn.editar}"></span>
+                                                        </a>
+                                                        <a class="btn btn-sm btn-info white edit"
+                                                           th:if="${entidad.grupo && entidad.asignadoATransportador != true && session.usuario.rol.toString() == 'DADOR_CARGA'}"
+                                                           th:href="@{/pedido/formulario(accion=actualizar,id=__${entidad.id}__,grupo=true)}"
+                                                           th:title="#{text.cargas.btn.editar}">
+                                                            <span th:text="#{text.cargas.btn.editar}"></span>
+                                                        </a>
+                                                        <a th:if="${(session.usuario.rol.toString() == 'DADOR_CARGA' OR session.usuario.rol.toString() == 'AMBAS') AND entidad.recibirOfertas == true AND session.usuario.id == entidad.dador.id AND entidad.grupo != true }"
+                                                           th:href="@{/contraoferta/dador/listado/(idPedido=__${entidad.id}__,rol=__${session.usuario.rol}__)}"
+                                                           th:title="#{text.cargas.btn.title.ofertas}"
+                                                           class="btn btn-sm btn-warning white dolar">
+                                                            <span th:text="#{text.cargas.btn.ofertas}"></span>
+                                                        </a>
+                                                        <!-- 														OFERTAS QUE SE ABILITA SOLO EN GRUPO DE PEDIDOS -->
+                                                        <a th:if="${(session.usuario.rol.toString() == 'DADOR_CARGA' OR session.usuario.rol.toString() == 'AMBAS') AND session.usuario.id == entidad.dador.id AND entidad.recibirOfertas == true AND entidad.asignadoATransportador != true AND entidad.grupo == true AND #httpServletRequest.requestURI.length() > 14}"
+                                                           th:href="@{/contraoferta/dador/listado/(idPedido=__${entidad.id}__,rol=__${session.usuario.rol}__)}"
+                                                           th:text="#{text.cargas.btn.ofertas}"
+                                                           class="btn btn-sm btn-warning white dolar">
+                                                            <span th:text="#{text.cargas.btn.ofertas}"></span>
+                                                        </a>
+                                                        <a class="btn btn-danger btn-sm white"
+                                                           th:if="${entidad.grupo == false AND session.usuario.id == entidad.dador.id && entidad.asignadoATransportador != true && (session.usuario.rol.toString() == 'DADOR_CARGA' OR session.usuario.rol.toString() == 'AMBAS')}"
+                                                           th:href="@{/pedido/formulario(accion=eliminar,id=__${entidad.id}__)}"
+                                                           th:title="#{text.cargas.btn.eliminar}">
+                                                            <span th:text="#{text.cargas.btn.eliminar}"></span>
+                                                        </a>
+                                                        <a class="btn btn-danger btn-sm white"
+                                                           th:if="${entidad.grupo != false && entidad.asignadoATransportador != true  && session.usuario.rol.toString() == 'DADOR_CARGA'}"
+                                                           th:onclick="javascript:alerta([[${entidad.carga.id}]],[[${entidad.dador.id}]])"
+                                                           th:title="#{text.cargas.btn.eliminar}">
+                                                            <span th:text="#{text.cargas.btn.eliminar}"></span>
+                                                        </a>
+                                                        <a class="btn btn-sm btn-secondary text-white dropdown"
+                                                           id="dropdownMenuButton" data-toggle="dropdown"
+                                                           aria-haspopup="true" aria-expanded="false">
+                                                            <span th:text="#{text.cargas.btn.compartir}"></span>
+                                                        </a>
+                                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                            <a class="dropdown-item"
+                                                               th:href="@{'https://www.facebook.com/sharer.php?u=https://app.tcargo.la/pedido/ver?id=' + __${entidad.id}__}"
+                                                               target="_blank"><i
+                                                                    class="lab la-facebook"></i>Facebook</a>
+                                                            <a class="dropdown-item"
+                                                               th:href="@{'http://twitter.com/share?url=https://app.tcargo.la/pedido/ver?id=' + __${entidad.id}__}"
+                                                               target="_blank"><i class="lab la-twitter"></i>Twitter</a>
+                                                            <a class="dropdown-item"
+                                                               th:href="@{'https://www.linkedin.com/sharing/share-offsite/?url=app.tcargo.la/pedido/ver?id=' + __${entidad.id}__ }"
+                                                               target="_blank"><i
+                                                                    class="lab la-linkedin"></i>Linkedin</a>
+                                                            <a class="dropdown-item"
+                                                               th:href="@{'https://wa.me/?text=app.tcargo.la/pedido/ver?id=' + __${entidad.id}__ }"
+                                                               target="_blank"><i
+                                                                    class="lab la-whatsapp"></i>WhatsApp</a>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </th:block>
+
+                                        </tbody>
+                                    </table>
+                                    <div th:replace="fragments/componentes/paginador :: paginador-no-q">...</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+
+
+<div class="sidenav-overlay"></div>
+<div class="drag-target"></div>
+<nav th:replace="fragments/componentes/plantilla :: footer"></nav>
+
+<!-- Modal -->
+<div th:each="entidad : ${page}">
+    <div class="modal fade bd-example-modal-lg" th:id="'abc' + ${entidad.id.toString()} " tabindex="-1" role="dialog"
+         aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-dark">
+                    <p class="modal-title text-white" th:text=" #{text.cargas.modal.titulo} + ' ' + ${entidad.id}"></p>
+                    <button type="button" class="close white" data-dismiss="modal" aria-label="Close">
+                        <i class="la la-close"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h4 class="form-section">
+                                    <i class="ft-truck"></i>
+                                    <span th:text="#{text.cargas.modal.infoGeneral}"></span>
+                                </h4>
+                            </div>
+
+                            <div class="col-md-4 col-sm-4">
+                                <div class="form-group">
+                                    <label th:text="#{text.cargas.modal.numeroPedido}"></label>
+                                    <p th:text="${entidad.id}"></p>
+
+                                </div>
+                            </div>
+                            <div class="col-md-8 col-sm-8">
+                                <div class="form-group">
+                                    <label th:text="#{text.cargas.modal.tipoViaje}"></label>
+                                    <p th:text="${entidad.tipoDeViaje}"></p>
+                                </div>
+                            </div>
+
+                            <div th:if="${entidad.contenedor != null}"
+                                 class="col-md-12 col-sm-12">
+                                <div class="col-md-12 col-sm-12">
+                                    <div class="form-group">
+                                        <label th:text="#{text.cargas.modal.contenedor}"> </label>
+                                        <p th:text="${entidad.contenedor.tipoContenedor.caracteristicas}"></p>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 col-sm-12">
+                                    <div class="form-group text-center" style="background: #CB1414; padding: 8px">
+                                        <a class="text-white"
+                                           th:href="@{'http://www.google.com/maps/?q=' + ${entidad.contenedor.ubicacionRetiro.latitud} + ',' +  ${entidad.contenedor.ubicacionRetiro.longitud} }"
+                                           target="_blank" th:text="#{text.cargas.modal.verMapa}"></a>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="holdername" th:text="#{text.cargas.modal.retiro}"> </label>
+                                        <p th:text="${entidad.contenedor.ubicacionRetiro.direccion}"></p>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 col-sm-12"
+                                     th:if="${entidad.contenedor.ubicacionEntrega.latitud != null}">
+                                    <div class="form-group text-center" style="background: #CB1414; padding: 8px">
+                                        <a class="text-white"
+                                           th:href="@{'http://www.google.com/maps/?q=' + ${entidad.contenedor.ubicacionEntrega.latitud} + ',' +  ${entidad.contenedor.ubicacionEntrega.longitud} }"
+                                           target="_blank" th:text="#{text.cargas.modal.verMapa}"></a>
+                                    </div>
+                                    <div class="form-group" th:if="${entidad.contenedor.ubicacionEntrega != null}">
+                                        <label for="holdername" th:text="#{text.cargas.modal.entrega}"> </label>
+                                        <p th:text="${entidad.contenedor.ubicacionEntrega.direccion}"></p>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="col-md-3 col-sm-3">
+                                <div class="form-group">
+                                    <label th:text="#{text.cargas.modal.nombre}"> </label>
+                                    <p th:if="${session.usuario.rol.toString() != 'DADOR_CARGA' && session.usuario.rol.toString() != 'ADMINISTRADOR' && session.usuario.rol.toString() != 'ADMINISTRADOR_LOCAL'}">
+                                        ******</p>
+                                    <p th:if="${session.usuario.rol.toString() == 'DADOR_CARGA'  || session.usuario.rol.toString() == 'ADMINISTRADOR' || session.usuario.rol.toString() == 'ADMINISTRADOR_LOCAL'}"
+                                       class="#" th:text="${entidad.dador.nombre}"></p>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-3">
+                                <div class="form-group">
+                                    <label th:text="#{text.cargas.modal.email}"> </label>
+                                    <p th:if="${session.usuario.rol.toString() != 'DADOR_CARGA' && session.usuario.rol.toString() != 'ADMINISTRADOR' && session.usuario.rol.toString() != 'ADMINISTRADOR_LOCAL'}">
+                                        ******</p>
+                                    <p th:if="${session.usuario.rol.toString() == 'DADOR_CARGA'  || session.usuario.rol.toString() == 'ADMINISTRADOR' || session.usuario.rol.toString() == 'ADMINISTRADOR_LOCAL'}"
+                                       class="#" th:text="${entidad.dador.mail}"></p>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-3">
+                                <div class="form-group">
+                                    <label th:text="#{text.cargas.modal.telefono}"> </label>
+                                    <p th:if="${session.usuario.rol.toString() != 'DADOR_CARGA' && session.usuario.rol.toString() != 'ADMINISTRADOR' && session.usuario.rol.toString() != 'ADMINISTRADOR_LOCAL'}">
+                                        ******</p>
+                                    <p th:if="${session.usuario.rol.toString() == 'DADOR_CARGA' || session.usuario.rol.toString() == 'ADMINISTRADOR' || session.usuario.rol.toString() == 'ADMINISTRADOR_LOCAL'}"
+                                       class="#" th:text="${entidad.dador.telefono}"></p>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-3">
+                                <div class="form-group">
+                                    <label th:text="#{text.cargas.modal.fechaCreacion}"> </label>
+                                    <p th:text="${entidad.modificacion} ? ${#dates.format(entidad.modificacion, 'dd-MM-yyyy')}"></p>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12">
+                                <h4 class="form-section">
+                                    <i class="ft-package"></i>
+                                    <span th:text="#{text.cargas.modal.informacionCarga}"></span>
+                                </h4>
+                            </div>
+
+                            <div class="col-md-6 col-sm-6">
+                                <div class="form-group">
+                                    <label th:text="#{text.cargas.modal.tipoCarga}"> </label>
+                                    <p th:if="${#lists.size(entidad.carga.tipoCargas) > 0}"
+                                       th:each="tc : ${entidad.carga.tipoCargas}" th:text="${tc.caracteristicas}"></p>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6">
+                                <div class="form-group">
+                                    <label th:text="#{text.cargas.modal.descripcion}"> </label>
+                                    <p th:text="${entidad.carga.descripcion}"></p>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-3">
+                                <div class="form-group">
+                                    <label th:text="#{text.cargas.modal.peso}"> </label>
+                                    <p th:text="${entidad.carga.peso} +' '+ ${entidad.carga.tipoPeso.toString()} "></p>
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-sm-2">
+                                <div class="form-group">
+                                    <label th:text="#{text.cargas.modal.camion}"></label>
+                                    <p th:text="${entidad.carga.cantidadCamiones}"></p>
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-sm-2">
+                                <div class="form-group" th:if="${entidad.carga.tipoRemolque != null}">
+                                    <label th:text="#{text.cargas.modal.remolque}"> </label>
+                                    <p th:text="${entidad.carga.tipoRemolque?.caracteristicas}"></p>
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-sm-2">
+                                <div class="form-group">
+                                    <label th:text="#{text.cargas.modal.embalaje}"> </label>
+                                    <p th:text="${entidad.carga.tipoEmbalaje.caracteristicas}"></p>
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-sm-2">
+                                <div class="form-group">
+                                    <label th:text="#{text.cargas.modal.producto}"> </label>
+                                    <p th:text="${entidad.carga.producto.nombre}"></p>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4 col-sm-4">
+                                <div class="form-group">
+                                    <label for="holdername" th:text="#{text.cargas.modal.custodia}"></label>
+                                    <input type="checkbox" disabled="disabled"
+                                           th:if="${entidad.carga.conCustodia != null}"
+                                           th:checked="${entidad.carga.conCustodia ?  true : false}"/>
+                                    <input type="checkbox" disabled="disabled"
+                                           th:unless="${entidad.carga.conCustodia != null}"/>
+
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4">
+                                <div class="form-group">
+                                    <label for="holdername" th:text="#{text.cargas.modal.seguro}"></label>
+                                    <input type="checkbox" disabled="disabled"
+                                           th:if="${entidad.carga.seguroCarga != null}"
+                                           th:checked="${entidad.carga.seguroCarga ?  true : false}"/>
+                                    <input type="checkbox" disabled="disabled"
+                                           th:unless="${entidad.carga.seguroCarga != null}"/>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4">
+                                <div class="form-group">
+                                    <label for="holdername" th:text="#{text.cargas.modal.indivisible}"></label>
+                                    <input type="checkbox" disabled="disabled"
+                                           th:if="${entidad.carga.indivisible != null}"
+                                           th:checked="${entidad.carga.indivisible ?  true : false}"/>
+                                    <input type="checkbox" disabled="disabled"
+                                           th:unless="${entidad.carga.indivisible != null}"/>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-sm-12">
+                                <div class="form-group">
+                                    <!--                                    TODO traducir esto-->
+                                    <label>Requisitos</label>
+                                    <p th:each="requisito : ${entidad.tipoRequisitos}"
+                                       th:text="${requisito.nombre}"></p>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <h4 class="form-section">
+                                    <i class="ft-globe"></i>
+                                    <span th:text="#{text.cargas.modal.ubicacion}"></span>
+                                </h4>
+                            </div>
+                            <div class="col-md-6 col-sm-6">
+
+                                <div class="form-group">
+                                    <p th:text="${entidad.ubicacionDesde.direccion}"></p>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 col-sm-6">
+                                <div class="form-group">
+                                    <p th:text="${entidad.ubicacionHasta.direccion}"></p>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 col-sm-6">
+                                <div class="form-group">
+                                    <label for="holdername" th:text="#{text.cargas.modal.inicioCarga}"></label>
+                                    <p th:text="${entidad.periodoDeCarga.inicio}"></p>
+                                    <label for="holdername" th:text="#{text.cargas.modal.finalCarga}"></label>
+                                    <p th:text="${entidad.periodoDeCarga.finalizacion}"></p>
+                                </div>
+
+                                <div class="form-group text-center">
+                                    <a class="btn btn-light form-control"
+                                       th:href="@{'http://www.google.com/maps/?q=' + ${entidad.ubicacionDesde.latitud} + ',' +  ${entidad.ubicacionDesde.longitud} }"
+                                       target="_blank">
+                                        <i class="la la-map-marker"></i>
+                                        <span th:text="#{text.cargas.modal.verMapa}"></span>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 col-sm-6">
+                                <div class="form-group">
+                                    <label for="holdername" th:text="#{text.cagas.modal.inicioDescarga}"></label>
+                                    <p th:text="${entidad.periodoDeDescarga.inicio}"></p>
+                                    <label for="holdername" th:text="#{text.cagas.modal.finalDescarga}"> </label>
+                                    <p th:text="${entidad.periodoDeDescarga.finalizacion}"></p>
+                                </div>
+                                <div class="form-group text-center">
+                                    <a class="btn btn-light form-control"
+                                       th:href="@{'http://www.google.com/maps/?q=' + ${entidad.ubicacionHasta.latitud} + ',' +  ${entidad.ubicacionHasta.longitud} }"
+                                       target="_blank">
+                                        <i class="la la-map-marker"></i>
+                                        <span th:text="#{text.cargas.modal.verMapa}"></span>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-sm-12" th:if="${entidad.kmTotales != null}">
+                                <div class="form-group">
+                                    <label class="text-right" style="width: 100%;"
+                                           th:text="#{text.cargas.modal.kmsTotal} + ' '+${entidad.kmTotales}"></label>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12">
+                                <h4 class="form-section">
+                                    <i class="ft-credit-card"></i>
+                                    <span th:text="#{text.cargas.modal.cotizacion}"></span>
+                                </h4>
+                            </div>
+
+                            <div class="col-md-12 col-sm-12" th:if="${entidad.recibirOfertas == true}">
+                                <div class="form-group">
+                                    <p class="text-center" th:text="#{text.cargas.modal.aptoOfertar}"></p>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6" th:if="${entidad.valor != null}">
+                                <div class="form-group">
+                                    <label th:text="#{text.cargas.modal.moneda}"></label>
+                                    <p>
+                                        <span th:if="${entidad.valor != null}"
+                                              th:text="${#numbers.formatDecimal(entidad.valor,1,'POINT',2,'COMMA')}"></span>
+                                        <span th:if="${entidad.moneda != null}"
+                                              th:text="${entidad.moneda.simbolo}"></span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6" th:if="${!#strings.isEmpty(entidad.descripcion)}">
+                                <div class="form-group">
+                                    <label  th:text="#{text.cargas.modal.condicionesPago}"></label>
+                                    <p th:text="${entidad.descripcion}"></p>
+
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-sm-12"
+                                 th:if="${entidad.pagaAlTransportista != null AND entidad.pagaAlTransportista == true}">
+                                <div class="form-group" style="background: #21DAEC; padding: 8px">
+                                    <p class="text-center" th:text="#{text.cargas.modal.pagoDirecto}"></p>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-sm-12" th:id="${'divConformidad' + entidad.id}"
+                                 th:if="${session.usuario.rol.toString() == 'ADMINISTRADOR' OR session.usuario.rol.toString() == 'ADMINISTRADOR_LOCAL'}">
+
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="la la-close"></i>
+                        <span th:text="#{text.cargas.modal.cerrar}"></span>
+                    </button>
+
+                    <button type="button" class="btn btn-info r-1"
+                            th:onclick="imprimir([['abc' + ${entidad.id.toString()}]])">
+                        <i class="la la-print"></i>
+                        <span th:text="#{text.cargas.modal.imprimir}"></span>
+                    </button>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script th:inline="javascript">
+    let matchModel = [[${matchsModels}]];
+
+    if (matchModel.length) {
+        for (let i = 0; i < matchModel.length; i++) {
+
+            $("#divEstado" + matchModel[i].idPedido).append("<span class='badge badge-warning mt-1'>" + matchModel[i].viaje.estadoString + "</span>")
+            if (matchModel[i].conformidadDador != null && matchModel[i].conformidadDador != "") {
+                if (matchModel[i].finalizado == true) {
+                    $("#divConformidad" + matchModel[i].idPedido).append(
+                        "<p class='text-center'><strong>[(#{text.cargas.script.estado.conformidad})]</strong> Si</p>");
+                } else {
+                    $("#divConformidad" + matchModel[i].idPedido).append(
+                        "<p class='text-center'><strong>[(#{text.cargas.script.estado.conformidad})]</strong> No</p>");
+                }
+                $("#divConformidad" + matchModel[i].idPedido).append(
+                    "<p class='text-center'><strong>[(#{text.cargas.script.comentarios})]</strong> " + matchModel[i].conformidadDador + "</p>");
+            }
+        }
+    }
+
+    $(".select2").select2();
+
+    var slider = document.getElementById("myRange");
+    var output = document.getElementById("valorSpan");
+    output.innerHTML = slider.value;
+    slider.oninput = function () {
+        output.innerHTML = this.value;
+    }
+
+    document.getElementById("habilitarRange").addEventListener("click", () => {
+        slider.disabled = !slider.disabled;
+    });
+
+    let idsParaNotificar = [[${idsParaNotificar}]];
+    var target;
+    if (idsParaNotificar != null) {
+        if (idsParaNotificar.length > 0) {
+            for (let i of idsParaNotificar) {
+                target = $("#" + i + 'dolar');
+                $(target).removeClass("success");
+                $(target).addClass('warning');
+                $(target).addClass('loop');
+            }
+
+            function runIt() {
+                $('.loop').animate({opacity: '1'}, 700);
+                $('.loop').animate({opacity: '0'}, 700, runIt);
+            }
+
+            runIt();
+        }
+    }
+
+    let rol = [[${session.usuario.rol}]];
+    let rolActual = [[${session.rolActual}]];
+    let cargaId = location.pathname;
+    const pageContent = [[${page.content}]];
+    let recibeOfertas = pageContent.length ? pageContent[0]["recibeOfertas"] : false;
+
+    if (cargaId.endsWith("cargas") || cargaId.endsWith("cargas/")) {
+        cargaId = null;
+    } else {
+        if (cargaId.endsWith("/")) {
+            cargaId = cargaId.substring(0, cargaId.length - 1);
+        }
+        cargaId = cargaId.split("/").pop();
+    }
+
+    if (cargaId != null) {
+        $('.folder').hide();
+        $('.edit').hide();
+        $("#divFiltros").hide();
+        if ((rol === 'TRANSPORTADOR' || rol === 'AMBAS') && rolActual !== 'dador' && recibeOfertas) {
+            $('#asd123').append("<a type='button' class='btn btn-primary float-right text-white' onclick='validar()'>Ofertar</a>");
+            $('#alertaPorCamion').show();
+        }
+    } else {
+        $('.check').hide();
+    }
+
+    function validar() {
+        let ids = [];
+        let cont = 0;
+        let checks = $(".check");
+        for (let i = 0; i < checks.length; i++) {
+            if (checks[i].checked == false) {
+                cont = cont + 1;
+            } else {
+                ids.push(checks[i].value);
+            }
+        }
+        if (cont == checks.length) {
+            Swal.queue([{
+                title: [[#{text.cargas.script.selecciona.pedido}]],
+                confirmButtonText: 'Ok',
+            }]);
+        } else {
+            window.location.assign('/contraoferta/formulario?idPedidos=' + ids);
+        }
+    }
+
+    function alerta() {
+        Swal.queue([{
+            title: [[#{text.cargas.script.seguro.eliminar}]],
+            text: [[#{text.cargas.script.recuerda.eliminaras}]],
+            confirmButtonText: [[#{text.option.si}]],
+            showCancelButton: true,
+            cancelButtonText: [[#{text.option.no}]],
+            cancelButtonColor: '#d33',
+            icon: "question",
+            showLoaderOnConfirm: true,
+            preConfirm: () => {
+                eliminar();
+            }
+        }]);
+    }
+
+    function alerta(cargaId, dadorId) {
+        Swal.queue([{
+            title: [[#{text.cargas.script.seguro.eliminar}]],
+            text: [[#{text.cargas.script.recuerda.eliminaras}]],
+            confirmButtonText: [[#{text.option.si}]],
+            showCancelButton: true,
+            cancelButtonText: [[#{text.option.no}]],
+            cancelButtonColor: '#d33',
+            icon: "question",
+            showLoaderOnConfirm: true,
+            preConfirm: () => {
+                eliminar(cargaId, dadorId);
+            }
+        }]);
+    }
+
+    function eliminar(cargaId, dadorId) {
+        $.ajax({
+            url: '/api/pedido/eliminar-grupo',
+            dataType: 'text',
+            data: {
+                cargaId: cargaId,
+                dadorId: dadorId,
+            },
+            type: 'GET',
+
+            success: function (data) {
+
+                window.location.assign('/pedido/cargas');
+
+            },
+            error: function (data) {
+                console.log('ERROR');
+            }
+        });
+    }
+
+    function imprimir(id) {
+        $("#" + id).printMe(
+            {"path": ["/app-assets/css/bootstrap.css", "/app-assets/css/colors.css"]}
+        );
+    }
+</script>
+<!--DESHABILITAR LINK DE DOCUMENTO xls cuando se hace click-->
+<script>
+    deshabilitar = (element) => {
+        element.style.pointerEvents = 'none';
+        element.style.color = '#bbb';
+        $("#cargarXls").show();
+        setTimeout(() => {
+            element.style.pointerEvents = null;
+            element.style.color = 'blue';
+            $("#cargarXls").hide();
+        }, 6000);
+    };
+</script>
+</body>
+</html>
